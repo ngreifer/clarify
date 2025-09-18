@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">clarify</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,18 +38,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.3" id="clarify-023">
-<code>clarify</code> 0.2.3<a class="anchor" aria-label="anchor" href="#clarify-023"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.2" id="clarify-022">
+<code>clarify</code> 0.2.2<a class="anchor" aria-label="anchor" href="#clarify-022"></a></h2>
 <ul><li><p>Simultaneous confidence bands and p-values are now available by setting <code>simultaneous = TRUE</code> in calls to <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> or <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</p></li>
+<li><p><code><a href="../reference/sim_setx.html">sim_setx()</a></code>, <code><a href="../reference/sim_ame.html">sim_ame()</a></code>, and <code><a href="../reference/sim_adrf.html">sim_adrf()</a></code> now accept other arguments passed through <code>...</code>, which are passed to <code><a href="https://marginaleffects.com/man/r/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> to compute predictions.</p></li>
 <li><p>Fixed a bug when using <code><a href="../reference/sim_ame.html">sim_ame()</a></code> after <code><a href="../reference/misim.html">misim()</a></code> with <code>by</code> specified. Thanks to Arvind Ilamaran for pointing out this bug.</p></li>
 <li><p>Added references to the published article in <em>The R Journal</em>, including in the package citation (<code>citation("clarify")</code>).</p></li>
 <li><p>Fixed an issue where sampling from a t-distribution used a slightly incorrect covariance matrix, leading to intervals that could be a tiny bit too wide in small samples.</p></li>
 <li><p>Now using a new random number generator that is more tolerant of nearly singular covariance matrices. The removes a dependence on <code>mvnfast</code>. Results from prior versions of <code>clarify</code> will not be reproducible using this and future versions, even when using the same seed.</p></li>
-</ul></div>
-    <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.2.2" id="clarify-022">
-<code>clarify</code> 0.2.2<a class="anchor" aria-label="anchor" href="#clarify-022"></a></h2>
-<ul><li><p><code><a href="../reference/sim_setx.html">sim_setx()</a></code>, <code><a href="../reference/sim_ame.html">sim_ame()</a></code>, and <code><a href="../reference/sim_adrf.html">sim_adrf()</a></code> now accept other arguments passed through <code>...</code>, which are passed to <code><a href="https://marginaleffects.com/man/r/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> to compute predictions.</p></li>
 <li><p>Documentation updates.</p></li>
 <li><p>Error and warning messages are wrapped more nicely.</p></li>
 </ul></div>
