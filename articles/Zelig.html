@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">clarify</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -165,12 +165,12 @@ predictors:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           Estimate   2.5 %  97.5 %</span></span>
-<span><span class="co">#&gt; treat = 0   6686.0  5355.6  7909.3</span></span>
-<span><span class="co">#&gt; treat = 1   8234.3  6405.9 10060.0</span></span>
-<span><span class="co">#&gt; FD          1548.2    12.5  3096.9</span></span>
+<span><span class="co">#&gt; treat = 0   6686.0  5410.3  7970.1</span></span>
+<span><span class="co">#&gt; treat = 1   8234.3  6521.0 10027.9</span></span>
+<span><span class="co">#&gt; FD          1548.2    89.7  3126.5</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Zelig_files/figure-html/unnamed-chunk-12-1.png" width="624"></p>
+<p><img src="Zelig_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="624"></p>
 </div>
 </div>
 <div class="section level2">
@@ -272,12 +272,12 @@ regression with a correction for bias in the intercept <span class="citation">(P
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           Estimate    2.5 %   97.5 %</span></span>
-<span><span class="co">#&gt; treat = 0  0.02341  0.00817  0.06940</span></span>
-<span><span class="co">#&gt; treat = 1  0.06760  0.01760  0.21703</span></span>
-<span><span class="co">#&gt; FD         0.04419 -0.00148  0.18017</span></span></code></pre></div>
+<span><span class="co">#&gt; treat = 0  0.02341  0.00853  0.06054</span></span>
+<span><span class="co">#&gt; treat = 1  0.06760  0.01661  0.22588</span></span>
+<span><span class="co">#&gt; FD         0.04419 -0.00315  0.18509</span></span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Zelig_files/figure-html/unnamed-chunk-19-1.png" width="624"></p>
+<p><img src="Zelig_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="624"></p>
 </div>
 </div>
 <div class="section level2">
@@ -340,12 +340,12 @@ effect of <code>treat</code> within the subset of treated units:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Estimate 2.5 % 97.5 %</span></span>
-<span><span class="co">#&gt; E[Y(0)]     5228  4129   6393</span></span>
-<span><span class="co">#&gt; E[Y(1)]     6349  5179   7564</span></span>
-<span><span class="co">#&gt; Diff        1121  -295   2566</span></span>
+<span><span class="co">#&gt; E[Y(0)]     5228  4086   6364</span></span>
+<span><span class="co">#&gt; E[Y(1)]     6349  5256   7404</span></span>
+<span><span class="co">#&gt; Diff        1121  -400   2625</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Zelig_files/figure-html/unnamed-chunk-28-1.png" width="624"></p>
+<p><img src="Zelig_files/figure-html/unnamed-chunk-28-1.png" class="r-plt" alt="" width="624"></p>
 </div>
 </div>
 <div class="section level2">
@@ -427,12 +427,12 @@ regression model fits:</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            Estimate 2.5 % 97.5 %</span></span>
-<span><span class="co">#&gt; trade = 40      678   552    831</span></span>
-<span><span class="co">#&gt; trade = 60     1103   961   1298</span></span>
-<span><span class="co">#&gt; FD              424   336    523</span></span>
+<span><span class="co">#&gt; trade = 40      678   570    792</span></span>
+<span><span class="co">#&gt; trade = 60     1103  1030   1178</span></span>
+<span><span class="co">#&gt; FD              424   356    498</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Zelig_files/figure-html/unnamed-chunk-37-1.png" width="624"></p>
+<p><img src="Zelig_files/figure-html/unnamed-chunk-37-1.png" class="r-plt" alt="" width="624"></p>
 </div>
 </div>
 <div class="section level2 unnumbered">
@@ -473,7 +473,7 @@ Methods</em>, 1–10. <a href="https://doi.org/10.1017/psrm.2023.8" class="exter
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">clarify</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -177,21 +177,25 @@
 <span class="r-in"><span><span class="co"># Compute confidence intervals and p-values,</span></span></span>
 <span class="r-in"><span><span class="co"># using given null values for computing p-values</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span>, null <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`RD` <span class="op">=</span> <span class="fl">0</span>, `RR` <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Estimate   2.5 %  97.5 % P-value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> E[Y(0)]   0.7453  0.6947  0.8243       .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> E[Y(1)]   0.8176  0.7340  0.9035       .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RD        0.0722 -0.0345  0.1791    0.16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RR        1.0969  0.9569  1.2478    0.16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Estimate   2.5 %  97.5 % P-value  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> E[Y(0)]   0.7453  0.7067  0.7781       .  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> E[Y(1)]   0.8176  0.7478  0.8920       .  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RD        0.0722 -0.0145  0.1871    0.06 .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RR        1.0969  0.9806  1.2588    0.06 .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Same tests using normal approximation and alternate</span></span></span>
 <span class="r-in"><span><span class="co"># syntax for `null`</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span>, null <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">NA</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>        normal <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Estimate   2.5 %  97.5 % P-value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> E[Y(0)]   0.7453  0.6947  0.8243       .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> E[Y(1)]   0.8176  0.7340  0.9035       .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RD        0.0722 -0.0345  0.1791    0.16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> RR        1.0969  0.9569  1.2478    0.16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Estimate   2.5 %  97.5 % P-value  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> E[Y(0)]   0.7453  0.7067  0.7781       .  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> E[Y(1)]   0.8176  0.7478  0.8920       .  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RD        0.0722 -0.0145  0.1871    0.06 .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RR        1.0969  0.9806  1.2588    0.06 .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot the RD and RR with a reference distribution</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est</span>, parm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RD"</span>, <span class="st">"RR"</span><span class="op">)</span>, reference <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
@@ -212,7 +216,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

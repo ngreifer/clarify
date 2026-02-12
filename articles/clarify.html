@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">clarify</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@
 
       <h1>clarify: Simulation-Based Inference for Regression Models</h1>
             
-            <h4 data-toc-skip class="date">2025-09-19</h4>
+            <h4 data-toc-skip class="date">2026-02-12</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iqss/clarify/blob/main/vignettes/clarify.Rmd" class="external-link"><code>vignettes/clarify.Rmd</code></a></small>
       <div class="d-none name"><code>clarify.Rmd</code></div>
@@ -582,7 +582,7 @@ are used. The default is not to perform such an adjustment.</p></li>
 probability for participant PSID1:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est1</span>, reference <span class="op">=</span> <span class="cn">TRUE</span>, ci <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="clarify_files/figure-html/plot1-1.png" alt="A plot of the density of the simulated predicted probability for participant PSID1, overlaid with a Normal distribution and a reference line for the median of the estimates" width="384" style="display: block; margin: auto;"></p>
+<p><img src="clarify_files/figure-html/plot1-1.png" class="r-plt" alt="A plot of the density of the simulated predicted probability for participant PSID1, overlaid with a Normal distribution and a reference line for the median of the estimates" width="384" style="display: block; margin: auto;"></p>
 <p>Overlaid on the plot in red is a Normal distribution with the same
 mean and standard deviation as the simulated values; this is requested
 by setting <code>reference = TRUE</code>. From the plot, one can see
@@ -645,7 +645,7 @@ quantile-based uncertainty bounds.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est1</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Estimate 2.5 % 97.5 %</span></span>
-<span><span class="co">#&gt; PSID1    0.976 0.900  0.997</span></span></code></pre></div>
+<span><span class="co">#&gt; PSID1    0.976 0.892  0.996</span></span></code></pre></div>
 <p>Our second estimated quantity, the difference between two regression
 coefficients, is closer to Normally distributed, as the plot below
 demonstrates (and would be expected theoretically), so we will use the
@@ -653,12 +653,12 @@ Normal approximation to test the hypothesis that difference differs from
 0.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est2</span>, reference <span class="op">=</span> <span class="cn">TRUE</span>, ci <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="clarify_files/figure-html/plot2-1.png" alt="A plot of the density of the simulated difference between two regression coefficients, overlaid with a Normal distribution and a reference line for the median of the estimates." width="384" style="display: block; margin: auto;"></p>
+<p><img src="clarify_files/figure-html/plot2-1.png" class="r-plt" alt="A plot of the density of the simulated difference between two regression coefficients, overlaid with a Normal distribution and a reference line for the median of the estimates." width="384" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est2</span>, method <span class="op">=</span> <span class="st">"wald"</span>, null <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Estimate   2.5 %  97.5 % Std. Error Z value P-value</span></span>
-<span><span class="co">#&gt; w - h  -0.0996 -0.5150  0.3159     0.2120   -0.47    0.64</span></span></code></pre></div>
+<span><span class="co">#&gt; w - h  -0.0996 -0.5103  0.3111     0.2095   -0.48    0.63</span></span></code></pre></div>
 <p>The uncertainty intervals and p-values in the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>
 output are computed using the Normal approximation because we set
 <code>method = "wald"</code>, and the p-value for the test that our
@@ -764,10 +764,10 @@ quantiles by default).</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est3</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                         Estimate 2.5 % 97.5 %</span></span>
-<span><span class="co">#&gt; treat = 0, re75 = 0        0.667 0.548  0.772</span></span>
-<span><span class="co">#&gt; treat = 1, re75 = 0        0.712 0.607  0.799</span></span>
-<span><span class="co">#&gt; treat = 0, re75 = 20000    0.938 0.726  0.995</span></span>
-<span><span class="co">#&gt; treat = 1, re75 = 20000    0.953 0.769  0.996</span></span></code></pre></div>
+<span><span class="co">#&gt; treat = 0, re75 = 0        0.667 0.553  0.764</span></span>
+<span><span class="co">#&gt; treat = 1, re75 = 0        0.712 0.614  0.795</span></span>
+<span><span class="co">#&gt; treat = 0, re75 = 20000    0.938 0.693  0.994</span></span>
+<span><span class="co">#&gt; treat = 1, re75 = 20000    0.953 0.743  0.996</span></span></code></pre></div>
 <p>To see the complete grid of the predictor values used in the
 predictions, which helps to identify the “typical” values of the other
 predictors, we can access the <code>"setx"</code> attribute of the
@@ -791,7 +791,7 @@ The <code>var</code> argument controls which variable is used for
 faceting the plots.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est3</span>, var <span class="op">=</span> <span class="st">"re75"</span>, ci <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="clarify_files/figure-html/plot3-1.png" alt="Two plots of the densities of the simulated predictions of the outcome for control and treated units, one corresponding to re74 = 0 and the other to re75 = 20000." width="480" style="display: block; margin: auto;"></p>
+<p><img src="clarify_files/figure-html/plot3-1.png" class="r-plt" alt="Two plots of the densities of the simulated predictions of the outcome for control and treated units, one corresponding to re74 = 0 and the other to re75 = 20000." width="480" style="display: block; margin: auto;"></p>
 <p>One can see again how a delta method or Normal approximation may have
 yielded uncertainty intervals outside the plausible range of the
 estimate without applying knowledge of the correct transformation to use
@@ -810,7 +810,7 @@ unit can be generated. Below, we set <code>re75</code> to vary from 0 to
 the levels of <code>re75</code>:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est4</span><span class="op">)</span></span></code></pre></div>
-<p><img src="clarify_files/figure-html/plot4-1.png" alt="A plot of the predicted values of the outcome across levels of re75 from 0 to 20000 with a line for control units and a line for treated units. Each line has an uncertainty band around it." width="480" style="display: block; margin: auto;"></p>
+<p><img src="clarify_files/figure-html/plot4-1.png" class="r-plt" alt="A plot of the predicted values of the outcome across levels of re75 from 0 to 20000 with a line for control units and a line for treated units. Each line has an uncertainty band around it." width="480" style="display: block; margin: auto;"></p>
 <p>We will return to display average dose-response functions using
 <code><a href="../reference/sim_adrf.html">sim_adrf()</a></code> later.</p>
 <p>Finally, we can use <code><a href="../reference/sim_setx.html">sim_setx()</a></code> to compute first
@@ -830,9 +830,9 @@ predicted values and their first difference (“FD”):</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est5</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           Estimate   2.5 %  97.5 %</span></span>
-<span><span class="co">#&gt; treat = 0   0.7856  0.6846  0.8551</span></span>
-<span><span class="co">#&gt; treat = 1   0.8213  0.7123  0.9037</span></span>
-<span><span class="co">#&gt; FD          0.0357 -0.0517  0.1192</span></span></code></pre></div>
+<span><span class="co">#&gt; treat = 0   0.7856  0.7009  0.8590</span></span>
+<span><span class="co">#&gt; treat = 1   0.8213  0.7122  0.9063</span></span>
+<span><span class="co">#&gt; FD          0.0357 -0.0521  0.1176</span></span></code></pre></div>
 <p>It is possible to compute first differences without using
 <code>x1</code> using <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform()</a></code>, which we describe
 later.</p>
@@ -925,9 +925,9 @@ include a test for the null hypothesis that the risk ratio is equal to
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est6</span>, null <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`RR` <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Estimate 2.5 % 97.5 % P-value</span></span>
-<span><span class="co">#&gt; E[Y(0)]    0.687 0.603  0.757       .</span></span>
-<span><span class="co">#&gt; E[Y(1)]    0.755 0.689  0.814       .</span></span>
-<span><span class="co">#&gt; RR         1.100 0.966  1.276    0.15</span></span></code></pre></div>
+<span><span class="co">#&gt; E[Y(0)]    0.687 0.609  0.757       .</span></span>
+<span><span class="co">#&gt; E[Y(1)]    0.755 0.686  0.809       .</span></span>
+<span><span class="co">#&gt; RR         1.100 0.960  1.269    0.19</span></span></code></pre></div>
 <p>Here we see the estimates for the AAPs, <code>E[Y(0)]</code> for the
 expected value of the outcome setting <code>treat</code> to 0 and
 <code>E[Y(1)]</code> for the expected value of the outcome setting
@@ -951,7 +951,7 @@ uncertainty interval.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est7</span><span class="op">)</span></span>
 <span><span class="co">#&gt;              Estimate    2.5 %   97.5 %</span></span>
-<span><span class="co">#&gt; E[dY/d(age)] -0.00605 -0.00933 -0.00222</span></span></code></pre></div>
+<span><span class="co">#&gt; E[dY/d(age)] -0.00605 -0.00946 -0.00292</span></span></code></pre></div>
 <p>The AME is named <code>E[dY/d(age)]</code>, which signifies that a
 derivative has been computed (more precisely, the average of the
 unit-specific derivatives). This estimate can be interpreted like a
@@ -973,12 +973,12 @@ estimate AAPs and their ratio within levels of <code>married</code>:</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est6b</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           Estimate 2.5 % 97.5 %</span></span>
-<span><span class="co">#&gt; E[Y(0)|0]    0.691 0.598  0.764</span></span>
-<span><span class="co">#&gt; E[Y(1)|0]    0.733 0.655  0.803</span></span>
-<span><span class="co">#&gt; RR[0]        1.061 0.919  1.236</span></span>
-<span><span class="co">#&gt; E[Y(0)|1]    0.668 0.547  0.768</span></span>
-<span><span class="co">#&gt; E[Y(1)|1]    0.848 0.694  0.942</span></span>
-<span><span class="co">#&gt; RR[1]        1.270 0.988  1.593</span></span></code></pre></div>
+<span><span class="co">#&gt; E[Y(0)|0]    0.691 0.608  0.765</span></span>
+<span><span class="co">#&gt; E[Y(1)|0]    0.733 0.657  0.795</span></span>
+<span><span class="co">#&gt; RR[0]        1.061 0.922  1.238</span></span>
+<span><span class="co">#&gt; E[Y(0)|1]    0.668 0.558  0.768</span></span>
+<span><span class="co">#&gt; E[Y(1)|1]    0.848 0.675  0.944</span></span>
+<span><span class="co">#&gt; RR[1]        1.270 0.974  1.587</span></span></code></pre></div>
 <p>The presence of effect modification can be tested by testing the
 contrast between the effects computed within each level of the
 <code>by</code> variable; this demonstrated in the section on
@@ -1073,7 +1073,7 @@ and 50 (here we only use even ages to speed up computation).</p>
 bands.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est8</span>, simultaneous <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="clarify_files/figure-html/plot8-1.png" alt="A plot of the average dose-response function for the outcome against age. The line has an uncertainty band around it." width="480" style="display: block; margin: auto;"></p>
+<p><img src="clarify_files/figure-html/plot8-1.png" class="r-plt" alt="A plot of the average dose-response function for the outcome against age. The line has an uncertainty band around it." width="480" style="display: block; margin: auto;"></p>
 <p>From the plot, we can see that as <code>age</code> increases, the
 expected outcome decreases.</p>
 <p>We can also examine the AAPs at the requested ages using
@@ -1083,10 +1083,10 @@ default, so we will request just the first 4 (<code>age</code>s 18 to
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est8</span>, parm <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          Estimate 2.5 % 97.5 %</span></span>
-<span><span class="co">#&gt; E[Y(18)]    0.821 0.768  0.855</span></span>
-<span><span class="co">#&gt; E[Y(20)]    0.811 0.763  0.843</span></span>
-<span><span class="co">#&gt; E[Y(22)]    0.800 0.756  0.830</span></span>
-<span><span class="co">#&gt; E[Y(24)]    0.788 0.748  0.817</span></span></code></pre></div>
+<span><span class="co">#&gt; E[Y(18)]    0.821 0.777  0.857</span></span>
+<span><span class="co">#&gt; E[Y(20)]    0.811 0.770  0.844</span></span>
+<span><span class="co">#&gt; E[Y(22)]    0.800 0.762  0.830</span></span>
+<span><span class="co">#&gt; E[Y(24)]    0.788 0.754  0.819</span></span></code></pre></div>
 <p>Next we will compute the AMEF, the effect of <code>age</code> at each
 level of <code>age</code>.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
@@ -1098,7 +1098,7 @@ level of <code>age</code>.</p>
 <p>We can plot the AMEF using <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">est9</span>, simultaneous <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="clarify_files/figure-html/plot9-1.png" alt="A plot of the average marginal effect function for the outcome against age. The line has an uncertainty band around it." width="480" style="display: block; margin: auto;"></p>
+<p><img src="clarify_files/figure-html/plot9-1.png" class="r-plt" alt="A plot of the average marginal effect function for the outcome against age. The line has an uncertainty band around it." width="480" style="display: block; margin: auto;"></p>
 <p>From the plot, we can see the AME of <code>age</code> decreases
 slightly but is mostly constant across values of <code>age</code>, and
 the uncertainty intervals for the AMEs consistently exclude 0.</p>
@@ -1163,10 +1163,10 @@ We will also set a null value for this quantity.</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est6</span>, null <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>`RR` <span class="op">=</span> <span class="fl">1</span>, `RD` <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Estimate   2.5 %  97.5 % P-value</span></span>
-<span><span class="co">#&gt; E[Y(0)]   0.6866  0.6029  0.7572       .</span></span>
-<span><span class="co">#&gt; E[Y(1)]   0.7551  0.6887  0.8136       .</span></span>
-<span><span class="co">#&gt; RR        1.0998  0.9657  1.2760    0.15</span></span>
-<span><span class="co">#&gt; RD        0.0685 -0.0263  0.1656    0.15</span></span></code></pre></div>
+<span><span class="co">#&gt; E[Y(0)]   0.6866  0.6094  0.7567       .</span></span>
+<span><span class="co">#&gt; E[Y(1)]   0.7551  0.6860  0.8094       .</span></span>
+<span><span class="co">#&gt; RR        1.0998  0.9600  1.2688    0.19</span></span>
+<span><span class="co">#&gt; RD        0.0685 -0.0301  0.1647    0.19</span></span></code></pre></div>
 <p>As mentioned previously, one benefit of using simulation-based
 inference with p-values computed from inverting the confidence intervals
 is that the p-values for testing the same hypothesis with the risk
@@ -1193,9 +1193,9 @@ risk ratios to assess the presence of effect modification.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span>parm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RR[0]"</span>, <span class="st">"RR[1]"</span>, <span class="st">"RR[1]/RR[0]"</span><span class="op">)</span>,</span>
 <span>          null <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt;             Estimate 2.5 % 97.5 % P-value  </span></span>
-<span><span class="co">#&gt; RR[0]          1.061 0.919  1.236    0.43  </span></span>
-<span><span class="co">#&gt; RR[1]          1.270 0.988  1.593    0.07 .</span></span>
-<span><span class="co">#&gt; RR[1]/RR[0]    1.196 0.905  1.506    0.18  </span></span>
+<span><span class="co">#&gt; RR[0]          1.061 0.922  1.238    0.41  </span></span>
+<span><span class="co">#&gt; RR[1]          1.270 0.974  1.587    0.09 .</span></span>
+<span><span class="co">#&gt; RR[1]/RR[0]    1.196 0.915  1.510    0.17  </span></span>
 <span><span class="co">#&gt; ---</span></span>
 <span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre></div>
 <p><code>RR[1]/RR[0]</code> contains the ratio of the risk ratios for
@@ -1224,18 +1224,18 @@ illustration), as demonstrated below:</p>
 <span>                  contrast <span class="op">=</span> <span class="st">"diff"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est10b</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Estimate   2.5 %  97.5 %</span></span>
-<span><span class="co">#&gt; E[Y(0)]   0.6677  0.5715  0.7484</span></span>
-<span><span class="co">#&gt; E[Y(1)]   0.7439  0.6714  0.8058</span></span>
-<span><span class="co">#&gt; Diff      0.0762 -0.0209  0.1768</span></span>
+<span><span class="co">#&gt; E[Y(0)]   0.6677  0.5796  0.7480</span></span>
+<span><span class="co">#&gt; E[Y(1)]   0.7439  0.6687  0.8045</span></span>
+<span><span class="co">#&gt; Diff      0.0762 -0.0273  0.1787</span></span>
 <span></span>
 <span><span class="co"># AME of treat with race = "hispan"</span></span>
 <span><span class="va">est10h</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim_ame.html">sim_ame</a></span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"treat"</span>, subset <span class="op">=</span> <span class="va">race</span> <span class="op">==</span> <span class="st">"hispan"</span>,</span>
 <span>                  contrast <span class="op">=</span> <span class="st">"diff"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est10h</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         Estimate    2.5 %   97.5 %</span></span>
-<span><span class="co">#&gt; E[Y(0)]  0.82664  0.71804  0.89555</span></span>
-<span><span class="co">#&gt; E[Y(1)]  0.89707  0.79463  0.95146</span></span>
-<span><span class="co">#&gt; Diff     0.07044 -0.00533  0.14530</span></span></code></pre></div>
+<span><span class="co">#&gt;         Estimate   2.5 %  97.5 %</span></span>
+<span><span class="co">#&gt; E[Y(0)]   0.8266  0.7196  0.8989</span></span>
+<span><span class="co">#&gt; E[Y(1)]   0.8971  0.7891  0.9521</span></span>
+<span><span class="co">#&gt; Diff      0.0704 -0.0129  0.1422</span></span></code></pre></div>
 <p>Here, we computed the risk difference for the subgroups
 <code>race = "black"</code> and <code>race = "hispan"</code>. If we
 wanted to compare the risk differences, we could combine them and
@@ -1251,13 +1251,13 @@ method for <code>clarify_est</code> objects.</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">est10</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">est10b</span>, <span class="va">est10h</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           Estimate    2.5 %   97.5 %</span></span>
-<span><span class="co">#&gt; E[Y(0)]_b  0.66770  0.57151  0.74836</span></span>
-<span><span class="co">#&gt; E[Y(1)]_b  0.74389  0.67143  0.80581</span></span>
-<span><span class="co">#&gt; Diff_b     0.07619 -0.02086  0.17679</span></span>
-<span><span class="co">#&gt; E[Y(0)]_h  0.82664  0.71804  0.89555</span></span>
-<span><span class="co">#&gt; E[Y(1)]_h  0.89707  0.79463  0.95146</span></span>
-<span><span class="co">#&gt; Diff_h     0.07044 -0.00533  0.14530</span></span></code></pre></div>
+<span><span class="co">#&gt;           Estimate   2.5 %  97.5 %</span></span>
+<span><span class="co">#&gt; E[Y(0)]_b   0.6677  0.5796  0.7480</span></span>
+<span><span class="co">#&gt; E[Y(1)]_b   0.7439  0.6687  0.8045</span></span>
+<span><span class="co">#&gt; Diff_b      0.0762 -0.0273  0.1787</span></span>
+<span><span class="co">#&gt; E[Y(0)]_h   0.8266  0.7196  0.8989</span></span>
+<span><span class="co">#&gt; E[Y(1)]_h   0.8971  0.7891  0.9521</span></span>
+<span><span class="co">#&gt; Diff_h      0.0704 -0.0129  0.1422</span></span></code></pre></div>
 <p>Finally, we can use <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform()</a></code> to compute the
 difference between the risk differences:</p>
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
@@ -1265,7 +1265,7 @@ difference between the risk differences:</p>
 <span>                   `Dh - Db` <span class="op">=</span> <span class="va">Diff_h</span> <span class="op">-</span> <span class="va">Diff_b</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est10</span>, parm <span class="op">=</span> <span class="st">"Dh - Db"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;         Estimate    2.5 %   97.5 %</span></span>
-<span><span class="co">#&gt; Dh - Db -0.00575 -0.06782  0.04043</span></span></code></pre></div>
+<span><span class="co">#&gt; Dh - Db -0.00575 -0.06995  0.04240</span></span></code></pre></div>
 <p>Importantly, <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind()</a></code> can only be used to join together
 <code>clarify_est</code> objects computed using the same simulated
 coefficients (i.e., resulting from the same call to <code><a href="../reference/sim.html">sim()</a></code>).
@@ -1374,7 +1374,7 @@ analysis afterward using <code><a href="../reference/sim_ame.html">sim_ame()</a>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est_mi</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     Estimate 2.5 % 97.5 %</span></span>
-<span><span class="co">#&gt; AME    -5.76 -9.39  -2.38</span></span></code></pre></div>
+<span><span class="co">#&gt; AME    -5.76 -9.13  -2.33</span></span></code></pre></div>
 <p>Note that <code><a href="../reference/sim_apply.html">sim_apply()</a></code> “knows” which imputation produced
 each set of simulated coefficients, so using
 <code><a href="https://easystats.github.io/insight/reference/get_predictors.html" class="external-link">insight::get_predictors()</a></code> on the <code>fit</code> supplied
@@ -1389,7 +1389,7 @@ draws may be invalid.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est_mi2</span><span class="op">)</span></span>
 <span><span class="co">#&gt;               Estimate 2.5 % 97.5 %</span></span>
-<span><span class="co">#&gt; E[dY/d(infl)]    -5.76 -9.39  -2.38</span></span></code></pre></div>
+<span><span class="co">#&gt; E[dY/d(infl)]    -5.76 -9.13  -2.33</span></span></code></pre></div>
 <p>We get the same results, as expected.</p>
 <p>Note that <code><a href="../reference/misim.html">misim()</a></code> is compatible with model fit objects
 from <strong>mice</strong>, <strong>Amelia</strong>,
@@ -1615,7 +1615,7 @@ Statistician</em> 64 (2): 159–63. <a href="https://doi.org/10.1198/tast.2010.0
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
