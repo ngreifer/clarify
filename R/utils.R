@@ -281,17 +281,20 @@ rmvt <- function(n, mu, Sigma, df = Inf, tol = 1e-7) {
   }
 
   mu <- drop(mu)
-  scale_mat <- eS$vectors %*% diag(sqrt(pmax(ev, 0)), p)
+
+  scale_mat <- tcrossprod(eS$vectors %*% diag(sqrt(pmax(ev, 0)), p),
+                          eS$vectors)
 
   if (is.finite(df)) {
-    X <- matrix(rnorm(p * n), nrow = n, ncol = p)
-
-    X <- t(mu + tcrossprod(scale_mat, X)) / sqrt(rchisq(n, df) / df)
+    X <- matrix(rnorm(p * n), nrow = n, ncol = p, byrow = TRUE) |>
+      tcrossprod(scale_mat) |>
+      sweep(1L, sqrt(rchisq(n, df) / df), "/") |>
+      sweep(2L, mu, "+")
   }
   else {
-    X <- matrix(rnorm(p * n), nrow = n, ncol = p)
-
-    X <- t(mu + tcrossprod(scale_mat, X))
+    X <- matrix(rnorm(p * n), nrow = n, ncol = p, byrow = TRUE) |>
+      tcrossprod(scale_mat) |>
+      sweep(2L, mu, "+")
   }
 
   colnames(X) <- colnames(Sigma)
