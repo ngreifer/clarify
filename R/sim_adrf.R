@@ -88,18 +88,18 @@ sim_adrf <- function(sim,
 
   check_sim_apply_wrapper_ready(sim)
 
-  chk::chk_flag(verbose)
+  arg_flag(verbose)
   is_misim <- inherits(sim, "clarify_misim")
 
   if (missing(var)) {
-    .err("`var` must be supplied, identifying the focal variable")
+    .err("{.arg var} must be supplied, identifying the focal variable")
   }
 
-  if (!chk::vld_string(var)) {
-    .err("`var` must be the name of the desired focal variable")
+  if (!rlang::is_string(var)) {
+    .err("{.arg var} must be the name of the desired focal variable")
   }
 
-  chk::chk_string(contrast)
+  arg_string(contrast)
   contrast <- tolower(contrast)
   contrast <- match_arg(contrast, c("adrf", "amef"))
 
@@ -111,8 +111,7 @@ sim_adrf <- function(sim,
   }
 
   if (!hasName(dat, var)) {
-    .err(sprintf("the variable %s named in `var` is not present in the original model",
-                 add_quotes(var)))
+    .err("the variable {.var {var}} named in {.arg var} is not present in the original model")
   }
 
   if (is_not_null(by)) {
@@ -120,16 +119,16 @@ sim_adrf <- function(sim,
       by <- reformulate(by)
     }
     else if (!inherits(by, "formula")) {
-      .err("`by` must be a one-sided formula or character vector")
+      .err("{.arg by} must be a one-sided formula or character vector")
     }
   }
 
   var_val <- dat[[var]]
   rm(dat)
 
-  if (chk::vld_character_or_factor(var_val) ||
+  if (is_char_or_factor(var_val) ||
       is.logical(var_val) || length(unique(var_val)) <= 2L) {
-    .err("the variable named in `var` must be a numeric variable taking on more than two values. Use `sim_ame()` instead")
+    .err("the variable named in {.arg var} must be a numeric variable taking on more than two values. Use {.fun sim_ame}` instead")
   }
 
   index.sub <- substitute(subset)
@@ -150,43 +149,42 @@ sim_adrf <- function(sim,
 
   if (hasName(test_predict, "group") && length(unique_group <- unique(test_predict$group)) > 1L) {
     if (is_null(outcome)) {
-      .err("`outcome` must be supplied with multivariate models and models with multi-category outcomes")
+      .err("{.arg outcome} must be supplied with multivariate models and models with multi-category outcomes")
     }
 
-    chk::chk_string(outcome)
+    arg_string(outcome)
 
     if (!outcome %in% unique_group) {
-      .err(sprintf("only the following values of `outcome` are allowed: %s",
-                   toString(add_quotes(unique_group))))
+      .err("only the following values of {.arg outcome} are allowed: {.val {unique_group}}")
     }
 
     test_predict <- .subset_group(test_predict, outcome)
   }
   else {
     if (is_not_null(outcome)) {
-      .wrn("`outcome` is ignored for univariate models")
+      .wrn("{.arg outcome} is ignored for univariate models")
     }
 
     outcome <- NULL
   }
 
   if (nrow(test_predict) != nrow(test_dat)) {
-    .err("not all units received a predicted value, suggesting a bug.")
+    .err("not all units received a predicted value, suggesting a bug")
   }
 
   min_var <- min(var_val)
   max_var <- max(var_val)
   if (is_null(at)) {
-    chk::chk_count(n)
+    arg_count(n)
     # lims <- c(min_var - .01 * (max_var - min_var),
     #           max_var + .01 * (max_var - min_var))
     lims <- c(min_var, max_var)
     at <- seq(lims[1L], lims[2L], length.out = n)
   }
   else {
-    chk::chk_numeric(at)
+    arg_numeric(at)
     if (min(at) > max_var || max(at) < min_var) {
-      .wrn(sprintf("the values supplied to `at` are outside the range of %s; proceed with caution", var))
+      .wrn("the values supplied to {.arg at} are outside the range of {.var {var}}; proceed with caution")
     }
     at <- sort(at)
   }
@@ -237,8 +235,8 @@ sim_adrf <- function(sim,
     }
   }
   else if (contrast == "amef") {
-    chk::chk_number(eps)
-    chk::chk_gt(eps)
+    arg_number(eps)
+    arg_gt(eps, 0)
     eps <- eps * sd(var_val)
 
     if (is_null(by)) {
@@ -313,29 +311,34 @@ sim_adrf <- function(sim,
 #' @exportS3Method print clarify_adrf
 #' @rdname sim_adrf
 print.clarify_adrf <- function(x, digits = 4L, max.ests = 6L, ...) {
-  chk::chk_whole_number(digits)
-  chk::chk_count(max.ests)
+  arg_whole_number(digits)
+  arg_count(max.ests)
 
   n.ests <- length(coef(x))
   max.ests <- min(max.ests, n.ests)
 
-  cat("A `clarify_est` object (from `sim_adrf()`)\n")
+  cli::format_inline("A {.cls clarify_est} object (from {.fun sim_adrf})") |>
+    cli::cat_line()
 
   if (is_not_null(.attr(x, "contrast")) && is_not_null(.attr(x, "var"))) {
-    cat(sprintf(" - %s of `%s`\n",
-                switch(.attr(x, "contrast"),
-                       adrf = "Average dose-response function",
-                       amef = "Average marginal effect function"),
-                .attr(x, "var")))
+    cn <- switch(.attr(x, "contrast"),
+                 adrf = "Average dose-response function",
+                 amef = "Average marginal effect function")
+
+    cli::format_inline(" - {cn} of {.var {(.attr(x, 'var'))}}") |>
+      cli::cat_line()
   }
 
   if (is_not_null(.attr(x, "by"))) {
-    cat(sprintf("   - within levels of %s\n",
-                word_list(.attr(x, "by"), quotes = "`")))
+    cli::format_inline("   - within levels of {.var {(.attr(x, 'by'))}}") |>
+      cli::cat_line()
   }
-  cat(sprintf(" - %s simulated values\n", nrow(x)))
-  cat(sprintf(" - %s %s estimated:", n.ests,
-              ngettext(n.ests, "quantity", "quantities")))
+
+  cli::format_inline(" - {nrow(x)} simulated value{?s}") |>
+    cli::cat_line()
+
+  cli::format_inline(" - {n.ests} quantit{?y/ies} estimated") |>
+    cli::cat_line()
 
   data.frame(names(coef(x)),
              coef(x),

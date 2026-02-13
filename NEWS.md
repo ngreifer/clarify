@@ -5,6 +5,8 @@ clarify News and Updates
 
 * Fixed a bug in the parameterization of the multivariate t-distribution. Thanks to Christopher Johnston for pointing it out. Unfortunately this means all prior results will not be perfectly reproducible when using this and future versions.
 
+* Removed *chk* as a dependency; error messages now use *cli*.
+
 # `clarify` 0.2.2
 
 * Simultaneous confidence bands and p-values are now available by setting `simultaneous = TRUE` in calls to `summary()` or `plot()`.

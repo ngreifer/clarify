@@ -9,13 +9,20 @@ bibliography: references.bib
 ---
 
 ```{r, include = FALSE}
+logistf_ok <- rlang::is_installed("logistf")
+Amelia_ok <- rlang::is_installed("Amelia")
+MatchIt_ok <- rlang::is_installed("MatchIt")
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   warning = FALSE,
   fig.width = 6.5,
-  fig.height = 2.75
+  fig.height = 2.75,
+  eval = MatchIt_ok
 )
+
+
 ```
 
 ## Introduction
@@ -71,7 +78,7 @@ Finally, we can print and plot the predicted values and first differences:
 fit
 ```
 
-```{r, eval = F}
+```{r, eval = FALSE}
 plot(fit)
 ```
 
@@ -149,7 +156,7 @@ plot(fit)
 
 Here, we'll use `logistf::logistif()` with `flic = TRUE`, which performs a variation on Firth's logistic regression with a correction for bias in the intercept [@puhrFirthLogisticRegression2017].
 
-```{r}
+```{r, eval = logistf_ok}
 fit <- logistf::logistf(re78_20k ~ treat + age + educ + married + race +
                           nodegree + re74 + re75, data = lalonde,
                         flic = TRUE)
@@ -159,7 +166,7 @@ summary(fit)
 
 We can compute predictions at representative values using `clarify::sim()` and `sim_setx()`.
 
-```{r}
+```{r, eval = logistf_ok}
 s <- clarify::sim(fit)
 
 est <- sim_setx(s, x = list(treat = 0), x1 = list(treat = 1),
@@ -168,7 +175,7 @@ est <- sim_setx(s, x = list(treat = 0), x1 = list(treat = 1),
 summary(est)
 ```
 
-```{r}
+```{r, eval = logistf_ok}
 plot(est)
 ```
 
@@ -200,11 +207,11 @@ Next, we use `ATT()` to request the ATT of `treat` and simulate the values:
 fit <- ATT(fit, "treat")
 ```
 
-```{r, eval = F}
+```{r, eval = FALSE}
 fit
 ```
 
-```{r, eval = F}
+```{r, eval = FALSE}
 plot(fit)
 ```
 
@@ -245,14 +252,14 @@ plot(est)
 
 Here we'll use the `africa` dataset in `{Amelia}` to demonstrate combining estimates after multiple imputation. This analysis is also demonstrated using `clarify` at the end of `vignette("clarify")`.
 
-```{r, message=F}
+```{r, message=F, eval = Amelia_ok}
 library(Amelia)
 data("africa", package = "Amelia")
 ```
 
 First we multiply impute the data using `amelia()` using the specification in the `{Amelia}` documentation.
 
-```{r}
+```{r, eval = Amelia_ok}
 # Multiple imputation
 a.out <- amelia(x = africa, m = 10, cs = "country",
                 ts = "year", logs = "gdp_pc", p2s = 0)
@@ -296,7 +303,7 @@ plot(fit)
 
 `clarify` does not combine coefficients, unlike `zelig()`; instead, the models should be fit using `Amelia::with()`. To view the combined coefficient estimates, use `Amelia::mi.combine()`.
 
-```{r}
+```{r, eval = Amelia_ok}
 #Use Amelia functions to model and combine coefficients
 fits <- with(a.out, lm(gdp_pc ~ infl * trade))
 
@@ -305,7 +312,7 @@ mi.combine(fits)
 
 Derived quantities can be computed using `clarify::misim()` and `sim_apply()` or its wrappers on the `with()` output, which is a list of regression model fits:
 
-```{r}
+```{r, eval = Amelia_ok}
 #Simulate coefficients, 100 in each of 10 imputations
 s <- misim(fits, n = 100)
 

@@ -10,15 +10,15 @@ plot.clarify_est <- function(x,
                              simultaneous = FALSE,
                              ...) {
 
-  chk::chk_flag(ci)
-  chk::chk_flag(reference)
+  arg_flag(ci)
+  arg_flag(reference)
 
   original_est <- coef(x)
   est_names <- names(x)
 
   parm <- process_parm(x, parm)
   if (anyNA(parm)) {
-    .err("`parm` must be a numeric or character vector identifiying the estimates to plot")
+    .err("{.arg parm} must be a numeric or character vector identifiying the estimates to plot")
   }
 
   est_names <- est_names[parm]

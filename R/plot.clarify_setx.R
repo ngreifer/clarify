@@ -40,7 +40,7 @@ plot.clarify_setx <- function(x,
 
   if (nrow(newdata) == 1L) {
     if (is_not_null(var)) {
-      .wrn("ignoring `var` because no variables vary over predictions")
+      .wrn("ignoring {.arg var} because no variables vary over predictions")
     }
 
     return(plot.clarify_est(x, parm = 1L, ci = ci, level = level,
@@ -50,7 +50,7 @@ plot.clarify_setx <- function(x,
 
   if (isTRUE(.attr(x, "fd"))) {
     if (is_not_null(var)) {
-      .wrn("ignoring `var`")
+      .wrn("ignoring {.arg var}")
     }
 
     return(plot.clarify_est(x, parm = 1:3, ci = ci, level = level,
@@ -63,7 +63,7 @@ plot.clarify_setx <- function(x,
 
   if (length(varying) == 1L) {
     if (is_not_null(var) && !identical(var, varying)) {
-      .wrn("ignoring `var` because only one variable varies over predictions")
+      .wrn("ignoring {.arg var} because only one variable varies over predictions")
     }
     var <- varying
   }
@@ -76,17 +76,17 @@ plot.clarify_setx <- function(x,
     }
   }
   else {
-    chk::chk_string(var)
+    arg_string(var)
     if (!var %in% varying) {
-      .err(sprintf("`var` must be the name of a predictor set to be varying. Allowable options include %s",
-                   word_list(varying, quotes = TRUE)))
+      .err("{.arg var} must be the name of a predictor set to be varying. Allowable options include {.val {varying}}")
     }
   }
 
   non_var_varying <- setdiff(varying, var)
 
   p <- {
-    if (len_unique_newdata[var] == 2L || chk::vld_character_or_factor(newdata[[var]]))
+    if (len_unique_newdata[var] == 2L || is.character(newdata[[var]]) ||
+        is.factor(newdata[[var]]))
       setx_sim_plot(x, var, non_var_varying, ci = ci,
                     level = level, method = method,
                     simultaneous = simultaneous, ...)
@@ -103,7 +103,7 @@ plot.clarify_setx <- function(x,
 setx_sim_plot <- function(x, var, non_var_varying = NULL, ci = TRUE, level = .95,
                           method = "quantile", simultaneous = FALSE, ...) {
 
-  chk::chk_flag(ci)
+  arg_flag(ci)
 
   newdata <- .attr(x, "setx")
   original_est <- coef(x)
@@ -116,7 +116,7 @@ setx_sim_plot <- function(x, var, non_var_varying = NULL, ci = TRUE, level = .95
           by.x = "est", by.y = 0)
 
   est_long[[var]] <- paste0(var, " = ", add_quotes(est_long[[var]],
-                                                   chk::vld_character_or_factor(est_long[[var]])))
+                                                   is_char_or_factor(est_long[[var]])))
 
   original_est_long <- original_est[est_names] |>
     stack() |>
@@ -125,17 +125,17 @@ setx_sim_plot <- function(x, var, non_var_varying = NULL, ci = TRUE, level = .95
           by.x = "est", by.y = 0)
 
   original_est_long[[var]] <- paste0(var, " = ", add_quotes(original_est_long[[var]],
-                                                            chk::vld_character_or_factor(original_est_long[[var]])))
+                                                            is_char_or_factor(original_est_long[[var]])))
 
   if (is_not_null(non_var_varying)) {
     non_var_varying_f <- do.call("paste", c(lapply(non_var_varying, function(i) {
-      paste0(i, " = ", add_quotes(est_long[[i]], chk::vld_character_or_factor(est_long[[i]])))
+      paste0(i, " = ", add_quotes(est_long[[i]], is_char_or_factor(est_long[[i]])))
     }), list(sep = ", ")))
 
     non_var_varying_f <- factor(non_var_varying_f, levels = unique(non_var_varying_f))
 
     non_var_varying_f_o <- do.call("paste", c(lapply(non_var_varying, function(i) {
-      paste0(i, " = ", add_quotes(original_est_long[[i]], chk::vld_character_or_factor(original_est_long[[i]])))
+      paste0(i, " = ", add_quotes(original_est_long[[i]], is_char_or_factor(original_est_long[[i]])))
     }), list(sep = ", ")))
 
     non_var_varying_f_o <- factor(non_var_varying_f_o, levels = unique(non_var_varying_f_o))
@@ -165,11 +165,11 @@ setx_sim_plot <- function(x, var, non_var_varying = NULL, ci = TRUE, level = .95
       merge(newdata[c(var, non_var_varying)],
             by.x = "est", by.y = 0)
 
-    ci_long[[var]] <- paste0(var, " = ", add_quotes(ci_long[[var]], chk::vld_character_or_factor(ci_long[[var]])))
+    ci_long[[var]] <- paste0(var, " = ", add_quotes(ci_long[[var]], is_char_or_factor(ci_long[[var]])))
 
     if (is_not_null(non_var_varying)) {
       non_var_varying_f_ci <- do.call("paste", c(lapply(non_var_varying, function(i) {
-        paste0(i, " = ", add_quotes(ci_long[[i]], chk::vld_character_or_factor(ci_long[[i]])))
+        paste0(i, " = ", add_quotes(ci_long[[i]], is_char_or_factor(ci_long[[i]])))
       }), list(sep = ", ")))
 
       non_var_varying_f_ci <- factor(non_var_varying_f_ci, levels = unique(non_var_varying_f_ci))
@@ -198,7 +198,7 @@ setx_reg_plot <- function(x, var, non_var_varying = NULL, ci = TRUE, level = .95
 
   if (is_not_null(non_var_varying)) {
     non_var_varying_f <- do.call("paste", c(lapply(non_var_varying, function(i) {
-      paste0(i, " = ", add_quotes(newdata[[i]], chk::vld_character_or_factor(newdata[[i]])))
+      paste0(i, " = ", add_quotes(newdata[[i]], is_char_or_factor(newdata[[i]])))
     }), list(sep = ", ")))
 
     non_var_varying_f <- factor(non_var_varying_f, levels = unique(non_var_varying_f))

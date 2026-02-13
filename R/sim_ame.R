@@ -189,13 +189,13 @@ sim_ame <- function(sim,
 
   check_sim_apply_wrapper_ready(sim)
 
-  chk::chk_flag(verbose)
+  arg_flag(verbose)
   is_misim <- inherits(sim, "clarify_misim")
 
   vals <- NULL
 
   if (missing(var)) {
-    .err("`var` must be supplied, identifying the focal variable")
+    .err("{.arg var} must be supplied, identifying the focal variable")
   }
 
   if (is.character(var)) {
@@ -203,7 +203,7 @@ sim_ame <- function(sim,
   }
 
   if (!is.list(var)) {
-    .err("`var` must be the name of the desired focal variable(s) or a named list with their values")
+    .err("{.arg var} must be the name of the desired focal variable(s) or a named list with their values")
   }
 
   vals <- var
@@ -214,13 +214,13 @@ sim_ame <- function(sim,
   vals[!nzchar(names(vals)) & lengths(vals) == 0L] <- NULL
 
   if (is_null(vals)) {
-    .err("`var` must be the name of the desired focal variable or a named list with its values")
+    .err("{.arg var} must be the name of the desired focal variable or a named list with its values")
   }
 
   empty_names <- is.na(names(vals)) | !nzchar(names(vals))
   if (any(empty_names)) {
-    if (!all_apply(vals[empty_names], chk::vld_string)) {
-      .err("`var` must be the name of the desired focal variable or a named list with its values")
+    if (!all_apply(vals[empty_names], rlang::is_string)) {
+      .err("{.arg var} must be the name of the desired focal variable or a named list with its values")
     }
 
     names(vals)[empty_names] <- unlist(vals[empty_names])
@@ -237,16 +237,14 @@ sim_ame <- function(sim,
   }
 
   if (!all(vars %in% names(dat))) {
-    .err(sprintf("the variable%%s %s named in `var` %%r not present in the original model",
-                 word_list(setdiff(vars, names(dat)), quotes = TRUE)),
-         n = sum(!vars %in% names(dat)))
+    .err("the variable{?s} {.var {setdiff(vars, names(dat))}} named in {.arg var} {?is/are} not present in the original model")
   }
 
   var_val <- dat[vars]
   rm(dat)
 
   var_types <- vapply(vars, function(v) {
-    if (is_not_null(vals[[v]]) || chk::vld_character_or_factor(var_val[[v]]) ||
+    if (is_not_null(vals[[v]]) || is_char_or_factor(var_val[[v]]) ||
         is.logical(var_val[[v]]) || length(unique(var_val[[v]])) <= 2L) "cat"
     else "cont"
   }, character(1L))
@@ -258,9 +256,8 @@ sim_ame <- function(sim,
         else sort(unique(var_val[[v]]))
       }
     }
-    else if (chk::vld_character_or_factor(var_val[[v]]) && !all(vals[[v]] %in% var_val[[v]])) {
-      .err(sprintf("the values mentioned in `var[[%s]]` must be values `%s` takes on",
-                   add_quotes(v), v))
+    else if (is_char_or_factor(var_val[[v]]) && !all(vals[[v]] %in% var_val[[v]])) {
+      .err('the values mentioned in {.code var[[{"v"}]]}` must be values {.var {v}} takes on')
     }
   }
 
@@ -269,12 +266,12 @@ sim_ame <- function(sim,
       by <- reformulate(by)
     }
     else if (!inherits(by, "formula")) {
-      .err("`by` must be a one-sided formula or character vector")
+      .err("{.arg by} must be a one-sided formula or character vector")
     }
   }
 
   if (sum(var_types == "cont") > 1L) {
-    .err("only one continuous variable can be supplied to `var`")
+    .err("only one continuous variable can be supplied to {.arg var}")
   }
 
   index.sub <- substitute(subset)
@@ -293,21 +290,20 @@ sim_ame <- function(sim,
 
   if (hasName(test_predict, "group") && length(unique_group <- unique(test_predict$group)) > 1L) {
     if (is_null(outcome)) {
-      .err("`outcome` must be supplied with multivariate models and models with multi-category outcomes")
+      .err("{.arg outcome} must be supplied with multivariate models and models with multi-category outcomes")
     }
 
-    chk::chk_string(outcome)
+    arg_string(outcome)
 
     if (!outcome %in% unique_group) {
-      .err("only the following values of `outcome` are allowed: ",
-           toString(add_quotes(unique_group)))
+      .err("only the following values of {.arg outcome} are allowed: {.val {unique_group}}")
     }
 
     test_predict <- .subset_group(test_predict, outcome)
   }
   else {
     if (is_not_null(outcome)) {
-      .wrn("`outcome` is ignored for univariate models")
+      .wrn("{.arg outcome} is ignored for univariate models")
     }
 
     outcome <- NULL
@@ -325,7 +321,7 @@ sim_ame <- function(sim,
     }
     else if (nrow(vars_grid) == 2L) {
       if (is_not_null(contrast)) {
-        chk::chk_string(contrast)
+        arg_string(contrast)
         contrast <- tolower(contrast)
         contrast <- match_arg(contrast, c("diff", "rd", "irr", "rr", "sr", "srr", "grrr", "log(irr)",
                                           "log(rr)", "or", "log(or)", "nnt"))
@@ -333,9 +329,9 @@ sim_ame <- function(sim,
     }
     else if (is_not_null(contrast)) {
       if (sum(lengths(vals) >= 2L) > 1L)
-        .wrn("`contrast` is ignored when multiple focal variables takes on two or more levels")
+        .wrn("{.arg contrast} is ignored when multiple focal variables takes on two or more levels")
       else
-        .wrn("`contrast` is ignored when any focal variable takes on more than two levels")
+        .wrn("{.arg contrast} is ignored when any focal variable takes on more than two levels")
 
       contrast <- NULL
     }
@@ -455,11 +451,11 @@ sim_ame <- function(sim,
     }
   }
   else {
-    chk::chk_number(eps)
-    chk::chk_gt(eps)
+    arg_number(eps)
+    arg_gt(eps, 0)
 
     if (is_not_null(contrast)) {
-      .wrn("`contrast` is ignored when the focal variable is continuous")
+      .wrn("{.arg contrast} is ignored when the focal variable is continuous")
       contrast <- NULL
     }
 
@@ -627,27 +623,30 @@ sim_ame <- function(sim,
 #' @exportS3Method print clarify_ame
 #' @rdname sim_ame
 print.clarify_ame <- function(x, digits = 4L, max.ests = 6L, ...) {
-  chk::chk_whole_number(digits)
-  chk::chk_count(max.ests)
+  arg_whole_number(digits)
+  arg_count(max.ests)
 
   n.ests <- length(coef(x))
   max.ests <- min(max.ests, n.ests)
 
-  cat("A `clarify_est` object (from `sim_ame()`)\n")
+  cli::format_inline("A {.cls clarify_est} object (from {.fun sim_ame})") |>
+    cli::cat_line()
 
   vals <- .attr(x, "var")
   cont_vals <- vals[lengths(vals) == 0L]
 
   if (is_not_null(cont_vals)) {
+    cli::format_inline(" - Average marginal effect of {.var {names(cont_vals)}}") |>
+      cli::cat_line()
+
     set_vals <- vals[lengths(vals) > 0L]
-    cat(sprintf(" - Average marginal effect of %s\n",
-                word_list(names(cont_vals), quotes = "`")))
     if (is_not_null(set_vals)) {
       set_text <- vapply(names(set_vals), function(i) {
-        sprintf("`%s` set to %s", i,
-                word_list(set_vals[[i]], quotes = chk::vld_character_or_factor(set_vals[[i]])))
+        cli::format_inline("{.var {i}} set to {.val {set_vals[[i]]}}")
       }, character(1L))
-      cat(sprintf("   - with %s\n", word_list(set_text)))
+
+      cli::format_inline("   - with {set_text}") |>
+        cli::cat_line()
     }
   }
   else {
@@ -655,35 +654,40 @@ print.clarify_ame <- function(x, digits = 4L, max.ests = 6L, ...) {
     varying_vals <- vals[lengths(vals) > 1L]
 
     if (is_null(varying_vals)) {
-      cat(" - Average adjusted predictions\n")
+      cli::cat_line(" - Average adjusted predictions")
+
       set_text <- vapply(names(set_vals), function(i) {
-        sprintf("`%s` set to %s", i,
-                word_list(set_vals[[i]], quotes = chk::vld_character_or_factor(set_vals[[i]])))
+        cli::format_inline("{.var {i}} set to {.val {set_vals[[i]]}}")
       }, character(1L))
-      cat(sprintf("   - with %s\n", word_list(set_text)))
+
+      cli::format_inline("   - with {set_text}") |>
+        cli::cat_line()
     }
     else {
-      cat(sprintf(" - Average adjusted predictions for %s\n",
-                  word_list(names(varying_vals), quotes = "`")))
+      cli::format_inline(" - Average adjusted predictions for {.var {names(varying_vals)}}") |>
+        cli::cat_line()
+
       if (is_not_null(set_vals)) {
         set_text <- vapply(names(set_vals), function(i) {
-          sprintf("`%s` set to %s", i,
-                  word_list(set_vals[[i]], quotes = chk::vld_character_or_factor(set_vals[[i]])))
+          cli::format_inline("{.var {i}} set to {.val {set_vals[[i]]}}")
         }, character(1L))
-        cat(sprintf("   - with %s\n", word_list(set_text)))
+
+        cli::format_inline("   - with {set_text}") |>
+          cli::cat_line()
       }
     }
   }
 
   if (is_not_null(.attr(x, "by"))) {
-    cat(sprintf("   - within levels of %s\n",
-                word_list(.attr(x, "by"), quotes = "`")))
+    cli::format_inline("   - within levels of {.var {(.attr(x, 'by'))}}") |>
+      cli::cat_line()
   }
 
-  cat(sprintf(" - %s simulated values\n", nrow(x)))
+  cli::format_inline(" - {nrow(x)} simulated value{?s}") |>
+    cli::cat_line()
 
-  cat(sprintf(" - %s %s estimated:", n.ests,
-              ngettext(n.ests, "quantity", "quantities")))
+  cli::format_inline(" - {n.ests} quantit{?y/ies} estimated") |>
+    cli::cat_line()
 
   data.frame(names(coef(x)),
              coef(x),
@@ -721,12 +725,12 @@ print.clarify_ame <- function(x, digits = 4L, max.ests = 6L, ...) {
   if (is_not_null(index.sub)) {
     subset <- eval(index.sub, data, parent.frame(2L))
 
-    if (!chk::vld_atomic(subset)) {
-      .err("`subset` must evaluate to an atomic vector")
+    if (!rlang::is_atomic(subset)) {
+      .err("{.arg subset} must evaluate to an atomic vector")
     }
 
     if (is.logical(subset) && length(subset) != nrow(data)) {
-      .err("when `subset` is logical, it must have the same length as the original dataset")
+      .err("when {.arg subset} is logical, it must have the same length as the original dataset")
     }
 
     if (is_not_null(subset)) {

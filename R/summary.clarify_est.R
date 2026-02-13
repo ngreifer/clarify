@@ -83,17 +83,17 @@ summary.clarify_est <- function(object,
       is_null(ncol(object)) ||
       ncol(object) != length(coef(object)) ||
       !identical(names(object), names(coef(object)))) {
-    .err("the `clarify_est` object is malformed, possibly due to tampering")
+    .err("the {.cls clarify_est} object is malformed, possibly due to tampering")
   }
 
   original_est <- coef(object)
 
   parm <- process_parm(object, parm)
   if (anyNA(parm)) {
-    .err("`parm` must be a numeric or character vector identifying the estimates to summarize")
+    .err("{.arg parm} must be a numeric or character vector identifying the estimates to summarize")
   }
 
-  chk::chk_string(method)
+  arg_string(method)
   method <- match_arg(method, c("quantile", "wald"))
   # method <- match_arg(method, c("quantile", "wald", "optimal"))
 
@@ -103,7 +103,7 @@ summary.clarify_est <- function(object,
 
   nas <- anyNA(object[parm])
   if (nas) {
-    .wrn("`NA` values present among the estimates")
+    .wrn("{.val {NA}} values are present among the estimates")
   }
 
   ans <- cbind(Estimate = original_est[parm],
@@ -150,7 +150,7 @@ summary.clarify_est <- function(object,
       }
     }
     else {
-      .err('`null` cannot be specified when `method = "optimal"`')
+      .err('{.arg null} cannot be specified when {.code method = "optimal"}')
     }
 
     p[p < .Machine$double.eps] <- 0
@@ -167,7 +167,7 @@ summary.clarify_est <- function(object,
 
 #' @exportS3Method print summary.clarify_est
 print.summary.clarify_est <- function(x, digits = 3L, ...) {
-  chk::chk_whole_number(digits)
+  arg_whole_number(digits)
   stats::printCoefmat(x, digits = digits,
                       cs.ind = c(1:3, (4)["Std. Error" %in% colnames(x)]),
                       tst.ind = which(colnames(x) == "Z value"),
@@ -185,21 +185,21 @@ confint.clarify_est <- function(object,
                                 simultaneous = FALSE,
                                 ...) {
 
-  chk::chk_number(level)
-  chk::chk_range(level, c(.5, 1), inclusive = FALSE)
+  arg_number(level)
+  arg_range(level, c(0, 1), inclusive = c(TRUE, FALSE))
 
-  chk::chk_string(method)
+  arg_string(method)
   method <- match_arg(method, c("quantile", "wald"))
   # method <- match_arg(method, c("quantile", "wald", "optimal"))
 
   parm <- process_parm(object, parm)
   if (anyNA(parm)) {
-    .err("`parm` must be a numeric or character vector identifying the estimates for which to compute confidence intervals")
+    .err("{.arg parm} must be a numeric or character vector identifying the estimates for which to compute confidence intervals")
   }
 
-  chk::chk_flag(simultaneous)
+  arg_flag(simultaneous)
   if (simultaneous && method == "optimal") {
-    .err('`method = "optimal"` cannot be used with `simultaneous = TRUE`')
+    .err('{.code method = "optimal"} cannot be used with {.code simultaneous = TRUE}')
   }
 
   est_names <- names(object)[parm]
@@ -214,7 +214,7 @@ confint.clarify_est <- function(object,
 
   nas <- anyNA(object[parm])
   if (nas) {
-    .wrn("`NA` values present among the estimates")
+    .wrn("{.val {NA}} values are present among the estimates")
   }
 
   if (method == "quantile") {

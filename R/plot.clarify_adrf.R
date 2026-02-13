@@ -41,7 +41,7 @@ plot.clarify_adrf <- function(x,
     baseline <- identical(contrast, "amef")
   }
   else {
-    chk::chk_flag(baseline)
+    arg_flag(baseline)
   }
 
   if (ci) {

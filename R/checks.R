@@ -1,21 +1,21 @@
 process_FUN <- function(FUN, use_fit = TRUE) {
-  chk::chk_function(FUN)
+  arg_function(FUN)
   FUN_arg_names <- names(formals(FUN))
 
   if (is_null(FUN_arg_names)) {
-    .err("`FUN` must accept one or more arguments")
+    .err("{.arg FUN} must accept one or more arguments")
   }
 
   attr(FUN, "use_coefs") <- any(FUN_arg_names == "coefs")
 
   if (!use_fit && !.attr(FUN, "use_coefs")) {
-    .err('`FUN` must accept a `coefs` argument. See help("sim_apply") for details')
+    .err('{.arg FUN} must accept a {.arg coefs} argument. See {.fun sim_apply} for details')
   }
 
   attr(FUN, "use_fit") <- any(FUN_arg_names == "fit")
 
   if (!use_fit && .attr(FUN, "use_fit")) {
-    .wrn('the `fit` argument to `FUN` will be ignored. See help("sim_apply") for details')
+    .wrn('the {.arg fit} argument to {.arg FUN} will be ignored. See {.fun sim_apply} for details')
     attr(FUN, "use_fit") <- FALSE
   }
 
@@ -33,7 +33,7 @@ check_transform <- function(transform = NULL) {
   }
 
   transform <- try(match.fun(transform))
-  chk::chk_function(transform)
+  arg_function(transform)
   attr(transform, "transform_name") <- transform_name
 
   transform
@@ -74,40 +74,32 @@ check_coefs_vcov_length <- function(vcov, coefs, vcov_supplied, coef_supplied) {
         .err("the covariance matrix extracted from the model has dimensions different from the number of coefficients extracted from the model. You may need to supply your own function to extract one or both of these")
       }
       if (vcov_supplied == "fun") {
-        .err(sprintf("the output of the function supplied to `vcov` must have dimensions equal to the number of coefficients extracted from the model (%s)",
-                     length(coefs)))
+        .err("the output of the function supplied to {.arg vcov} must have dimensions equal to the number of coefficients extracted from the model ({length(coefs)})")
       }
       if (vcov_supplied == "num") {
-        .err(sprintf("when supplied as a matrix, `vcov` must have dimensions equal to the number of coefficients extracted from the model (%s)",
-                     length(coefs)))
+        .err("when supplied as a matrix, {.arg vcov} must have dimensions equal to the number of coefficients extracted from the model ({length(coefs)})")
       }
     }
     else if (coef_supplied == "fun") {
       if (vcov_supplied == "null") {
-        .err(sprintf("the output of the function supplied to `coefs` must have length equal to the dimensions of the covariance matrix extracted from the model (%s)",
-                     nrow(vcov)))
+        .err("the output of the function supplied to {.arg coefs} must have length equal to the dimensions of the covariance matrix extracted from the model ({nrow(vcov)})")
       }
       if (vcov_supplied == "fun") {
-        .err(sprintf("the output of the function supplied to `vcov` must have dimensions equal to the length of the output of the function supplied to `coefs` (%s)",
-                     length(coefs)))
+        .err("the output of the function supplied to {.arg vcov} must have dimensions equal to the length of the output of the function supplied to {.arg coefs} ({length(coefs)})")
       }
       if (vcov_supplied == "num") {
-        .err(sprintf("when supplied as a matrix, `vcov` must have dimensions equal to the length of the output of the function supplied to `coefs` (%s)",
-                     length(coefs)))
+        .err("when supplied as a matrix, {.arg vcov} must have dimensions equal to the length of the output of the function supplied to {.arg coefs} ({length(coefs)})")
       }
     }
     else if (coef_supplied == "num") {
       if (vcov_supplied == "null") {
-        .err(sprintf("the coefficient vector supplied to `coefs` must have length equal to the dimensions of the covariance matrix extracted from the model (%s)",
-                     nrow(vcov)))
+        .err("the coefficient vector supplied to {.arg coefs} must have length equal to the dimensions of the covariance matrix extracted from the model ({nrow(vcov)})")
       }
       if (vcov_supplied == "fun") {
-        .err(sprintf("the output of the function supplied to `vcov` must have dimensions equal to the length of the coefficient vector supplied to `coefs` (%s)",
-                     length(coefs)))
+        .err("the output of the function supplied to {.arg vcov} must have dimensions equal to the length of the coefficient vector supplied to {.arg coefs} ({length(coefs)})")
       }
       if (vcov_supplied == "num") {
-        .err(sprintf("when supplied as a matrix, `vcov` must have dimensions equal to the length of the coefficient vector supplied to `coefs` (%s)",
-                     length(coefs)))
+        .err("when supplied as a matrix, {.arg vcov} must have dimensions equal to the length of the coefficient vector supplied to {.arg coefs} ({length(coefs)})")
       }
     }
   }
@@ -119,17 +111,17 @@ check_coefs_vcov_length_mi <- function(vcov, coefs, vcov_supplied, coef_supplied
     switch(
       coef_supplied,
       "null" = .err("the coefficient vectors extracted from the models must all have the same length"),
-      "fun" = .err("the coefficient vectors returned by the function supplied to `coefs` must all have the same length"),
-      "num" = .err("the coefficient vectors supplied to `coefs` must all have the same length")
+      "fun" = .err("the coefficient vectors returned by the function supplied to {.arg coefs} must all have the same length"),
+      "num" = .err("the coefficient vectors supplied to {.arg coefs} must all have the same length")
     )
   }
 
-  if (!all_the_same(lapply(vcov, dim))) {
+  if (length(unique(lapply(vcov, dim))) > 1L) {
     switch(
       coef_supplied,
       "null" = .err("the covariance matrices extracted from the models must all have the same dimensions"),
-      "fun" = .err("the covariance matrices returned by the function supplied to `vcov` must all have the same dimensions"),
-      "num" = .err("the covariance matrices supplied to `vcov` must all have the same dimensions")
+      "fun" = .err("the covariance matrices returned by the function supplied to {.arg vcov} must all have the same dimensions"),
+      "num" = .err("the covariance matrices supplied to {.arg vcov} must all have the same dimensions")
     )
   }
 
@@ -141,50 +133,41 @@ check_coefs_vcov_length_mi <- function(vcov, coefs, vcov_supplied, coef_supplied
     if (length(bad_imps) == length(vcov))
       "all imputations"
     else
-      paste0("imputation%s ", word_list(as.character(bad_imps)))
+      cli::format_inline("{cli::qty(length(bad_imps))}imputation{?s} {bad_imps}")
   }
 
   if (is_not_null(bad_imps)) {
     if (coef_supplied == "null") {
       if (vcov_supplied == "null") {
-        .err("in ", in.imps, ", the covariance matrix extracted from the model has dimensions different from the number of coefficients extracted from the model. You may need to supply your own function to extract one or both of these",
-             n = length(bad_imps))
+        .err("in {in.imps}, the covariance matrix extracted from the model has dimensions different from the number of coefficients extracted from the model. You may need to supply your own function to extract one or both of these")
       }
       else if (vcov_supplied == "fun") {
-        .err("in ", in.imps, ", the output of the function supplied to `vcov` must have dimensions equal to the number of coefficients extracted from the model (", length(coefs[[1L]]), ")",
-             n = length(bad_imps))
+        .err("in {in.imps}, the output of the function supplied to {.arg vcov} must have dimensions equal to the number of coefficients extracted from the model ({length(coefs[[1L]])})")
       }
       else if (vcov_supplied == "num") {
-        .err("in ", in.imps, ", `vcov` must have dimensions equal to the number of coefficients extracted from the model (", length(coefs[[1L]]), ") when supplied as a matrix or list of matrices",
-             n = length(bad_imps))
+        .err("in {in.imps}, {.arg vcov} must have dimensions equal to the number of coefficients extracted from the model ({length(coefs[[1L]])}) when supplied as a matrix or list of matrices")
       }
     }
     else if (coef_supplied == "fun") {
       if (vcov_supplied == "null") {
-        .err("in ", in.imps, ", the output of the function supplied to `coefs` must have length equal to the dimensions of the covariance matrix extracted from the model (", nrow(vcov[[1L]]), ")",
-             n = length(bad_imps))
+        .err("in {in.imps}, the output of the function supplied to {.arg coefs} must have length equal to the dimensions of the covariance matrix extracted from the model ({nrow(vcov[[1L]])})")
       }
       else if (vcov_supplied == "fun") {
-        .err("in ", in.imps, ", the output of the function supplied to `vcov` must have dimensions equal to the length of the output of the function supplied to `coefs` (", length(coefs[[1L]]), ")",
-             n = length(bad_imps))
+        .err("in {in.imps}, the output of the function supplied to {.arg vcov} must have dimensions equal to the length of the output of the function supplied to {.arg coefs} ({length(coefs[[1L]])})")
       }
       else if (vcov_supplied == "num") {
-        .err("in ", in.imps, ", `vcov` must have dimensions equal to the length of the output of the function supplied to `coefs` (", length(coefs[[1L]]), ") when supplied as a matrix or list of matrices",
-             n = length(bad_imps))
+        .err("in {in.imps}, {.arg vcov} must have dimensions equal to the length of the output of the function supplied to {.arg coefs} ({length(coefs[[1L]])}) when supplied as a matrix or list of matrices")
       }
     }
     else if (coef_supplied == "num") {
       if (vcov_supplied == "null") {
-        .err("in ", in.imps, ", the coefficient vector supplied to `coefs` must have length equal to the dimensions of the covariance matrix extracted from the model (", nrow(vcov[[1L]]), ")",
-             n = length(bad_imps))
+        .err("in {in.imps}, the coefficient vector supplied to {.arg coefs} must have length equal to the dimensions of the covariance matrix extracted from the model ({nrow(vcov[[1L]])})")
       }
       else if (vcov_supplied == "fun") {
-        .err("in ", in.imps, ", the output of the function supplied to `vcov` must have dimensions equal to the length of the coefficient vector supplied to `coefs` (", length(coefs[[1L]]), ")",
-             n = length(bad_imps))
+        .err("in {in.imps}, the output of the function supplied to {.arg vcov} must have dimensions equal to the length of the coefficient vector supplied to {.arg coefs} ({length(coefs[[1L]])})")
       }
       else if (vcov_supplied == "num") {
-        .err("in ", in.imps, ", `vcov` must have dimensions equal to the length of the coefficient vector supplied to `coefs` (", length(coefs[[1L]]), ") when supplied as a matrix or list of matrices",
-             n = length(bad_imps))
+        .err("in {in.imps}, {.arg vcov} must have dimensions equal to the length of the coefficient vector supplied to {.arg coefs} ({length(coefs[[1L]])}) when supplied as a matrix or list of matrices")
       }
     }
   }
@@ -196,7 +179,7 @@ check_fitlist <- function(fitlist) {
         b <- try(coef(f), silent = TRUE)
         is_error(b) || is_null(b) || all(is.na(b))
       })) {
-    .err("`fitlist` must be a list of model fits or a `mira` object")
+    .err("{.arg fitlist} must be a list of model fits or a {.cls mira} object")
   }
 }
 
@@ -205,7 +188,7 @@ check_ests.list <- function(est, test) {
   l0 <- which(l == 0L)
 
   if (is_not_null(l0)) {
-    .wrn("some simulations produced no estimates; these estimates have been replaced by `NA`",
+    .wrn("some simulations produced no estimates; these estimates have been replaced by {.val {NA}}",
          immediate = FALSE)
 
     est[l0] <- lapply(l0, function(i) {
@@ -214,7 +197,7 @@ check_ests.list <- function(est, test) {
   }
 
   if (!all(l == length(test))) {
-    .err("not all simulations produced estimates with the same length as the number of estimates computed from the original coefficients, indicating a problem in `FUN`")
+    .err("not all simulations produced estimates with the same length as the number of estimates computed from the original coefficients, indicating a problem in {.arg FUN}")
   }
 }
 
@@ -239,22 +222,19 @@ process_parm <- function(object, parm) {
   if (is.character(parm)) {
     ind <- match(parm, names(object))
     if (anyNA(ind)) {
-      .err(sprintf("%s %%r not the name%%s of any estimated quantities.",
-                   word_list(parm[is.na(ind)], quotes = TRUE)),
-           n = sum(is.na(ind)))
+      .err("{.val {parm[is.na(ind)]}} {?is/are} not the name{?s} of any estimated quantities")
     }
     parm <- ind
   }
   else if (is.numeric(parm)) {
-    chk::chk_whole_numeric(parm)
+    arg_whole_numeric(parm)
 
     if (any(parm < 1) || any(parm > ncol(object))) {
       if (ncol(object) != 1L) {
-        .err(sprintf("all values in `parm` must be between 1 and %s",
-                     ncol(object)))
+        .err("all values in {.arg parm} must be between 1 and {ncol(object)}")
       }
 
-      .wrn("ignoring `parm` because only one estimate is available")
+      .wrn("ignoring {.arg parm} because only one estimate is available")
       parm <- 1L
     }
   }
@@ -270,7 +250,7 @@ process_null <- function(null, object, parm) {
     null <- NA_real_
   }
   else {
-    chk::chk_numeric(null)
+    arg_numeric(null[!is.na(null)], arg = "null")
   }
 
   if (is_not_null(names(null))) {
@@ -279,10 +259,10 @@ process_null <- function(null, object, parm) {
 
     if (!all(names(null) %in% names(null0))) {
       if (all(seq_len(ncol(object)) %in% parm)) {
-        .err("if `null` is named, its names must correspond to estimates in the supplied `clarify_est` object")
+        .err("if {.arg null} is named, its names must correspond to estimates in the supplied {.cls clarify_est} object")
       }
       else {
-        .err("if `null` is named, its names must correspond to estimates specified in `parm`")
+        .err("if {.arg null} is named, its names must correspond to estimates specified in {.arg parm}")
       }
     }
 
@@ -296,8 +276,7 @@ process_null <- function(null, object, parm) {
     null0 <- setNames(null, names(object)[parm])
   }
   else {
-    .err(sprintf("`null` must have length 1 or length equal to the number of quantities estimated (%s)",
-                 length(parm)))
+    .err("{.arg null} must have length 1 or length equal to the number of quantities estimated ({length(parm)})")
   }
 
   null0
@@ -322,35 +301,30 @@ check_classes <- function(olddata, newdata) {
   if (!identical(old, new)) {
     wrong <- old != new
     if (sum(wrong) == 1)
-      .err(sprintf("variable '%s' was fit with type %s but type %s was supplied",
-                   names(old)[wrong], add_quotes(old[wrong]), add_quotes(new[wrong])))
+      .err("variable {.var {names(old)[wrong]}} was fit with type {.cls {old[wrong]}} but type {.cls {new[wrong]}} was supplied")
     else
-      .err(sprintf("variables %s were specified with different types from the original model fit",
-                   word_list(names(old)[wrong], quotes = TRUE)))
+      .err("variables {.var {names(old)[wrong]}} were specified with different types from the original model fit")
   }
 
   invisible(NULL)
 }
 
 check_sim_apply_wrapper_ready <- function(sim) {
-  fun <- deparse1(pkg_caller_call()[[1L]])
+  fun <- deparse1(.pkg_caller_call()[[1L]])
 
-  chk::chk_is(sim, "clarify_sim")
+  arg_is(sim, "clarify_sim")
 
   if (!isTRUE(.attr(sim, "use_fit"))) {
-    .err(sprintf("`%s()` can only be used when a model fit was supplied to the original call to `sim()`",
-                 fun))
+    .err("{.fun {fun}} can only be used when a model fit was supplied to the original call to {.fun sim}")
   }
 
   if (inherits(sim, "clarify_misim")) {
     if (!all_apply(sim$fit, insight::is_regression_model)) {
-      .err(sprintf("`%s()` can only be used with regression models",
-                   fun))
+      .err("{.fun {fun}} can only be used with regression models")
     }
   }
   else if (!insight::is_regression_model(sim$fit)) {
-    .err(sprintf("`%s()` can only be used with regression models",
-                 fun))
+    .err("{.fun {fun}} can only be used with regression models")
   }
 
   invisible(NULL)

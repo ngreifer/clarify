@@ -56,11 +56,11 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
 
   if (is_null(fitlist)) {
     if (is_null(coefs) || is_null(vcov)) {
-      .err("when `fitlist` is not supplied, arguments must be supplied to both `coefs` and `vcov`")
+      .err("when {.arg fitlist} is not supplied, arguments must be supplied to both {.arg coefs} and {.arg vcov}")
     }
 
     if (!is.list(coefs) && !is.list(vcov)) {
-      .err("when `fitlist` is not supplied, at least one of `coefs` or `vcov` must be a list")
+      .err("when {.arg fitlist} is not supplied, at least one of {.arg coefs} or {.arg vcov} must be a list")
     }
 
     nimp <- if (is.list(coefs)) length(coefs) else length(vcov)
@@ -70,17 +70,17 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
     nimp <- length(fitlist)
   }
 
-  chk::chk_count(n)
+  arg_count(n)
 
   if (!is.list(coefs)) {
     coefs <- rep.int(list(coefs), nimp)
   }
   else if (length(coefs) != nimp) {
     if (is_null(fitlist)) {
-      .err("when `fitlist` is not supplied and `coefs` is supplied as a list, `coefs` must have as many entries as there are entries in `vcov`")
+      .err("when {.arg fitlist} is not supplied and {.arg coefs} is supplied as a list, {.arg coefs} must have as many entries as there are entries in {.arg vcov}")
     }
     else {
-      .err("when supplied as a list, `coefs` must have as many entries as there are models in `fitlist`")
+      .err("when supplied as a list, {.arg coefs} must have as many entries as there are models in {.arg fitlist}")
     }
   }
 
@@ -89,7 +89,7 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
     else if (all_apply(coefs, is.function)) "fun"
     else if (all_apply(coefs, check_valid_coef)) "num"
     else {
-      .err("`coefs` must be a vector of coefficients, a function that extracts one from each model in `fitlist`, or a list thereof")
+      .err("{.arg coefs} must be a vector of coefficients, a function that extracts one from each model in {.arg fitlist}, or a list thereof")
     }
   }
 
@@ -98,10 +98,10 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
   }
   else if (length(vcov) != nimp) {
     if (is_null(fitlist)) {
-      .err("when `fitlist` is not supplied and `vcov` is supplied as a list, `vcov` must have as many entries as there are entries in `coefs`")
+      .err("when {.arg fitlist} is not supplied and {.arg vcov} is supplied as a list, {.arg vcov} must have as many entries as there are entries in {.arg coefs}")
     }
     else {
-      .err("when supplied as a list, `vcov` must have as many entries as there are models in `fitlist`")
+      .err("when supplied as a list, {.arg vcov} must have as many entries as there are models in {.arg fitlist}")
     }
   }
 
@@ -121,7 +121,7 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
 
   check_coefs_vcov_length_mi(vcov, coefs, vcov_supplied, coef_supplied)
 
-  chk::chk_count(n)
+  arg_count(n)
 
   if (is_not_null(dist)) {
     if (length(dist) == 1L) {
@@ -131,7 +131,7 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
       dist <- as.list(dist)
     }
     else {
-      .err("when supplied as a vector, `dist` must have as many values as there are imputations")
+      .err("when supplied as a vector, {.arg dist} must have as many values as there are imputations")
     }
   }
 
@@ -167,21 +167,18 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
 print.clarify_misim <- function(x, ...) {
   obj <- deparse1(substitute(x))
 
-  cat("A `clarify_misim` object\n")
-  cat(sprintf(" - %s coefficients, %s imputations with %s simulated values each\n",
-              ncol(x$sim.coefs), nrow(x$coefs), nrow(x$sim.coefs) / nrow(x$coefs)))
-  cat(" - sampled distributions: ")
+  cli::format_inline("A {.cls clarify_misim} object") |>
+    cli::cat_line()
+
+  cli::format_inline(" - {ncol(x$sim.coefs)} coefficient{?s}, {nrow(x$coefs)} imputation{?s} with {nrow(x$sim.coefs) / nrow(x$coefs)} simulated value{?s} each") |>
+    cli::cat_line()
+
   if (length(.attr(x, "dist")) == 1L) {
-    cat(sprintf("multivariate %s\n", .attr(x, "dist")))
+    cli::format_inline(" - sampled distributions: multivariate {(.attr(x, 'dist'))}") |>
+      cli::cat_line()
   }
   else {
-    cat("multiple different multivariate distributions")
-    if (exists(obj)) {
-      cat(sprintf(' (use `attr(%s, "dist") to view them\n', obj))
-    }
-    else {
-      cat("\n")
-    }
+    cli::cat_line(" - sampled distributions: multiple different multivariate distributions")
   }
 
   invisible(x)

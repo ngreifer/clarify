@@ -1,56 +1,6 @@
 #Utilities
 
 #Turn a vector into a string with "," and "and" or "or" for clean messages.
-word_list <- function(word.list = NULL, and.or = "and", is.are = FALSE, quotes = FALSE) {
-  #When given a vector of strings, creates a string of the form "a and b"
-  #or "a, b, and c"
-  #If is.are, adds "is" or "are" appropriately
-
-  word.list <- setdiff(word.list, c(NA_character_, ""))
-
-  if (is_null(word.list)) {
-    out <- ""
-    attr(out, "plural") <- FALSE
-    return(out)
-  }
-
-  word.list <- add_quotes(word.list, quotes)
-
-  L <- length(word.list)
-
-  if (L == 1L) {
-    out <- word.list
-    if (is.are) out <- paste(out, "is")
-    attr(out, "plural") <- FALSE
-    return(out)
-  }
-
-  if (is_null(and.or) || isFALSE(and.or)) {
-    out <- toString(word.list)
-  }
-  else {
-    and.or <- match_arg(and.or, c("and", "or"))
-
-    if (L == 2L) {
-      out <- sprintf("%s %s %s",
-                     word.list[1L],
-                     and.or,
-                     word.list[2L])
-    }
-    else {
-      out <- sprintf("%s, %s %s",
-                     toString(word.list[-L]),
-                     and.or,
-                     word.list[L])
-    }
-  }
-
-  if (is.are) out <- sprintf("%s are", out)
-
-  attr(out, "plural") <- TRUE
-
-  out
-}
 
 #Add quotes to a string
 add_quotes <- function(x, quotes = 2L) {
@@ -62,11 +12,11 @@ add_quotes <- function(x, quotes = 2L) {
     quotes <- '"'
   }
 
-  if (chk::vld_string(quotes)) {
+  if (rlang::is_string(quotes)) {
     return(paste0(quotes, x, str_rev(quotes)))
   }
 
-  if (!chk::vld_count(quotes) || quotes > 2L) {
+  if (length(quotes) != 1L || !is.numeric(quotes) || !(quotes %in% c(1, 2))) {
     stop("`quotes` must be boolean, 1, 2, or a string.")
   }
 
@@ -87,15 +37,15 @@ str_rev <- function(x) {
   vapply(lapply(strsplit(x, NULL), rev), paste, character(1L), collapse = "")
 }
 
-#More informative and cleaner version of base::match.arg(). Uses chk.
-match_arg <- function(arg, choices, several.ok = FALSE) {
-  #Replaces match.arg() but gives cleaner error message and processing
-  #of arg.
+#More informative and cleaner version of base::match.arg(). Uses arg, rlang, and cli.
+match_arg <- function(arg, choices, several.ok = FALSE, context = NULL,
+                      arg.name = rlang::caller_arg(arg)) {
+  #Replaces match.arg() but gives cleaner error message and processing of arg.
   if (missing(arg)) {
-    stop("No argument was supplied to match_arg.")
+    .err("no argument was supplied to match_arg() (this is a bug)")
   }
 
-  arg.name <- deparse1(substitute(arg), width.cutoff = 500L)
+  # arg.name <- deparse1(substitute(arg), width.cutoff = 500L)
 
   if (missing(choices)) {
     sysP <- sys.parent()
@@ -109,10 +59,11 @@ match_arg <- function(arg, choices, several.ok = FALSE) {
   }
 
   if (several.ok) {
-    chk::chk_character(arg, x_name = add_quotes(arg.name, "`"))
+    arg_character(arg, arg.name)
   }
   else {
-    chk::chk_string(arg, x_name = add_quotes(arg.name, "`"))
+    arg_string(arg, arg.name)
+
     if (identical(arg, choices)) {
       return(arg[1L])
     }
@@ -121,10 +72,19 @@ match_arg <- function(arg, choices, several.ok = FALSE) {
   i <- pmatch(arg, choices, nomatch = 0L, duplicates.ok = TRUE)
 
   if (all(i == 0L)) {
-    .err(sprintf("the argument to `%s` should be %s%s",
-                 arg.name,
-                 ngettext(length(choices), "", if (several.ok) "at least one of " else "one of "),
-                 word_list(choices, and.or = "or", quotes = 2L)))
+    one_of <- {
+      if (length(choices) <= 1L) NULL
+      else if (several.ok) "at least one of"
+      else "one of"
+    }
+
+    if (is_null(context)) {
+      .err("the argument to {.arg {arg.name}} should be {one_of} {.or {.val {choices}}}")
+    }
+    else {
+      .err(sprintf("%s the argument to {.arg {arg.name}} should be {one_of} {.or {.val {choices}}}",
+                   context))
+    }
   }
 
   i <- i[i > 0L]
@@ -138,35 +98,31 @@ fmt.prc <- function(probs, digits = 3L) {
 }
 
 #Check if all values are the same
-all_the_same <- function(x) {
-  if (is.list(x)) {
-    for (i in x[-1L]) {
-      if (!identical(i, x[[1L]])) {
-        return(FALSE)
-      }
+all_the_same <- function(x, na.rm = TRUE) {
+  if (anyNA(x)) {
+    x <- x[!is.na(x)]
+
+    if (!na.rm) {
+      return(is_null(x))
     }
-    return(TRUE)
   }
 
-  if (is.numeric(x)) {
-    return(abs(max(x) - min(x)) < 1e-9)
-  }
-
-  length(unique(x)) == 1L
+  if (is.numeric(x)) check_if_zero(max(x) - min(x))
+  else all(x == x[1L])
 }
 
 #Tidy tryCatching
-try_chk <- function(expr) {
+try_catch <- function(expr) {
   tryCatch({
     withCallingHandlers({
       expr
     },
     warning = function(w) {
-      .wrn(conditionMessage(w), tidy = FALSE)
+      .wrn("{conditionMessage(w)}")
       invokeRestart("muffleWarning")
     })},
     error = function(e) {
-      .err(conditionMessage(e), tidy = FALSE)
+      .err("{conditionMessage(e)}")
     })
 }
 
@@ -219,46 +175,55 @@ is_error <- function(x) {
 is_null <- function(x) {length(x) == 0L}
 is_not_null <- function(x) {!is_null(x)}
 
+is_char_or_factor <- function(x) {
+  is.character(x) || is.factor(x)
+}
+
+check_if_zero <- function(x, tolerance = sqrt(.Machine$double.eps)) {
+  # this is the default tolerance used in all.equal
+  abs(x) < tolerance
+}
+
 #chk utilities
-pkg_caller_call <- function() {
-  pn <- utils::packageName()
-  package.funs <- c(getNamespaceExports(pn),
-                    .getNamespaceInfo(asNamespace(pn), "S3methods")[, 3L])
-
-  for (i in seq_len(sys.nframe())) {
-    e <- sys.call(i)
-
-    n <- rlang::call_name(e)
-
-    if (is_not_null(n) && n %in% package.funs) {
-      return(e)
-    }
-  }
-
-  NULL
-}
-
-.err <- function(..., n = NULL, tidy = TRUE) {
-  m <- chk::message_chk(..., n = n, tidy = tidy)
-  rlang::abort(paste(strwrap(m), collapse = "\n"),
-               call = pkg_caller_call())
-}
-.wrn <- function(..., n = NULL, tidy = TRUE, immediate = TRUE) {
-  m <- chk::message_chk(..., n = n, tidy = tidy)
-
-  if (immediate && isTRUE(all.equal(0, getOption("warn")))) {
-    rlang::with_options({
-      rlang::warn(paste(strwrap(m), collapse = "\n"))
-    }, warn = 1)
-  }
-  else {
-    rlang::warn(paste(strwrap(m), collapse = "\n"))
-  }
-}
-.msg <- function(..., n = NULL, tidy = TRUE) {
-  m <- chk::message_chk(..., n = n, tidy = tidy)
-  rlang::inform(paste(strwrap(m), collapse = "\n"), tidy = FALSE)
-}
+# pkg_caller_call <- function() {
+#   pn <- utils::packageName()
+#   package.funs <- c(getNamespaceExports(pn),
+#                     .getNamespaceInfo(asNamespace(pn), "S3methods")[, 3L])
+#
+#   for (i in seq_len(sys.nframe())) {
+#     e <- sys.call(i)
+#
+#     n <- rlang::call_name(e)
+#
+#     if (is_not_null(n) && n %in% package.funs) {
+#       return(e)
+#     }
+#   }
+#
+#   NULL
+# }
+#
+# .err <- function(..., n = NULL, tidy = TRUE) {
+#   m <- chk::message_chk(..., n = n, tidy = tidy)
+#   rlang::abort(paste(strwrap(m), collapse = "\n"),
+#                call = pkg_caller_call())
+# }
+# .wrn <- function(..., n = NULL, tidy = TRUE, immediate = TRUE) {
+#   m <- chk::message_chk(..., n = n, tidy = tidy)
+#
+#   if (immediate && isTRUE(all.equal(0, getOption("warn")))) {
+#     rlang::with_options({
+#       rlang::warn(paste(strwrap(m), collapse = "\n"))
+#     }, warn = 1)
+#   }
+#   else {
+#     rlang::warn(paste(strwrap(m), collapse = "\n"))
+#   }
+# }
+# .msg <- function(..., n = NULL, tidy = TRUE) {
+#   m <- chk::message_chk(..., n = n, tidy = tidy)
+#   rlang::inform(paste(strwrap(m), collapse = "\n"), tidy = FALSE)
+# }
 
 drop_sim_class <- function(x) {
   class(x) <- class(x)[!startsWith(class(x), "clarify_")]
@@ -277,7 +242,7 @@ rmvt <- function(n, mu, Sigma, df = Inf, tol = 1e-7) {
   ev <- eS$values
 
   if (any(ev < -tol * abs(ev[1L]))) {
-    .err("`Sigma` is not positive definite")
+    .err("{.arg Sigma} is not positive definite")
   }
 
   mu <- drop(mu)

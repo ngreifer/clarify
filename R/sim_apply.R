@@ -125,14 +125,14 @@ sim_apply <- function(sim,
                       cl = NULL,
                       ...) {
 
-  chk::chk_is(sim, "clarify_sim")
-  chk::chk_flag(verbose)
+  arg_is(sim, "clarify_sim")
+  arg_flag(verbose)
 
   missing.fun <- missing(FUN)
 
   if (missing.fun || is_null(FUN)) {
     if (verbose && missing.fun) {
-      .wrn("`FUN` not supplied; returning simulated coefficients")
+      .wrn("{.arg FUN} not supplied; returning simulated coefficients")
     }
 
     ests <- sim$sim.coefs
@@ -166,8 +166,8 @@ sim_apply <- function(sim,
     }), silent = TRUE)
 
     if (is_error(test)) {
-      .err("`FUN` failed to run on an initial check with the following error:\n",
-           conditionMessage(.attr(test, "condition")))
+      cmm <- conditionMessage(.attr(test, "condition"))
+      .err("{.arg FUN} failed to run on an initial check with the following error:\f{cmm}")
     }
 
     # test <- apply(do.call("rbind", test), 2, median)
@@ -187,8 +187,8 @@ sim_apply <- function(sim,
     # Test apply_FUN() on original model coefficients
     test <- try(apply_FUN(fit = sim$fit, coefs = sim$coefs, ...), silent = TRUE)
     if (is_error(test)) {
-      .err("`FUN` failed to run on an initial check with the following error:\n",
-           conditionMessage(.attr(test, "condition")))
+      cmm <- conditionMessage(.attr(test, "condition"))
+      .err("{.arg FUN} failed to run on an initial check with the following error:\f{cmm}")
     }
 
     if (is_null(names(test))) {
@@ -216,20 +216,26 @@ sim_apply <- function(sim,
 #' @exportS3Method print clarify_est
 #' @rdname sim_apply
 print.clarify_est <- function(x, digits = 4L, max.ests = 6L, ...) {
-  chk::chk_whole_number(digits)
-  chk::chk_count(max.ests)
+  arg_whole_number(digits)
+  arg_count(max.ests)
 
   n.ests <- length(coef(x))
   max.ests <- min(max.ests, n.ests)
 
-  cat(sprintf("A `clarify_est` object (from %s)\n",
-              if (inherits(x, "clarify_ame")) "`sim_ame()`"
-              else if (inherits(x, "clarify_setx")) "`sim_setx()`"
-              else "`sim_apply()`"))
+  calling_fn <- {
+    if (inherits(x, "clarify_ame")) "sim_ame"
+    else if (inherits(x, "clarify_setx")) "sim_setx"
+    else "sim_apply"
+  }
 
-  cat(sprintf(" - %s simulated values\n", nrow(x)))
-  cat(sprintf(" - %s %s estimated:", n.ests,
-              ngettext(n.ests, "quantity", "quantities")))
+  cli::format_inline("A {.cls clarify_est} object (from {.fun {calling_fn}})") |>
+    cli::cat_line()
+
+  cli::format_inline(" - {nrow(x)} simulated value{?s}") |>
+    cli::cat_line()
+
+  cli::format_inline(" - {n.ests} quantit{?y/ies} estimated") |>
+    cli::cat_line()
 
   data.frame(names(coef(x)),
              coef(x),

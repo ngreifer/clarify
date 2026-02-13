@@ -87,12 +87,12 @@ transform.clarify_est <- function(`_data`, ...) {
   e <- try(eval(dots, as.data.frame(`_data`), parent.frame()), silent = TRUE)
 
   if (is_error(e)) {
-    .err(conditionMessage(.attr(e, "condition")), tidy = FALSE)
+    .err('{conditionMessage(.attr(e, "condition"))}')
   }
 
   n <- nrow(`_data`)
   if (any_apply(e, function(e.) is_not_null(e.) && (length(e.) != n || !is.numeric(e.)))) {
-    .err("all transformations must be vector operations of the variables in the original `clarify_est` object")
+    .err("all transformations must be vector operations of the variables in the original {.cls clarify_est} object")
   }
 
   e_original <- eval(dots, as.list(.attr(`_data`, "original")), parent.frame())
@@ -148,17 +148,17 @@ cbind.clarify_est <- function(..., deparse.level = 1) {
     obj[[i]] <- ...elt(i)
 
     if (!inherits(obj[[i]], "clarify_est")) {
-      .err("all supplied objects must be `clarify_est` objects, the output of calls to `sim_apply()` or its wrappers")
+      .err("all supplied objects must be {.cls clarify_est} objects, the output of calls to {.fun sim_apply} or its wrappers")
     }
 
     hashes[[i]] <- .attr(obj[[i]], "sim_hash")
 
-    if (is_null(hashes[[i]]) || !chk::vld_string(hashes[[i]])) {
-      .err("all supplied objects must be unmodified `clarify_est` objects")
+    if (is_null(hashes[[i]]) || !rlang::is_string(hashes[[i]])) {
+      .err("all supplied objects must be unmodified {.cls clarify_est} objects")
     }
 
     if (i > 1L && (hashes[[i]] != hashes[[1L]] || nrow(obj[[i]]) != nrow(obj[[1L]]))) {
-      .err("all supplied objects must be calls of `sim_apply()` or its wrappers on the same `clarify_sim` object")
+      .err("all supplied objects must be calls of {.fun sim_apply} or its wrappers on the same {.cls clarify_sim} object")
     }
 
     coefs[[i]] <- coef(obj[[i]])
@@ -168,6 +168,7 @@ cbind.clarify_est <- function(..., deparse.level = 1) {
 
   attr(out, "original") <- unlist(coefs)
   attr(out, "sim_hash") <- hashes[[1L]]
+
   class(out) <- c("clarify_est", class(out))
 
   out

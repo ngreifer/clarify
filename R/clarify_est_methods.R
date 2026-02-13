@@ -35,7 +35,7 @@ Ops.clarify_est <- function(e1, e2 = NULL) {
   FUN <- get(.Generic, envir = parent.frame(), mode = "function")
 
   if (!.Generic %in% c("+", "-", "*", "^", "%%", "%/%", "/")) {
-    .err("only mathematical operations can be applied to `clarify_est` objects")
+    .err("only mathematical operations can be applied to {.cls clarify_est} objects")
   }
 
   if (unary) {
@@ -55,23 +55,19 @@ Ops.clarify_est <- function(e1, e2 = NULL) {
 
   if (e1_clarify_est && e2_clarify_est) {
     if (!identical(class(e1), class(e2))) {
-      .wrn(sprintf("`%s` should only be used on `clarify_est` objects produced from the same function",
-                   .Generic))
+      .wrn("{.fun {(.Generic)}} should only be used on {.cls clarify_est} objects produced from the same function")
     }
 
     if (!identical(.attr(e1, "hash"), .attr(e2, "hash"))) {
-      .err(sprintf("`%s` can only be used on `clarify_est` objects originating from calls applied to the same `clarify-sim` object",
-                   .Generic))
+      .err("{.fun {(.Generic)}} can only be used on {.cls clarify_est} objects originating from calls applied to the same {.cls clarify_sim} object")
     }
 
     if (!all(dim(e2) == dim(e1))) {
-      .err(sprintf("`%s` can only be used on `clarify_est` objects with an equal number of estimated quantities",
-                   .Generic))
+      .err("{.fun {(.Generic)}} can only be used on {.cls clarify_est} objects with an equal number of estimated quantities")
     }
 
     if (!identical(.attr(e1, "at"), .attr(e2, "at"))) {
-      .err(sprintf("`%s` can only be used on `clarify_adrf` objects with the same values of `at`",
-                   .Generic))
+      .err("{.fun {(.Generic)}} can only be used on {.cls clarify_adrf} objects with the same values of {.arg at}")
     }
   }
 
@@ -111,7 +107,7 @@ Ops.clarify_est <- function(e1, e2 = NULL) {
   }
 
   if (Narg > 2L) {
-    .err("`clarify_est` objects can only by subset as obj[.], not obj[., .]")
+    .err("{.cls clarify_est} objects can only by subset as {.code obj[.]}, not {.code obj[., .]}")
   }
 
   attrs <- attributes(x)
@@ -157,12 +153,12 @@ as.data.frame.clarify_est <- function(x, ...) {
 
 #' @exportS3Method dimnames clarify_est
 dimnames.clarify_est <- function(x) {
-  .err("do not use `colnames()`, `rownames()`, or `dimnames()` with a `clarify_est` object. Use `names()` instead")
+  .err("do not use {.fun colnames}, {.fun rownames}, or {.fun dimnames} with a {.cls clarify_est} object. Use {.fun names} instead")
 }
 
 #' @exportS3Method `dimnames<-` clarify_est
 `dimnames<-.clarify_est` <- function(x, value) {
-  .err("do not use `colnames()`, `rownames()`, or `dimnames()` with a `clarify_est` object. Use `names()` instead")
+  .err("do not use {.fun colnames}, {.fun rownames}, or {.fun dimnames} with a {.cls clarify_est} object. Use {.fun names} instead")
 }
 
 #' @exportS3Method str clarify_est

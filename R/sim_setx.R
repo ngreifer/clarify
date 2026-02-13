@@ -88,7 +88,7 @@ sim_setx <- function(sim,
 
   check_sim_apply_wrapper_ready(sim)
 
-  chk::chk_flag(verbose)
+  arg_flag(verbose)
   is_misim <- inherits(sim, "clarify_misim")
 
   dat <- {
@@ -114,18 +114,17 @@ sim_setx <- function(sim,
 
   if (hasName(test_predict, "group") && length(unique_group <- unique(test_predict$group)) > 1L) {
     if (is_null(outcome)) {
-      .err("`outcome` must be supplied with multivariate models and models with multi-category outcomes")
+      .err("{.arg outcome} must be supplied with multivariate models and models with multi-category outcomes")
     }
 
-    chk::chk_string(outcome)
+    arg_string(outcome)
     if (!outcome %in% unique_group) {
-      .err(sprintf("only the following values of `outcome` are allowed: %s",
-                   toString(add_quotes(unique_group))))
+      .err("only the following values of {.arg outcome} are allowed: {.val {unique_group}}")
     }
   }
   else {
     if (is_not_null(outcome)) {
-      .wrn("`outcome` is ignored for univariate models")
+      .wrn("{.arg outcome} is ignored for univariate models")
     }
     outcome <- NULL
   }
@@ -133,25 +132,25 @@ sim_setx <- function(sim,
   fd <- is_not_null(x1)
   if (fd) {
     if (is_null(.attr(newdata, "set_preds"))) {
-      .err("when `x1` is specified, `x` must be specified")
+      .err("when {.arg x1} is specified, {.arg x} must be specified")
     }
 
     if (nrow(newdata) != 1L) {
-      .err("when `x1` is specified, `x` must identify a single reference unit")
+      .err("when {.arg x1} is specified, {.arg x} must identify a single reference unit")
     }
 
     newdata_x1 <- process_x(x1, dat, "x1")
 
     if (nrow(newdata_x1) != 1L) {
-      .err("`x1` must identify a single unit")
+      .err("{.arg x1} must identify a single unit")
     }
 
     if (!setequal(.attr(newdata, "set_preds"), .attr(newdata_x1, "set_preds"))) {
-      .err("when `x1` is specified, the same variables must be specified in `x` and `x1`")
+      .err("when {.arg x1} is specified, the same variables must be specified in {.arg x} and {.arg x1}")
     }
 
     if (all_apply(names(newdata), function(i) identical(newdata[[i]], newdata_x1[[i]]))) {
-      .err("`x` and `x1` must be different")
+      .err("{.arg x} and {.arg x1} must be different")
     }
 
     newdata <- rbind(newdata, newdata_x1)
@@ -163,7 +162,7 @@ sim_setx <- function(sim,
 
     if (nrow(newdata) > 1L) {
       rownames(newdata) <- do.call("paste", c(lapply(set_preds[set_pred_lengths > 1L], function(i) {
-        paste0(i, " = ", add_quotes(newdata[[i]], chk::vld_character_or_factor(newdata[[i]])))
+        paste0(i, " = ", add_quotes(newdata[[i]], is_char_or_factor(newdata[[i]])))
       }), list(sep = ", ")))
     }
   }
@@ -203,35 +202,42 @@ sim_setx <- function(sim,
 #' @exportS3Method print clarify_setx
 #' @rdname sim_setx
 print.clarify_setx <- function(x, digits = 4L, max.ests = 6L, ...) {
-  chk::chk_whole_number(digits)
-  chk::chk_count(max.ests)
+  arg_whole_number(digits)
+  arg_count(max.ests)
 
   n.ests <- length(coef(x))
   max.ests <- min(max.ests, n.ests)
 
-  cat("A `clarify_est` object (from `sim_setx()`)\n")
+  cli::format_inline("A {.cls clarify_est} object (from {.fun sim_setx})") |>
+    cli::cat_line()
+
   if (isTRUE(.attr(x, "fd"))) {
-    cat(" - First difference\n")
+    cli::cat_line(" - First difference")
   }
   else {
-    cat(" - Predicted outcomes at specified values\n")
+    cli::cat_line(" - Predicted outcomes at specified values")
   }
 
   set_preds <- .attr(.attr(x, "setx"), "set_preds")
   if (is_not_null(set_preds)) {
-    cat(sprintf("   + Predictors set: %s\n",
-                toString(set_preds)))
+    cli::format_inline("   + Predictors set: {.var {set_preds}}") |>
+      cli::cat_line()
+
     if (length(set_preds) != nrow(.attr(x, "setx"))) {
-      cat('   + All others set at typical values (see `help("sim_setx")` for definition)\n')
+      cli::format_inline("   + All others set at typical values (see {.fun sim_setx} for definition)") |>
+        cli::cat_line()
     }
   }
   else {
-    cat('   + All predictors set at typical values (see `help("sim_setx")` for definition)')
+    cli::format_inline("   + All predictors set at typical values (see {.fun sim_setx} for definition)") |>
+      cli::cat_line()
   }
 
-  cat(sprintf(" - %s simulated values\n", nrow(x)))
-  cat(sprintf(" - %s %s estimated:", n.ests,
-              ngettext(n.ests, "quantity", "quantities")))
+  cli::format_inline(" - {nrow(x)} simulated value{?s}") |>
+    cli::cat_line()
+
+  cli::format_inline(" - {n.ests} quantit{?y/ies} estimated") |>
+    cli::cat_line()
 
   data.frame(names(coef(x)),
              coef(x),
@@ -253,13 +259,12 @@ process_x <- function(x, dat, arg_name) {
     auto_preds <- setdiff(names(dat), set_preds)
 
     if (is_null(set_preds)) {
-      .wrn(sprintf("the data data.frame supplied to %s does not contain any variables that correspond to variables used in the original model", arg_name))
+      .wrn("the data frame supplied to {.arg {arg_name}} does not contain any variables that correspond to variables used in the original model")
     }
   }
   else if (!is.list(x) || is_null(names(x)) || !all(nzchar(names(x))) ||
-           !chk::vld_all(x, is.atomic)) {
-    .err(sprintf("the argument to `%s` must be a grid data.frame or a named list of values for variables to be set to",
-                 arg_name))
+           !all_apply(x, rlang::is_atomic)) {
+    .err("the argument to {.arg {arg_name}} must be a grid data frame or a named list of values for variables to be set to")
   }
   else if (all(names(x) %in% names(dat))) {
     set_preds <- names(x)[lengths(x) > 0L]
@@ -267,10 +272,7 @@ process_x <- function(x, dat, arg_name) {
   }
   else {
     vars_not_in_model <- setdiff(names(x), names(dat))
-    .err(sprintf("the variable%%s %s named in `%s` %%r not present in the original model",
-                 word_list(vars_not_in_model, quotes = TRUE),
-                 arg_name),
-         n = length(vars_not_in_model))
+    .err("{cli::qty(vars_not_in_model)} the variable{?s} {.var {vars_not_in_model}} named in {.arg {arg_name}} {cli::qty(vars_not_in_model)} {?is/are} not present in the original model")
   }
 
   #Check to make sure inputs are the right type
