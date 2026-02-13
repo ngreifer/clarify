@@ -329,11 +329,12 @@ est <- sim_ame(s, var = "treat", by = ~married,
                contrast = "rd", verbose = FALSE)
 
 est
-#> A `clarify_est` object (from `sim_ame()`)
+#> A <clarify_est> object (from `sim_ame()`)
 #>  - Average adjusted predictions for `treat`
 #>    - within levels of `married`
 #>  - 100 simulated values
-#>  - 6 quantities estimated:                 
+#>  - 6 quantities estimated
+#>                  
 #>  E[Y(0)|0] 0.7241
 #>  E[Y(1)|0] 0.7952
 #>  RD[0]     0.0711
@@ -354,11 +355,12 @@ summary(est)
 est <- sim_ame(s, var = "age", by = ~married + race,
                verbose = FALSE)
 est
-#> A `clarify_est` object (from `sim_ame()`)
+#> A <clarify_est> object (from `sim_ame()`)
 #>  - Average marginal effect of `age`
 #>    - within levels of `married` and `race`
 #>  - 100 simulated values
-#>  - 6 quantities estimated:                                
+#>  - 6 quantities estimated
+#>                                 
 #>  E[dY/d(age)|0,black]  -0.007950
 #>  E[dY/d(age)|0,hispan] -0.005600
 #>  E[dY/d(age)|0,white]  -0.006626
@@ -391,10 +393,11 @@ summary(est_diff)
 est <- sim_ame(s, var = c("treat", "married"),
                verbose = FALSE)
 est
-#> A `clarify_est` object (from `sim_ame()`)
+#> A <clarify_est> object (from `sim_ame()`)
 #>  - Average adjusted predictions for `treat` and `married`
 #>  - 100 simulated values
-#>  - 4 quantities estimated:                 
+#>  - 4 quantities estimated
+#>                  
 #>  E[Y(0,0)] 0.7374
 #>  E[Y(1,0)] 0.8055
 #>  E[Y(0,1)] 0.7518

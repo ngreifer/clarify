@@ -113,7 +113,7 @@ fit <- lm(re78 ~ treat * (age + race + nodegree + re74),
 # Simulate coefficients
 s <- sim(fit)
 s
-#> A `clarify_sim` object
+#> A <clarify_sim> object
 #>  - 12 coefficients, 1000 simulated values
 #>  - sampled distribution: multivariate t(602)
 #>  - original fitting function call:
@@ -128,7 +128,7 @@ s <- sim(fit, vcov = "HC3")
 # distribution
 s <- sim(fit, dist = "normal")
 s
-#> A `clarify_sim` object
+#> A <clarify_sim> object
 #>  - 12 coefficients, 1000 simulated values
 #>  - sampled distribution: multivariate normal
 #>  - original fitting function call:

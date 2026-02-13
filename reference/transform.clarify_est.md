@@ -88,20 +88,22 @@ s <- sim(fit, n = 100)
 est_b <- sim_ame(s, var = "treat", verbose = FALSE,
                  subset = race == "black")
 est_b
-#> A `clarify_est` object (from `sim_ame()`)
+#> A <clarify_est> object (from `sim_ame()`)
 #>  - Average adjusted predictions for `treat`
 #>  - 100 simulated values
-#>  - 2 quantities estimated:             
+#>  - 2 quantities estimated
+#>              
 #>  E[Y(0)] 4589
 #>  E[Y(1)] 6148
 
 est_h <- sim_ame(s, var = "treat", verbose = FALSE,
                  subset = race == "hispan")
 est_h
-#> A `clarify_est` object (from `sim_ame()`)
+#> A <clarify_est> object (from `sim_ame()`)
 #>  - Average adjusted predictions for `treat`
 #>  - 100 simulated values
-#>  - 2 quantities estimated:             
+#>  - 2 quantities estimated
+#>              
 #>  E[Y(0)] 7015
 #>  E[Y(1)] 7183
 
@@ -109,9 +111,10 @@ est_h
 est_b <- transform(est_b,
                    diff = `E[Y(1)]` - `E[Y(0)]`)
 est_b
-#> A `clarify_est` object (from `sim_apply()`)
+#> A <clarify_est> object (from `sim_apply()`)
 #>  - 100 simulated values
-#>  - 3 quantities estimated:             
+#>  - 3 quantities estimated
+#>              
 #>  E[Y(0)] 4589
 #>  E[Y(1)] 6148
 #>  diff    1559
@@ -119,9 +122,10 @@ est_b
 est_h <- transform(est_h,
                    diff = `E[Y(1)]` - `E[Y(0)]`)
 est_h
-#> A `clarify_est` object (from `sim_apply()`)
+#> A <clarify_est> object (from `sim_apply()`)
 #>  - 100 simulated values
-#>  - 3 quantities estimated:             
+#>  - 3 quantities estimated
+#>              
 #>  E[Y(0)] 7015
 #>  E[Y(1)] 7183
 #>  diff     169
@@ -132,9 +136,10 @@ names(est_h) <- paste0(names(est_h), "_h")
 
 est <- cbind(est_b, est_h)
 est
-#> A `clarify_est` object (from `sim_apply()`)
+#> A <clarify_est> object (from `sim_apply()`)
 #>  - 100 simulated values
-#>  - 6 quantities estimated:               
+#>  - 6 quantities estimated
+#>                
 #>  E[Y(0)]_b 4589
 #>  E[Y(1)]_b 6148
 #>  diff_b    1559
@@ -155,9 +160,10 @@ summary(est,
 
 # Remove last quantity by using `NULL`
 transform(est, `diff-diff` = NULL)
-#> A `clarify_est` object (from `sim_apply()`)
+#> A <clarify_est> object (from `sim_apply()`)
 #>  - 100 simulated values
-#>  - 6 quantities estimated:               
+#>  - 6 quantities estimated
+#>                
 #>  E[Y(0)]_b 4589
 #>  E[Y(1)]_b 6148
 #>  diff_b    1559

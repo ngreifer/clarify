@@ -7,6 +7,8 @@
   Unfortunately this means all prior results will not be perfectly
   reproducible when using this and future versions.
 
+- Removed *chk* as a dependency; error messages now use *cli*.
+
 ## `clarify` 0.2.2
 
 CRAN release: 2025-09-19

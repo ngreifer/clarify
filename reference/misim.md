@@ -126,7 +126,7 @@ fits <- with(a.out, lm(gdp_pc ~ infl * trade))
 # Simulate coefficients
 s <- misim(fits)
 s
-#> A `clarify_misim` object
+#> A <clarify_misim> object
 #>  - 4 coefficients, 10 imputations with 1000 simulated values each
 #>  - sampled distributions: multivariate t(116)
 ```

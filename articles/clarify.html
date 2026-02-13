@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">clarify</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@
 
       <h1>clarify: Simulation-Based Inference for Regression Models</h1>
             
-            <h4 data-toc-skip class="date">2026-02-12</h4>
+            <h4 data-toc-skip class="date">2026-02-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iqss/clarify/blob/main/vignettes/clarify.Rmd" class="external-link"><code>vignettes/clarify.Rmd</code></a></small>
       <div class="d-none name"><code>clarify.Rmd</code></div>
@@ -409,7 +409,7 @@ coefficients and covariance matrix used to sample.</p>
 <span>         vcov <span class="op">=</span> <span class="st">"HC2"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">s</span></span>
-<span><span class="co">#&gt; A `clarify_sim` object</span></span>
+<span><span class="co">#&gt; A <span style="color: #0000BB;">&lt;clarify_sim&gt;</span> object</span></span>
 <span><span class="co">#&gt;  - 11 coefficients, 1000 simulated values</span></span>
 <span><span class="co">#&gt;  - sampled distribution: multivariate normal</span></span>
 <span><span class="co">#&gt;  - original fitting function call:</span></span>
@@ -472,9 +472,10 @@ distribution of the predicted value of interest:</p>
 <code class="sourceCode R"><span><span class="va">est1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim_apply.html">sim_apply</a></span><span class="op">(</span><span class="va">s</span>, FUN <span class="op">=</span> <span class="va">sim_fun1</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">est1</span></span>
-<span><span class="co">#&gt; A `clarify_est` object (from `sim_apply()`)</span></span>
+<span><span class="co">#&gt; A <span style="color: #0000BB;">&lt;clarify_est&gt;</span> object (from `sim_apply()`)</span></span>
 <span><span class="co">#&gt;  - 1000 simulated values</span></span>
-<span><span class="co">#&gt;  - 1 quantity estimated:             </span></span>
+<span><span class="co">#&gt;  - 1 quantity estimated</span></span>
+<span><span class="co">#&gt;              </span></span>
 <span><span class="co">#&gt;  PSID1 0.9757</span></span></code></pre></div>
 <p>The resulting <code>clarify_est</code> object contains the simulated
 estimates in matrix form as well as the estimate computed on the
@@ -500,9 +501,10 @@ them.</p>
 <span><span class="va">est2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim_apply.html">sim_apply</a></span><span class="op">(</span><span class="va">s</span>, FUN <span class="op">=</span> <span class="va">sim_fun2</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">est2</span></span>
-<span><span class="co">#&gt; A `clarify_est` object (from `sim_apply()`)</span></span>
+<span><span class="co">#&gt; A <span style="color: #0000BB;">&lt;clarify_est&gt;</span> object (from `sim_apply()`)</span></span>
 <span><span class="co">#&gt;  - 1000 simulated values</span></span>
-<span><span class="co">#&gt;  - 1 quantity estimated:               </span></span>
+<span><span class="co">#&gt;  - 1 quantity estimated</span></span>
+<span><span class="co">#&gt;                </span></span>
 <span><span class="co">#&gt;  w - h -0.09956</span></span></code></pre></div>
 <p>The function supplied to <code>FUN</code> can be arbitrarily
 complicated and return as many derived quantities as one wants, though
@@ -1351,7 +1353,7 @@ package.</p>
 <span><span class="va">si</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/misim.html">misim</a></span><span class="op">(</span><span class="va">model.list</span>, n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">si</span></span>
-<span><span class="co">#&gt; A `clarify_misim` object</span></span>
+<span><span class="co">#&gt; A <span style="color: #0000BB;">&lt;clarify_misim&gt;</span> object</span></span>
 <span><span class="co">#&gt;  - 4 coefficients, 10 imputations with 100 simulated values each</span></span>
 <span><span class="co">#&gt;  - sampled distributions: multivariate t(116)</span></span></code></pre></div>
 <p>The function we will be applying to each imputed dataset will be one

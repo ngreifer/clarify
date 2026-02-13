@@ -215,10 +215,11 @@ est <- sim_adrf(s, var = "age",
                 at = seq(15, 55, length.out = 6),
                 verbose = FALSE)
 est
-#> A `clarify_est` object (from `sim_adrf()`)
+#> A <clarify_est> object (from `sim_adrf()`)
 #>  - Average dose-response function of `age`
 #>  - 100 simulated values
-#>  - 6 quantities estimated:                
+#>  - 6 quantities estimated
+#>                 
 #>  E[Y(15)] 0.8443
 #>  E[Y(23)] 0.7976
 #>  E[Y(31)] 0.7416
@@ -233,10 +234,11 @@ est <- sim_adrf(s, var = "age", contrast = "amef",
                at = seq(15, 55, length.out = 6),
                verbose = FALSE)
 est
-#> A `clarify_est` object (from `sim_adrf()`)
+#> A <clarify_est> object (from `sim_adrf()`)
 #>  - Average marginal effect function of `age`
 #>  - 100 simulated values
-#>  - 6 quantities estimated:                          
+#>  - 6 quantities estimated
+#>                           
 #>  E[dY/d(age)|15] -0.005258
 #>  E[dY/d(age)|23] -0.006415
 #>  E[dY/d(age)|31] -0.007563
@@ -260,11 +262,12 @@ est <- sim_adrf(s, var = "age",
                 by = ~married,
                 verbose = FALSE)
 est
-#> A `clarify_est` object (from `sim_adrf()`)
+#> A <clarify_est> object (from `sim_adrf()`)
 #>  - Average dose-response function of `age`
 #>    - within levels of `married`
 #>  - 100 simulated values
-#>  - 12 quantities estimated:                  
+#>  - 12 quantities estimated
+#>                   
 #>  E[Y(15)|0] 0.8215
 #>  E[Y(23)|0] 0.7694
 #>  E[Y(31)|0] 0.7077

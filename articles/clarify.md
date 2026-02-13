@@ -351,7 +351,7 @@ s <- sim(fit, n = 1000,
          vcov = "HC2")
 
 s
-#> A `clarify_sim` object
+#> A <clarify_sim> object
 #>  - 11 coefficients, 1000 simulated values
 #>  - sampled distribution: multivariate normal
 #>  - original fitting function call:
@@ -422,9 +422,10 @@ simulate the sampling distribution of the predicted value of interest:
 est1 <- sim_apply(s, FUN = sim_fun1, verbose = FALSE)
 
 est1
-#> A `clarify_est` object (from `sim_apply()`)
+#> A <clarify_est> object (from `sim_apply()`)
 #>  - 1000 simulated values
-#>  - 1 quantity estimated:             
+#>  - 1 quantity estimated
+#>              
 #>  PSID1 0.9757
 ```
 
@@ -453,9 +454,10 @@ sim_fun2 <- function(coefs) {
 est2 <- sim_apply(s, FUN = sim_fun2, verbose = FALSE)
 
 est2
-#> A `clarify_est` object (from `sim_apply()`)
+#> A <clarify_est> object (from `sim_apply()`)
 #>  - 1000 simulated values
-#>  - 1 quantity estimated:               
+#>  - 1 quantity estimated
+#>                
 #>  w - h -0.09956
 ```
 
@@ -1457,7 +1459,7 @@ model.list <- with(a.out, lm(gdp_pc ~ infl * trade))
 si <- misim(model.list, n = 100)
 
 si
-#> A `clarify_misim` object
+#> A <clarify_misim> object
 #>  - 4 coefficients, 10 imputations with 100 simulated values each
 #>  - sampled distributions: multivariate t(116)
 ```
