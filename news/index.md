@@ -1,11 +1,11 @@
 # Changelog
 
-## `clarify` (development version)
+## *clarify* 0.2.3
 
 - Fixed a bug in the parameterization of the multivariate
   t-distribution. Thanks to Christopher Johnston for pointing it out.
-  Unfortunately this means all prior results will not be perfectly
-  reproducible when using this and future versions.
+  Unfortunately this means all results produced by prior versions will
+  not be perfectly reproducible when using this and future versions.
 
 - Removed *chk* as a dependency; error messages now use *arg*.
 
@@ -14,7 +14,7 @@
 
 - Documentation updates.
 
-## `clarify` 0.2.2
+## *clarify* 0.2.2
 
 CRAN release: 2025-09-19
 
@@ -43,7 +43,7 @@ CRAN release: 2025-09-19
 
 - Now using a new random number generator that is more tolerant of
   nearly singular covariance matrices. The removes a dependence on
-  `mvnfast`. Results from prior versions of `clarify` will not be
+  `mvnfast`. Results from prior versions of *clarify* will not be
   reproducible using this and future versions, even when using the same
   seed.
 
@@ -51,7 +51,7 @@ CRAN release: 2025-09-19
 
 - Error and warning messages are wrapped more nicely.
 
-## `clarify` 0.2.1
+## *clarify* 0.2.1
 
 CRAN release: 2024-05-30
 
@@ -81,7 +81,7 @@ CRAN release: 2024-05-30
   when this value does not align with the estimate, quantile confidence
   intervals may be invalid.
 
-## `clarify` 0.2.0
+## *clarify* 0.2.0
 
 CRAN release: 2023-09-21
 
@@ -103,15 +103,15 @@ CRAN release: 2023-09-21
 
 - Typo fixes in vignettes.
 
-## `clarify` 0.1.3
+## *clarify* 0.1.3
 
 CRAN release: 2023-05-04
 
 - Documentation updates incorporating the work of Rainey (2023).
-  `clarify` already implemented the recommendations in Rainey (2023) so
+  *clarify* already implemented the recommendations in Rainey (2023) so
   no functionality has changed.
 
-## `clarify` 0.1.2
+## *clarify* 0.1.2
 
 CRAN release: 2023-02-22
 
@@ -127,7 +127,7 @@ CRAN release: 2023-02-22
 - Fixed a warning that can occur about recovering model data, from
   `insight`.
 
-## `clarify` 0.1.1
+## *clarify* 0.1.1
 
 CRAN release: 2023-02-03
 
@@ -140,7 +140,7 @@ CRAN release: 2023-02-03
 
 - Updates to the README and vignettes.
 
-## `clarify` 0.1.0
+## *clarify* 0.1.0
 
 CRAN release: 2023-01-25
 
