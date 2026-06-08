@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Compute average marginal effects — sim_ame"><meta name="description" content="sim_ame() is a wrapper for sim_apply() that computes average marginal effects, the average effect of changing a single variable from one value to another (i.e., from one category to another for categorical variables or a tiny change for continuous variables)."><meta property="og:description" content="sim_ame() is a wrapper for sim_apply() that computes average marginal effects, the average effect of changing a single variable from one value to another (i.e., from one category to another for categorical variables or a tiny change for continuous variables)."></head><body>
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Compute average marginal effects — sim_ame"><meta name="description" content="sim_ame() is a wrapper for sim_apply() that computes average marginal effects, the average effect of changing a single variable from one value to another (i.e., from one category to another for categorical variables or a tiny change for continuous variables)."><meta property="og:description" content="sim_ame() is a wrapper for sim_apply() that computes average marginal effects, the average effect of changing a single variable from one value to another (i.e., from one category to another for categorical variables or a tiny change for continuous variables)."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">clarify</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@
 <span>  outcome <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eps <span class="op">=</span> <span class="fl">1e-05</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  cl <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
@@ -73,7 +73,7 @@
 
 
 <dl><dt id="arg-sim">sim<a class="anchor" aria-label="anchor" href="#arg-sim"></a></dt>
-<dd><p>a <code>clarify_sim</code> object; the output of a call to <code><a href="sim.html">sim()</a></code> or <code><a href="misim.html">misim()</a></code>.</p></dd>
+<dd><p>a <code>&lt;clarify_sim&gt;</code> object; the output of a call to <code><a href="sim.html">sim()</a></code> or <code><a href="misim.html">misim()</a></code>.</p></dd>
 
 
 <dt id="arg-var">var<a class="anchor" aria-label="anchor" href="#arg-var"></a></dt>
@@ -111,7 +111,7 @@ for univariate (single outcome) and binary outcomes.</p></dd>
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>a string containing the type of predicted values (e.g., the link
-or the response). Passed to <code><a href="https://marginaleffects.com/man/r/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> and eventually
+or the response). Passed to <code><a href="https://rdrr.io/pkg/marginaleffects/man/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> and eventually
 to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> in most cases. The default and allowable option depend on
 the type of model supplied, but almost always corresponds to the response
 scale (e.g., predicted probabilities for binomial models).</p></dd>
@@ -123,7 +123,7 @@ to change the variable values to approximate the derivative. See Details.</p></d
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p><code>logical</code>; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is <code>TRUE</code>.</p></dd>
+<dd><p><code>logical</code>; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is <code>TRUE</code> for interactive sessions and <code>FALSE</code> otherwise.</p></dd>
 
 
 <dt id="arg-cl">cl<a class="anchor" aria-label="anchor" href="#arg-cl"></a></dt>
@@ -131,11 +131,11 @@ to change the variable values to approximate the derivative. See Details.</p></d
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>for <code>sim_ame()</code>, additional arguments passed to <code><a href="https://marginaleffects.com/man/r/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> (and eventually to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>) to compute predictions. For <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, ignored.</p></dd>
+<dd><p>for <code>sim_ame()</code>, additional arguments passed to <code><a href="https://rdrr.io/pkg/marginaleffects/man/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> (and eventually to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>) to compute predictions. For <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, ignored.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>a <code>clarify_ame</code> object.</p></dd>
+<dd><p>a <code>&lt;clarify_ame&gt;</code> object.</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
@@ -148,7 +148,7 @@ to change the variable values to approximate the derivative. See Details.</p></d
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>clarify_ame</code> object, which inherits from <code>clarify_est</code> and is
+    <p>A <code>&lt;clarify_ame&gt;</code> object, which inherits from <code>&lt;clarify_est&gt;</code> and is
 similar to the output of <code><a href="sim_apply.html">sim_apply()</a></code>, with the additional attributes
 <code>"var"</code> containing the variable values specified in <code>var</code> and <code>"by"</code> containing the
 names of the variables specified in <code>by</code> (if any). The average adjusted
@@ -169,20 +169,10 @@ the quantity is computed. See examples.</p>
 <li><p><code>list(x2 = c(5, 10))</code> – the average adjusted predictions setting <code>x2</code> to 5 and to 10</p></li>
 <li><p><code>list(x1 = 0:1, x2 = c(5, 10))</code>, <code>list("x1", x2 = c(5, 10))</code> – the average adjusted predictions setting <code>x1</code> and <code>x2</code> in a full cross of 0, 1 and 5, 10, respectively (e.g., (0, 5), (0, 10), (1, 5), and (1, 10))</p></li>
 <li><p><code>list(x1 = 0:1, "x2")</code>, <code>list("x1", "x2")</code>, <code>c("x1", "x2")</code> – the average marginal effects of <code>x2</code> setting <code>x1</code> to 0 and to 1</p></li>
-</ul><p>The average adjusted prediction is the average predicted outcome
-value after setting all units' value of a variable to a specified level. (This quantity
-has several names, including the average potential outcome, average marginal mean, and standardized mean). When exactly two average adjusted predictions are requested, a contrast
-between them can be requested by supplying an argument
-to <code>contrast</code> (see Effect Measures section below). Contrasts can be manually computed using <code><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform()</a></code>
-afterward as well; this is required when multiple average adjusted predictions are requested (i.e., because a single variable was supplied to <code>var</code> with more than two levels or a combination of multiple variables was supplied).</p>
-<p>A marginal effect is the instantaneous rate of change
-corresponding to changing a unit's observed value of a variable by a tiny amount
-and considering to what degree the predicted outcome changes. The ratio of
-the change in the predicted outcome to the change in the value of the variable is
-the marginal effect; these are averaged across the sample to arrive at an
-average marginal effect. The "tiny amount" used is <code>eps</code> times the standard
-deviation of the focal variable.</p>
-<p>The difference between using <code>by</code> or <code>subset</code> vs. <code>var</code> is that <code>by</code> and <code>subset</code> subset the data when computing the requested quantity, whereas <code>var</code> sets the corresponding variable to given a value for all units. For example, using <code>by = ~v</code> computes the quantity of interest separately for each subset of the data defined by <code>v</code>, whereas setting <code>var = list(., "v")</code> computes the quantity of interest for all units setting their value of <code>v</code> to its unique values. The resulting quantities have different interpretations. Both <code>by</code> and <code>var</code> can be used simultaneously.</p><div class="section">
+</ul><p>The average adjusted prediction is the average predicted outcome value after setting all units' value of a variable to a specified level. (This quantity has several names, including the average potential outcome, average marginal mean, and standardized mean). When exactly two average adjusted predictions are requested, a contrast between them can be requested by supplying an argument to <code>contrast</code> (see Effect Measures section below). Contrasts can be manually computed using <code><a href="transform.clarify_est.html">transform()</a></code> afterward as well; this is required when multiple average adjusted predictions are requested (i.e., because a single variable was supplied to <code>var</code> with more than two levels or a combination of multiple variables was supplied).</p>
+<p>A marginal effect is the instantaneous rate of change corresponding to changing a unit's observed value of a variable by a tiny amount and considering to what degree the predicted outcome changes. The ratio of the change in the predicted outcome to the change in the value of the variable is the marginal effect; these are averaged across the sample to arrive at an average marginal effect. The "tiny amount" used is <code>eps</code> times the standard deviation of the focal variable.</p>
+<p>The difference between using <code>by</code> or <code>subset</code> vs. <code>var</code> is that <code>by</code> and <code>subset</code> subset the data when computing the requested quantity, whereas <code>var</code> sets the corresponding variable to given a value for all units. For example, using <code>by = ~v</code> computes the quantity of interest separately for each subset of the data defined by <code>v</code>, whereas setting <code>var = list(., "v")</code> computes the quantity of interest for all units setting their value of <code>v</code> to its unique values. The resulting quantities have different interpretations. Both <code>by</code> and <code>var</code> can be used simultaneously.</p>
+<p>Note that inference on the computed quantities treats the other variables in the model as fixed; that is, it only accounts for model-based uncertainty, not uncertainty due to sampling.</p><div class="section">
 <h3 id="effect-measures">Effect measures<a class="anchor" aria-label="anchor" href="#effect-measures"></a></h3>
 
 
@@ -198,8 +188,12 @@ corresponding effect measure.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="sim_apply.html">sim_apply()</a></code>, which provides a general interface to computing any quantities for simulation-based inference; <code><a href="summary.clarify_est.html">plot.clarify_est()</a></code> for plotting the output of a call to <code>sim_ame()</code>; <code><a href="summary.clarify_est.html">summary.clarify_est()</a></code> for computing p-values and confidence intervals for the estimated quantities.</p>
-<p><code><a href="https://marginaleffects.com/man/r/predictions.html" class="external-link">marginaleffects::avg_predictions()</a></code>, <code><a href="https://marginaleffects.com/man/r/comparisons.html" class="external-link">marginaleffects::avg_comparisons()</a></code> and <code><a href="https://marginaleffects.com/man/r/slopes.html" class="external-link">marginaleffects::avg_slopes()</a></code> for delta method-based implementations of computing average marginal effects.</p></div>
+    <div class="dont-index">
+<ul><li><p><code><a href="sim_apply.html">sim_apply()</a></code>, which provides a general interface to computing any quantities for simulation-based inference.</p></li>
+<li><p><code><a href="summary.clarify_est.html">plot.clarify_est()</a></code> for plotting the output of a call to <code>sim_ame()</code>.</p></li>
+<li><p><code><a href="summary.clarify_est.html">summary.clarify_est()</a></code> for computing p-values and confidence intervals for the estimated quantities.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/marginaleffects/man/predictions.html" class="external-link">marginaleffects::avg_predictions()</a></code>, <code><a href="https://rdrr.io/pkg/marginaleffects/man/comparisons.html" class="external-link">marginaleffects::avg_comparisons()</a></code> and <code><a href="https://rdrr.io/pkg/marginaleffects/man/slopes.html" class="external-link">marginaleffects::avg_slopes()</a></code> for delta method-based implementations of computing average marginal effects.</p></li>
+</ul></div>
     </div>
 
     <div class="section level2">
@@ -216,15 +210,14 @@ corresponding effect measure.</p>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="sim.html">sim</a></span><span class="op">(</span><span class="va">fit</span>, n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Average marginal effect of `age`</span></span></span>
-<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"age"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              Estimate    2.5 %   97.5 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> E[dY/d(age)] -0.00695 -0.01008 -0.00316</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Contrast between average adjusted predictions</span></span></span>
 <span class="r-in"><span><span class="co"># for `treat`</span></span></span>
-<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"treat"</span>, contrast <span class="op">=</span> <span class="st">"rr"</span>,</span></span>
-<span class="r-in"><span>               verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"treat"</span>, contrast <span class="op">=</span> <span class="st">"rr"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Estimate 2.5 % 97.5 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> E[Y(0)]    0.743 0.688  0.783</span>
@@ -233,7 +226,7 @@ corresponding effect measure.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Average adjusted predictions for `race`; need to follow up</span></span></span>
 <span class="r-in"><span><span class="co"># with contrasts for specific levels</span></span></span>
-<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"race"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"race"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/transform.html" class="external-link">transform</a></span><span class="op">(</span><span class="va">est</span>,</span></span>
 <span class="r-in"><span>                 `RR(h,b)` <span class="op">=</span> <span class="va">`E[Y(hispan)]`</span> <span class="op">/</span> <span class="va">`E[Y(black)]`</span><span class="op">)</span></span></span>
@@ -248,10 +241,10 @@ corresponding effect measure.</p>
 <span class="r-in"><span><span class="co"># Average adjusted predictions for `treat` within levels of</span></span></span>
 <span class="r-in"><span><span class="co"># `married`, first using `subset` and then using `by`</span></span></span>
 <span class="r-in"><span><span class="va">est0</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"treat"</span>, subset <span class="op">=</span> <span class="va">married</span> <span class="op">==</span> <span class="fl">0</span>,</span></span>
-<span class="r-in"><span>                contrast <span class="op">=</span> <span class="st">"rd"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                contrast <span class="op">=</span> <span class="st">"rd"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">est0</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">est0</span><span class="op">)</span>, <span class="st">"|married=0"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est1</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"treat"</span>, subset <span class="op">=</span> <span class="va">married</span> <span class="op">==</span> <span class="fl">1</span>,</span></span>
-<span class="r-in"><span>                contrast <span class="op">=</span> <span class="st">"rd"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                contrast <span class="op">=</span> <span class="st">"rd"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">est1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">est1</span><span class="op">)</span>, <span class="st">"|married=1"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">est0</span>, <span class="va">est1</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -264,7 +257,7 @@ corresponding effect measure.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> RD|married=1        0.0610 -0.0235  0.1231</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"treat"</span>, by <span class="op">=</span> <span class="op">~</span><span class="va">married</span>,</span></span>
-<span class="r-in"><span>               contrast <span class="op">=</span> <span class="st">"rd"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>               contrast <span class="op">=</span> <span class="st">"rd"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">est</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A <span style="color: #0000BB;">&lt;clarify_est&gt;</span> object (from `sim_ame()`)</span>
@@ -290,8 +283,7 @@ corresponding effect measure.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Average marginal effect of `age` within levels of</span></span></span>
 <span class="r-in"><span><span class="co"># married*race</span></span></span>
-<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"age"</span>, by <span class="op">=</span> <span class="op">~</span><span class="va">married</span> <span class="op">+</span> <span class="va">race</span>,</span></span>
-<span class="r-in"><span>               verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"age"</span>, by <span class="op">=</span> <span class="op">~</span><span class="va">married</span> <span class="op">+</span> <span class="va">race</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A <span style="color: #0000BB;">&lt;clarify_est&gt;</span> object (from `sim_ame()`)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Average marginal effect of `age`</span>
@@ -328,8 +320,7 @@ corresponding effect measure.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Average adjusted predictions at a combination of `treat`</span></span></span>
 <span class="r-in"><span><span class="co"># and `married`</span></span></span>
-<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treat"</span>, <span class="st">"married"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>               verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"treat"</span>, <span class="st">"married"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A <span style="color: #0000BB;">&lt;clarify_est&gt;</span> object (from `sim_ame()`)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Average adjusted predictions for `treat` and `married`</span>
@@ -342,8 +333,7 @@ corresponding effect measure.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  E[Y(1,1)] 0.8171</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Average marginal effect of `age` setting `married` to 1</span></span></span>
-<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"age"</span>, married <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>               verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_ame</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"age"</span>, married <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -18,7 +18,7 @@ sim_setx(
   x1 = list(),
   outcome = NULL,
   type = NULL,
-  verbose = TRUE,
+  verbose = interactive(),
   cl = NULL,
   ...
 )
@@ -31,18 +31,18 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
 - sim:
 
-  a `clarify_sim` object; the output of a call to [`sim()`](sim.md) or
+  a `<clarify_sim>` object; the output of a call to [`sim()`](sim.md) or
   [`misim()`](misim.md).
 
 - x:
 
-  a data.frame containing a reference grid of predictor values or a
+  a data frame containing a reference grid of predictor values or a
   named list of values each predictor should take defining such a
   reference grid, e.g., `list(v1 = 1:4, v2 = c("A", "B"))`. Any omitted
   predictors are fixed at a "typical" value. See Details. When `x1` is
   specified, `x` should identify a single reference unit.
 
-  For [`print()`](https://rdrr.io/r/base/print.html), a `clarify_setx`
+  For [`print()`](https://rdrr.io/r/base/print.html), a `<clarify_setx>`
   object.
 
 - x1:
@@ -61,7 +61,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
   a string containing the type of predicted values (e.g., the link or
   the response). Passed to
-  [`marginaleffects::get_predict()`](https://marginaleffects.com/man/r/get_predict.html)
+  [`marginaleffects::get_predict()`](https://rdrr.io/pkg/marginaleffects/man/get_predict.html)
   and eventually to [`predict()`](https://rdrr.io/r/stats/predict.html)
   in most cases. The default and allowable option depend on the type of
   model supplied, but almost always corresponds to the response scale
@@ -70,7 +70,8 @@ print(x, digits = 4L, max.ests = 6L, ...)
 - verbose:
 
   `logical`; whether to display a text progress bar indicating progress
-  and estimated time remaining for the procedure. Default is `TRUE`.
+  and estimated time remaining for the procedure. Default is `TRUE` for
+  interactive sessions and `FALSE` otherwise.
 
 - cl:
 
@@ -84,7 +85,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 - ...:
 
   for `sim_setx()`, additional arguments passed to
-  [`marginaleffects::get_predict()`](https://marginaleffects.com/man/r/get_predict.html)
+  [`marginaleffects::get_predict()`](https://rdrr.io/pkg/marginaleffects/man/get_predict.html)
   (and eventually to
   [`predict()`](https://rdrr.io/r/stats/predict.html)) to compute
   predictions. For [`print()`](https://rdrr.io/r/base/print.html),
@@ -101,7 +102,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
 ## Value
 
-A `clarify_setx` object, which inherits from `clarify_est` and is
+A `<clarify_setx>` object, which inherits from `<clarify_est>` and is
 similar to the output of [`sim_apply()`](sim_apply.md), with the
 following additional attributes:
 
@@ -131,12 +132,20 @@ single predictor changed, specified in `x1`.
 
 ## See also
 
-[`sim_apply()`](sim_apply.md), which provides a general interface to
-computing any quantities for simulation-based inference;
-[`plot.clarify_setx()`](plot.clarify_setx.md) for plotting the output of
-a call to `sim_setx()`;
-[`summary.clarify_est()`](summary.clarify_est.md) for computing p-values
-and confidence intervals for the estimated quantities.
+- [`sim_apply()`](sim_apply.md), which provides a general interface to
+  computing any quantities for simulation-based inference.
+
+- [`plot.clarify_setx()`](plot.clarify_setx.md) for plotting the output
+  of a call to `sim_setx()`.
+
+- [`summary.clarify_est()`](summary.clarify_est.md) for computing
+  p-values and confidence intervals for the estimated quantities.
+
+- [`marginaleffects::predictions()`](https://rdrr.io/pkg/marginaleffects/man/predictions.html)
+  and
+  [`marginaleffects::comparisons()`](https://rdrr.io/pkg/marginaleffects/man/comparisons.html)
+  for delta method-based implementations of computing predicted values
+  and first differences.
 
 ## Examples
 
@@ -153,8 +162,7 @@ s <- sim(fit, n = 100)
 # Predicted values at specified values of values, typical
 # values for other predictors
 est <- sim_setx(s, x = list(treat = 0:1,
-                            re74 = c(0, 10000)),
-                verbose = FALSE)
+                            re74 = c(0, 10000)))
 summary(est)
 #>                         Estimate 2.5 % 97.5 %
 #> treat = 0, re74 = 0         4771  3709   5771
@@ -167,8 +175,7 @@ plot(est)
 # Predicted values at specified grid of values, typical
 # values for other predictors
 est <- sim_setx(s, x = list(age = c(20, 25, 30, 35),
-                            married = 0:1),
-                verbose = FALSE)
+                            married = 0:1))
 summary(est)
 #>                       Estimate 2.5 % 97.5 %
 #> age = 20, married = 0     6377  5211   7464
@@ -185,8 +192,7 @@ plot(est)
 # First differences of treat at specified value of
 # race, typical values for other predictors
 est <- sim_setx(s, x = data.frame(treat = 0, race = "hispan"),
-                x1 = data.frame(treat = 1, race = "hispan"),
-                verbose = FALSE)
+                x1 = data.frame(treat = 1, race = "hispan"))
 summary(est)
 #>           Estimate   2.5 %  97.5 %
 #> treat = 0   7053.6  5340.1  8589.0

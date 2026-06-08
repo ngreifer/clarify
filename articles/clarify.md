@@ -28,16 +28,15 @@ method—simulation-based inference—which involves simulating a
 inference does not require understanding Taylor series or the calculus
 that underlies it, which can make it more palatable to nontechnical
 audiences and easier to learn for students without necessarily
-sacrificing statistical performance ([King, Tomz, and Wittenberg
+sacrificing statistical performance ([King et al.
 2000](#ref-kingMakingMostStatistical2000); [Zelner
 2009](#ref-zelnerUsingSimulationInterpret2009)). Some studies have found
 that simulation-based inference performs as well or better than the
 delta method for computing derived quantities (i.e., with respect to
 achieving close to nominal coverage for confidence intervals),
 especially for complicated derived quantities and in smaller samples
-([MacKinnon, Lockwood, and Williams
-2004](#ref-mackinnonConfidenceLimitsIndirect2004); [Hole
-2007](#ref-holeComparisonApproachesEstimating2007); [Herron
+([MacKinnon et al. 2004](#ref-mackinnonConfidenceLimitsIndirect2004);
+[Hole 2007](#ref-holeComparisonApproachesEstimating2007); [Herron
 1999](#ref-herronPostestimationUncertaintyLimited1999)). Its empirical
 performance has been particularly well studied in the context of
 mediation analysis, in which the quantities of interest are products and
@@ -48,8 +47,8 @@ quantities ([Tofighi and MacKinnon
 2012](#ref-preacherAdvantagesMonteCarlo2012)).
 
 The methodology **clarify** relies on was developed by Krinsky and Robb
-([1986](#ref-krinsky1986)) and is described in King, Tomz, and
-Wittenberg ([2000](#ref-kingMakingMostStatistical2000)) and Herron
+([1986](#ref-krinsky1986)) and is described in King et al.
+([2000](#ref-kingMakingMostStatistical2000)) and Herron
 ([1999](#ref-herronPostestimationUncertaintyLimited1999)).
 Simulation-based inference involves taking draws from a specified joint
 distribution of model parameters, computing derived quantities from
@@ -172,7 +171,7 @@ it so, though, neither quantile-based nor Wald-based intervals would be
 expected to perform well, and quantile intervals could yield even worse
 coverage than Wald-based intervals, a phenomenon that occurs in the
 context of bootstrapping ([Efron and Tibshirani
-1986](#ref-efronBootstrapMethodsStandard1986))[¹](#fn1). An informal
+1986](#ref-efronBootstrapMethodsStandard1986))[^1]. An informal
 falsification test for whether such a monotonic transformation exists is
 whether the median of the simulated estimates is aligned with the point
 estimate; if it is not, there is no monotonic transformation that will
@@ -180,10 +179,9 @@ yield a symmetric quantile interval with the desired coverage.
 
 ## Related software
 
-Similar functionality exists in the **CLARIFY** package in
-Stata[²](#fn2) ([Tomz, Wittenberg, and King
-2003](#ref-tomzClarifySoftwareInterpreting2003)) and used to be
-available in the **Zelig** R package ([Imai, King, and Lau
+Similar functionality exists in the **CLARIFY** package in Stata[^2]
+([Tomz et al. 2003](#ref-tomzClarifySoftwareInterpreting2003)) and used
+to be available in the **Zelig** R package ([Imai et al.
 2008](#ref-imaiCommonFrameworkStatistical2008a)), though there are
 differences in these implementations. **clarify** provides additional
 flexibility by allowing the user to request any derived quantity, in
@@ -191,11 +189,10 @@ addition to providing shortcuts for common quantities, including
 predictions at representative values, average marginal effects, and
 average dose-response functions (described below). **clarify** relies on
 and can be seen as a companion to the **marginaleffects** package
-([Arel-Bundock, Greifer, and Heiss
-2024](#ref-marginaleffectsforthcoming)), which offers similar
-functionality but primarily uses the delta method for calculating
-uncertainty (though simulation-based inference is supported in a more
-limited capacity as well).
+([Arel-Bundock et al. 2024](#ref-marginaleffectsforthcoming)), which
+offers similar functionality but primarily uses the delta method for
+calculating uncertainty (though simulation-based inference is supported
+in a more limited capacity as well).
 
 ## Using **clarify**
 
@@ -223,6 +220,7 @@ detail. First, we will load **clarify** using
 [`library()`](https://rdrr.io/r/base/library.html).
 
 ``` r
+
 library(clarify)
 ```
 
@@ -240,6 +238,7 @@ to nonlinear models, for which the benefits of simulation-based
 inference are more apparent.
 
 ``` r
+
 data("lalonde", package = "MatchIt")
 
 # Create a binary outcome variable
@@ -276,6 +275,7 @@ quantities—functions of the model parameters, such as predictions,
 counterfactual predictions, and averages and contrasts of them.
 
 ``` r
+
 fit <- glm(re78_0 ~ treat * married + age + educ + race +
              nodegree + re74 + re75, data = lalonde,
            family = binomial("probit"))
@@ -292,6 +292,7 @@ covariance matrix extracted from the model. The arguments to
 [`sim()`](../reference/sim.md) are listed below:
 
 ``` r
+
 sim(fit = , n = , vcov = , coefs = , dist = )
 ```
 
@@ -307,7 +308,7 @@ sim(fit = , n = , vcov = , coefs = , dist = )
   [`sandwich::vcovHC()`](https://sandwich.R-Forge.R-project.org/reference/vcovHC.html)
   for the robust covariance matrix), or a string or formula giving a
   code for extracting the covariance matrix, which is passed to
-  [`marginaleffects::get_vcov()`](https://marginaleffects.com/man/r/get_vcov.html).
+  [`marginaleffects::get_vcov()`](https://rdrr.io/pkg/marginaleffects/man/get_vcov.html).
   If left unspecified, the default covariance matrix will be extracted
   from the model.
 
@@ -338,11 +339,12 @@ to ensure results are replicable across sessions. Using more iterations
 runs even when a seed is not set.
 
 The output of the call to [`sim()`](../reference/sim.md) is a
-`clarify_sim` object, which contains the sampled coefficients, the
+`<clarify_sim>` object, which contains the sampled coefficients, the
 original model fit object if supplied, and the coefficients and
 covariance matrix used to sample.
 
 ``` r
+
 set.seed(1234)
 
 # Drawing 1000 simulated coefficients using an HC2 robust
@@ -367,16 +369,18 @@ each set of sampled coefficients and store the result, which represents
 the “posterior” distribution of the derived quantity, as well as on the
 original coefficients, which are used as the final estimates. The core
 functionality is provided by [`sim_apply()`](../reference/sim_apply.md),
-which accepts a `clarify_sim` object from [`sim()`](../reference/sim.md)
-and a function to compute and return one or more derived quantities,
-then applies that function to each set of simulated coefficients. The
-arguments to [`sim_apply()`](../reference/sim_apply.md) are below:
+which accepts a `<clarify_sim>` object from
+[`sim()`](../reference/sim.md) and a function to compute and return one
+or more derived quantities, then applies that function to each set of
+simulated coefficients. The arguments to
+[`sim_apply()`](../reference/sim_apply.md) are below:
 
 ``` r
+
 sim_apply(sim = , FUN = , verbose = , cl = , ...)
 ```
 
-- `sim` – a `clarify_sim` object; the output of a call to
+- `sim` – a `<clarify_sim>` object; the output of a call to
   [`sim()`](../reference/sim.md).
 
 - `FUN` – a function that takes in either a model fit object or a vector
@@ -393,8 +397,9 @@ sim_apply(sim = , FUN = , verbose = , cl = , ...)
 - `...` – further arguments to `FUN`.
 
 The `FUN` argument can be specified in one of two ways: either as a
-function that takes in a model fit object (e.g., a `glm` or `lm` object,
-the output of a call to [`glm()`](https://rdrr.io/r/stats/glm.html) or
+function that takes in a model fit object (e.g., a `<glm>` or `<lm>`
+object, the output of a call to
+[`glm()`](https://rdrr.io/r/stats/glm.html) or
 [`lm()`](https://rdrr.io/r/stats/lm.html)) or a function that takes in a
 vector of coefficients. The latter will always work but the former only
 works for supported models. When the function takes in a model fit
@@ -407,6 +412,7 @@ predicted probability of the outcome for participant PSID1. We specify
 our `FUN` function as follows:
 
 ``` r
+
 sim_fun1 <- function(fit) {
   predict(fit, newdata = lalonde["PSID1",], type = "response")
 }
@@ -419,7 +425,8 @@ supply the function to [`sim_apply()`](../reference/sim_apply.md) to
 simulate the sampling distribution of the predicted value of interest:
 
 ``` r
-est1 <- sim_apply(s, FUN = sim_fun1, verbose = FALSE)
+
+est1 <- sim_apply(s, FUN = sim_fun1)
 
 est1
 #> A <clarify_est> object (from `sim_apply()`)
@@ -429,7 +436,7 @@ est1
 #>  PSID1 0.9757
 ```
 
-The resulting `clarify_est` object contains the simulated estimates in
+The resulting `<clarify_est>` object contains the simulated estimates in
 matrix form as well as the estimate computed on the original
 coefficients. We will examine the posterior distribution shortly, but
 first we will demonstrate computing a derived quantity from the
@@ -444,6 +451,7 @@ these two directly, we can use
 that corresponds to the difference between them.
 
 ``` r
+
 sim_fun2 <- function(coefs) {
   hispan <- unname(coefs["racehispan"])
   white <- unname(coefs["racewhite"])
@@ -451,7 +459,7 @@ sim_fun2 <- function(coefs) {
   c("w - h" = white - hispan)
 }
 
-est2 <- sim_apply(s, FUN = sim_fun2, verbose = FALSE)
+est2 <- sim_apply(s, FUN = sim_fun2)
 
 est2
 #> A <clarify_est> object (from `sim_apply()`)
@@ -483,9 +491,9 @@ common derived quantities of interest. These include
   dose-response functions and average marginal effects functions
 
 These are described in their own sections below. In addition, there are
-functions that have methods for `clarify_est` objects, including
+functions that have methods for `<clarify_est>` objects, including
 [`cbind()`](https://rdrr.io/r/base/cbind.html) for combining two
-`clarify_est` objects together and
+`<clarify_est>` objects together and
 [`transform()`](https://rdrr.io/r/base/transform.html) for computing
 quantities that are derived from the already-computed derived
 quantities. These are also described in their own sections below.
@@ -495,8 +503,8 @@ quantities. These are also described in their own sections below.
 To examine the uncertainty around and perform inference on our estimated
 quantities, we can use
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) and
-[`summary()`](https://rdrr.io/r/base/summary.html) on the `clarify_est`
-object.
+[`summary()`](https://rdrr.io/r/base/summary.html) on the
+`<clarify_est>` object.
 
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) displays a
 density plot of the resulting estimates across the simulations, with
@@ -508,10 +516,11 @@ bounds). The arguments to
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) are below:
 
 ``` r
+
 plot(x = , parm = , ci = , level = , method = , reference = , simultaneous =)
 ```
 
-- `x` – the `clarify_est` object (the output of a call to
+- `x` – the `<clarify_est>` object (the output of a call to
   [`sim_apply()`](../reference/sim_apply.md)).
 
 - `parm` – the names or indices of the quantities to be plotted if more
@@ -541,9 +550,8 @@ plot(x = , parm = , ci = , level = , method = , reference = , simultaneous =)
 
 - `simultaneous` – whether confidence intervals and bands should adjust
   for multiple comparisons. If `TRUE`, the “sup-t” bands as described by
-  Hothorn, Bretz, and Westfall
-  ([2008](#ref-hothornSimultaneousInferenceGeneral2008)) and Montiel
-  Olea and Plagborg-Møller
+  Hothorn et al. ([2008](#ref-hothornSimultaneousInferenceGeneral2008))
+  and Montiel Olea and Plagborg-Møller
   ([2019](#ref-montieloleaSimultaneousConfidenceBands2019)) are used.
   The default is not to perform such an adjustment.
 
@@ -551,6 +559,7 @@ Below, we plot the first estimate we computed above, the predicted
 probability for participant PSID1:
 
 ``` r
+
 plot(est1, reference = TRUE, ci = FALSE)
 ```
 
@@ -570,8 +579,8 @@ the Normal approximation, as the bounds computed from the Normal
 approximation would be outside the bounds of the estimate. The blue
 reference line for the median of the estimates is close to the point
 estimate, suggesting it is possible for a monotonic transformation to
-have a symmetric distribution around the estimate[³](#fn3). The plot
-itself is a `ggplot` object that can be modified using `ggplot2` syntax.
+have a symmetric distribution around the estimate[^3]. The plot itself
+is a `<ggplot>` object that can be modified using **ggplot2** syntax.
 
 We can use [`summary()`](https://rdrr.io/r/base/summary.html) to display
 the value of the point estimate, the uncertainty bounds, and other
@@ -579,10 +588,11 @@ statistics that describe the distribution of estimates. The arguments to
 [`summary()`](https://rdrr.io/r/base/summary.html) are below:
 
 ``` r
+
 summary(object = , parm = , level = , method = , null = , simultaneous =)
 ```
 
-- `object` – the `clarify_est` object (the output of a call to
+- `object` – the `<clarify_est>` object (the output of a call to
   [`sim_apply()`](../reference/sim_apply.md)).
 
 - `parm` – the names or indices of the quantities to be displayed if
@@ -607,17 +617,18 @@ summary(object = , parm = , level = , method = , null = , simultaneous =)
 
 - `simultaneous` – whether inference (confidence intervals and p-values)
   should adjust for multiple comparisons. If `TRUE`, the “sup-t”
-  intervals as described by Hothorn, Bretz, and Westfall
+  intervals as described by Hothorn et al.
   ([2008](#ref-hothornSimultaneousInferenceGeneral2008)) and Montiel
   Olea and Plagborg-Møller
   ([2019](#ref-montieloleaSimultaneousConfidenceBands2019)) and their
   inversion are used. The default is not to perform such an adjustment.
 
 We can use [`summary()`](https://rdrr.io/r/base/summary.html) with the
-default arguments on our first `clarify_est` object to view the point
+default arguments on our first `<clarify_est>` object to view the point
 estimate and quantile-based uncertainty bounds.
 
 ``` r
+
 summary(est1)
 #>       Estimate 2.5 % 97.5 %
 #> PSID1    0.976 0.892  0.996
@@ -630,6 +641,7 @@ Normal approximation to test the hypothesis that difference differs from
 0.
 
 ``` r
+
 plot(est2, reference = TRUE, ci = FALSE)
 ```
 
@@ -639,6 +651,7 @@ reference line for the median of the
 estimates.](clarify_files/figure-html/plot2-1.png)
 
 ``` r
+
 
 summary(est2, method = "wald", null = 0)
 #>       Estimate   2.5 %  97.5 % Std. Error Z value P-value
@@ -674,9 +687,9 @@ original call to [`sim()`](../reference/sim.md).
 
 Like [`sim_apply()`](../reference/sim_apply.md), each of these functions
 is named `sim_*()`, which signifies that they are to be used on an
-object produced by [`sim()`](../reference/sim.md) (i.e., a `clarify_sim`
-object). (Multiple calls to these functions can be applied to the same
-`clarify_sim` object and combined; see the
+object produced by [`sim()`](../reference/sim.md) (i.e., a
+`<clarify_sim>` object). (Multiple calls to these functions can be
+applied to the same `<clarify_sim>` object and combined; see the
 [`cbind()`](https://rdrr.io/r/base/cbind.html) section below.) These
 functions are described below.
 
@@ -708,10 +721,11 @@ The arguments to [`sim_setx()`](../reference/sim_setx.md) are as
 follows:
 
 ``` r
+
 sim_setx(sim = , x = , x1 = , outcome = , type = , verbose = , cl = )
 ```
 
-- `sim` – a `clarify_sim` object; the output of a call to
+- `sim` – a `<clarify_sim>` object; the output of a call to
   [`sim()`](../reference/sim.md).
 
 - `x` – a named list containing the requested values of the predictors,
@@ -747,11 +761,11 @@ predicted values of the outcome for control and treated units, at `re75`
 set to 0 and 20000, and `race` set to “black”.
 
 ``` r
+
 est3 <- sim_setx(s,
                  x = list(treat = 0:1,
                           re75 = c(0, 20000),
-                          race = "black"),
-                 verbose = FALSE)
+                          race = "black"))
 ```
 
 When we use [`summary()`](https://rdrr.io/r/base/summary.html) on the
@@ -759,6 +773,7 @@ resulting output, we can see the estimates and their uncertainty
 intervals (calculated using quantiles by default).
 
 ``` r
+
 summary(est3)
 #>                         Estimate 2.5 % 97.5 %
 #> treat = 0, re75 = 0        0.667 0.553  0.764
@@ -772,6 +787,7 @@ predictions, which helps to identify the “typical” values of the other
 predictors, we can access the `"setx"` attribute of the object:
 
 ``` r
+
 attr(est3, "setx")
 #>                         treat married      age     educ  race nodegree     re74
 #> treat = 0, re75 = 0         0       0 27.36319 10.26873 black        1 4557.547
@@ -792,6 +808,7 @@ without the uncertainty bounds). The `var` argument controls which
 variable is used for faceting the plots.
 
 ``` r
+
 plot(est3, var = "re75", ci = FALSE)
 ```
 
@@ -810,17 +827,18 @@ can be generated. Below, we set `re75` to vary from 0 to 20000 in steps
 of 2000.
 
 ``` r
+
 est4 <- sim_setx(s,
                  x = list(treat = 0:1,
                           re75 = seq(0, 20000, by = 2000),
-                          race = "black"),
-                 verbose = FALSE)
+                          race = "black"))
 ```
 
 When we plot the output, we can see how the predictions varies across
 the levels of `re75`:
 
 ``` r
+
 plot(est4)
 ```
 
@@ -841,10 +859,10 @@ treated and control unit who have `re75` of 0 and typical values of all
 other covariates:
 
 ``` r
+
 est5 <- sim_setx(s,
                  x = list(treat = 0, re75 = 0),
-                 x1 = list(treat = 1, re75 = 0),
-                 verbose = FALSE)
+                 x1 = list(treat = 1, re75 = 0))
 ```
 
 When we use [`summary()`](https://rdrr.io/r/base/summary.html), we see
@@ -852,6 +870,7 @@ the estimates for the predicted values and their first difference
 (“FD”):
 
 ``` r
+
 summary(est5)
 #>           Estimate   2.5 %  97.5 %
 #> treat = 0   0.7856  0.7009  0.8590
@@ -874,17 +893,18 @@ average of the predicted values for all units after setting one
 predictor to a chosen value, and we define AMEs for binary predictors as
 the contrast of two AAPs and for continuous predictors as the average of
 instantaneous rate of change in the AAP corresponding to a small change
-in the predictor from its observed values across all units[⁴](#fn4)
-([Long and Freese 2014](#ref-longRegressionModelsCategorical2014)).
+in the predictor from its observed values across all units[^4] ([Long
+and Freese 2014](#ref-longRegressionModelsCategorical2014)).
 
 The arguments to [`sim_ame()`](../reference/sim_ame.md) are as follows:
 
 ``` r
+
 sim_ame(sim = , var = , subset = , by = , contrast = , outcome = ,
         type = , eps = , verbose = , cl = )
 ```
 
-- `sim` – a `clarify_sim` object; the output of a call to
+- `sim` – a `<clarify_sim>` object; the output of a call to
   [`sim()`](../reference/sim.md).
 
 - `var` – the name of focal variable over which to compute the AAPs or
@@ -941,11 +961,11 @@ this is known as the average treatment effect in the treated, or ATT
 will request our estimate to be on the risk ratio scale.
 
 ``` r
+
 est6 <- sim_ame(s,
                 var = "treat",
                 subset = treat == 1,
-                contrast = "rr",
-                verbose = FALSE)
+                contrast = "rr")
 ```
 
 We can use [`summary()`](https://rdrr.io/r/base/summary.html) to display
@@ -954,6 +974,7 @@ the estimates and their uncertainty intervals. Here, we will also use
 equal to 1.
 
 ``` r
+
 summary(est6, null = c(`RR` = 1))
 #>         Estimate 2.5 % 97.5 % P-value
 #> E[Y(0)]    0.687 0.609  0.757       .
@@ -979,15 +1000,16 @@ consider `age` (just for demonstration; this analysis does not have a
 valid interpretation).
 
 ``` r
+
 est7 <- sim_ame(s,
-                var = "age",
-                verbose = FALSE)
+                var = "age")
 ```
 
 We can use [`summary()`](https://rdrr.io/r/base/summary.html) to display
 the AME estimate and its uncertainty interval.
 
 ``` r
+
 summary(est7)
 #>              Estimate    2.5 %   97.5 %
 #> E[dY/d(age)] -0.00605 -0.00946 -0.00292
@@ -1007,12 +1029,12 @@ Below, we will examine effect modification of the ATT by the predictor
 within levels of `married`:
 
 ``` r
+
 est6b <- sim_ame(s,
                  var = "treat",
                  subset = treat == 1,
                  by = ~married,
-                 contrast = "rr",
-                 verbose = FALSE)
+                 contrast = "rr")
 
 summary(est6b)
 #>           Estimate 2.5 % 97.5 %
@@ -1052,11 +1074,12 @@ The ADRF and AMEF can be computed using
 [`sim_adrf()`](../reference/sim_adrf.md). The arguments are below:
 
 ``` r
+
 sim_adrf(sim = , var = , subset = , by = , contrast = , at = ,
          n = , outcome = , type = , eps = , verbose = , cl = )
 ```
 
-- `sim` – a `clarify_sim` object; the output of a call to
+- `sim` – a `<clarify_sim>` object; the output of a call to
   [`sim()`](../reference/sim.md).
 
 - `var` – the name of focal variable over which to compute the ADRF or
@@ -1116,13 +1139,13 @@ average if one set all unit’s value of `age` to each value between 18
 and 50 (here we only use even ages to speed up computation).
 
 ``` r
+
 age_seq <- seq(18, 50, by = 2)
 
 est8 <- sim_adrf(s,
                  var = "age",
                  contrast = "adrf",
-                 at = age_seq,
-                 verbose = FALSE)
+                 at = age_seq)
 ```
 
 We can plot the ADRF using
@@ -1130,6 +1153,7 @@ We can plot the ADRF using
 `simultaneous = TRUE` to request simultaneous confidence bands.
 
 ``` r
+
 plot(est8, simultaneous = TRUE)
 ```
 
@@ -1146,6 +1170,7 @@ all the estimated AAPs by default, so we will request just the first 4
 (`age`s 18 to 24):
 
 ``` r
+
 summary(est8, parm = 1:4)
 #>          Estimate 2.5 % 97.5 %
 #> E[Y(18)]    0.821 0.777  0.857
@@ -1158,17 +1183,18 @@ Next we will compute the AMEF, the effect of `age` at each level of
 `age`.
 
 ``` r
+
 est9 <- sim_adrf(s,
                  var = "age",
                  contrast = "amef",
-                 at = age_seq,
-                 verbose = FALSE)
+                 at = age_seq)
 ```
 
 We can plot the AMEF using
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html):
 
 ``` r
+
 plot(est9, simultaneous = TRUE)
 ```
 
@@ -1191,9 +1217,9 @@ the one originally produced; for example, we may decide we want the risk
 difference AME after computing the risk ratio AME. The functions
 [`transform()`](https://rdrr.io/r/base/transform.html) and
 [`cbind()`](https://rdrr.io/r/base/cbind.html) allow users to transform
-quantities in a single `clarify_est` object and combine two
-`clarify_est` objects. These are essential for computing quantities that
-themselves are derived from the derived quantities computed by the
+quantities in a single `<clarify_est>` object and combine two
+`<clarify_est>` objects. These are essential for computing quantities
+that themselves are derived from the derived quantities computed by the
 `sim_*()` functions.
 
 ### `transform()`
@@ -1202,21 +1228,23 @@ themselves are derived from the derived quantities computed by the
 function in R that is typically used to create a new variable in a data
 frame that is a function of other columns. For example, to compute the
 binary outcome we used in our model, we could have run the
-following[⁵](#fn5):
+following[^5]:
 
 ``` r
+
 lalonde <- transform(lalonde,
                      re78_0 = ifelse(re78 == 0, 1, 0))
 ```
 
 Similarly, to compute a derived or transformed quantity from a
-`clarify_est` object, we can use
+`<clarify_est>` object, we can use
 [`transform()`](https://rdrr.io/r/base/transform.html). Here, we will
 compute the risk difference AME of `treat`; previously, we used
 [`sim_ame()`](../reference/sim_ame.md) to compute the AAPs and the risk
 ratio.
 
 ``` r
+
 est6 <- transform(est6,
                   RD = `E[Y(1)]` - `E[Y(0)]`)
 ```
@@ -1230,11 +1258,12 @@ the index of the quantity referenced. For example, because
 respectively, the above code could be replaced with
 
 ``` r
+
 est6 <- transform(est6,
                   RD = .b2 - .b1)
 ```
 
-which will yield identical results[⁶](#fn6).
+which will yield identical results[^6].
 
 When we run [`summary()`](https://rdrr.io/r/base/summary.html) on the
 output, the new quantity, which we named “RD”, will be displayed along
@@ -1242,6 +1271,7 @@ with the other estimates. We will also set a null value for this
 quantity.
 
 ``` r
+
 summary(est6, null = c(`RR` = 1, `RD` = 0))
 #>         Estimate   2.5 %  97.5 % P-value
 #> E[Y(0)]   0.6866  0.6094  0.7567       .
@@ -1260,10 +1290,10 @@ depend on the effect measure used. In contrast, Wald-type inference
 is not invariant to transformations of the quantity of interest.
 
 The same value would be computed if we were to have called
-[`sim_ame()`](../reference/sim_ame.md) on the same `clarify_sim` object
-and requested the risk difference using `contrast = "diff"`; using
-[`transform()`](https://rdrr.io/r/base/transform.html) saves time
-because the AAPs are already computed and stored in the `clarify_est`
+[`sim_ame()`](../reference/sim_ame.md) on the same `<clarify_sim>`
+object and requested the risk difference using `contrast = "diff"`;
+using [`transform()`](https://rdrr.io/r/base/transform.html) saves time
+because the AAPs are already computed and stored in the `<clarify_est>`
 object.
 
 We can use [`transform()`](https://rdrr.io/r/base/transform.html) along
@@ -1274,6 +1304,7 @@ levels of `married`; here we will compute the ratio of these risk ratios
 to assess the presence of effect modification.
 
 ``` r
+
 est6b |>
   transform(`RR[1]/RR[0]` = `RR[1]` / `RR[0]`) |>
   summary(parm = c("RR[0]", "RR[1]", "RR[1]/RR[0]"),
@@ -1297,17 +1328,19 @@ testing whether the risk ratios differ across levels of `married`.
 function that is typically used to combine two or more datasets
 columnwise (i.e., to widen a dataset). In **clarify**,
 [`cbind()`](https://rdrr.io/r/base/cbind.html) can be used to combine
-two `clarify_est` objects so that the estimates can be examined jointly
-and so that it is possible to compare them directly. For example, if we
-were to compute AMEs in two subgroups using `subset` and wanted to
-compare them, we would call [`sim_ame()`](../reference/sim_ame.md)
-twice, one for each subset (though in practice it is more effective to
-use `by`; this is just for illustration), as demonstrated below:
+two `<clarify_est>` objects so that the estimates can be examined
+jointly and so that it is possible to compare them directly. For
+example, if we were to compute AMEs in two subgroups using `subset` and
+wanted to compare them, we would call
+[`sim_ame()`](../reference/sim_ame.md) twice, one for each subset
+(though in practice it is more effective to use `by`; this is just for
+illustration), as demonstrated below:
 
 ``` r
+
 # AME of treat with race = "black"
 est10b <- sim_ame(s, var = "treat", subset = race == "black",
-                  contrast = "diff", verbose = FALSE)
+                  contrast = "diff")
 summary(est10b)
 #>         Estimate   2.5 %  97.5 %
 #> E[Y(0)]   0.6677  0.5796  0.7480
@@ -1316,7 +1349,7 @@ summary(est10b)
 
 # AME of treat with race = "hispan"
 est10h <- sim_ame(s, var = "treat", subset = race == "hispan",
-                  contrast = "diff", verbose = FALSE)
+                  contrast = "diff")
 summary(est10h)
 #>         Estimate   2.5 %  97.5 %
 #> E[Y(0)]   0.8266  0.7196  0.8989
@@ -1332,9 +1365,10 @@ We will do that below.
 First, we need to rename the quantities in each object so they do not
 overlap; we can do so using
 [`names()`](https://rdrr.io/r/base/names.html), which has a special
-method for `clarify_est` objects.
+method for `<clarify_est>` objects.
 
 ``` r
+
 names(est10b) <- paste(names(est10b), "b", sep = "_")
 names(est10h) <- paste(names(est10h), "h", sep = "_")
 ```
@@ -1343,6 +1377,7 @@ Next, we use [`cbind()`](https://rdrr.io/r/base/cbind.html) to bind the
 objects together.
 
 ``` r
+
 est10 <- cbind(est10b, est10h)
 summary(est10)
 #>           Estimate   2.5 %  97.5 %
@@ -1359,6 +1394,7 @@ Finally, we can use
 difference between the risk differences:
 
 ``` r
+
 est10 <- transform(est10,
                    `Dh - Db` = Diff_h - Diff_b)
 summary(est10, parm = "Dh - Db")
@@ -1367,7 +1403,7 @@ summary(est10, parm = "Dh - Db")
 ```
 
 Importantly, [`cbind()`](https://rdrr.io/r/base/cbind.html) can only be
-used to join together `clarify_est` objects computed using the same
+used to join together `<clarify_est>` objects computed using the same
 simulated coefficients (i.e., resulting from the same call to
 [`sim()`](../reference/sim.md)). This preserves the covariance among the
 estimated quantities, which is critical for maintaining valid inference.
@@ -1393,9 +1429,9 @@ using [`sim()`](../reference/sim.md), we use the function
 [`misim()`](../reference/misim.md). [`misim()`](../reference/misim.md)
 functions just like [`sim()`](../reference/sim.md) except that it takes
 in a list of model fits (i.e., containing a model fit to each imputed
-dataset) or an object containing such a list (e.g., a `mira` object from
-[`mice::with()`](https://amices.org/mice/reference/with.mids.html) or a
-`mimira` object from `MatchThem::with()`).
+dataset) or an object containing such a list (e.g., a `<mira>` object
+from [`mice::with()`](https://amices.org/mice/reference/with.mids.html)
+or a `<mimira>` object from `MatchThem::with()`).
 [`misim()`](../reference/misim.md) simulates coefficient distributions
 within each imputed dataset and then appends them together to a form a
 single combined set of coefficient draws.
@@ -1424,11 +1460,12 @@ described by Rainey ([2017](#ref-rainey2017))).
 The arguments to [`misim()`](../reference/misim.md) are as follows:
 
 ``` r
+
 misim(fitlist = , n = , vcov = , coefs = , dist = )
 ```
 
 - `fitlist` – a list of model fits or an accepted object containing them
-  (e.g., a `mira` object from
+  (e.g., a `<mira>` object from
   [`mice::with()`](https://amices.org/mice/reference/with.mids.html))
 
 - `n` – the number of simulations to run *for each imputed dataset*. The
@@ -1445,6 +1482,7 @@ Below we illustrate using [`misim()`](../reference/misim.md) and
 We will use the `africa` dataset from the **Amelia** package.
 
 ``` r
+
 library(Amelia)
 data("africa", package = "Amelia")
 
@@ -1469,6 +1507,7 @@ that computes the AME of `infl`. (We will run the same analysis
 afterward using [`sim_ame()`](../reference/sim_ame.md).)
 
 ``` r
+
 sim_fun <- function(fit) {
   #Extract the original dataset using get_predictors()
   X <- insight::get_predictors(fit)
@@ -1481,7 +1520,7 @@ sim_fun <- function(fit) {
  c(AME = mean((p1 - p0) / 1e-5))
 }
 
-est_mi <- sim_apply(si, FUN = sim_fun, verbose = FALSE)
+est_mi <- sim_apply(si, FUN = sim_fun)
 
 summary(est_mi)
 #>     Estimate 2.5 % 97.5 %
@@ -1500,7 +1539,8 @@ mixing the draws may be invalid.
 Below, we can use [`sim_ame()`](../reference/sim_ame.md):
 
 ``` r
-est_mi2 <- sim_ame(si, var = "infl", verbose = FALSE)
+
+est_mi2 <- sim_ame(si, var = "infl")
 
 summary(est_mi2)
 #>               Estimate 2.5 % 97.5 %
@@ -1520,7 +1560,7 @@ Several packages offer methods for computing interpretable quantities
 form regression models, including **emmeans** ([Lenth
 2024](#ref-emmeans2024)), **margins** ([Leeper 2024](#ref-margins2021)),
 **modelbased** ([Makowski et al. 2020](#ref-modelbased2020)), and
-**marginaleffects** ([Arel-Bundock, Greifer, and Heiss
+**marginaleffects** ([Arel-Bundock et al.
 2024](#ref-marginaleffectsforthcoming)). Many of the quantities computed
 by these packages can also be computed by **clarify**, the primary
 difference being that **clarify** uses simulation-based inference rather
@@ -1530,9 +1570,9 @@ than delta method-based inference.
 **clarify**, and **clarify** depends on functionality provided by
 **marginaleffects** to accommodate a wide variety of regression models.
 **marginaleffects** also offers simulation-based inference using
-[`marginaleffects::inferences()`](https://marginaleffects.com/man/r/inferences.html)
+[`marginaleffects::inferences()`](https://rdrr.io/pkg/marginaleffects/man/inferences.html)
 and support for arbitrary user-specified post-estimation functions using
-[`marginaleffects::hypotheses()`](https://marginaleffects.com/man/r/hypotheses.html).
+[`marginaleffects::hypotheses()`](https://rdrr.io/pkg/marginaleffects/man/hypotheses.html).
 However, **clarify** and `marignalefefcts` differ in several ways. The
 largest difference is that **clarify** supports iterative building of
 more and more complex hypotheses through the
@@ -1562,7 +1602,7 @@ method through **marginaleffects** will be much faster, more accurate,
 and more replicable than the simulation-based inference **clarify**
 provides. For the quantities easily computed by **marginaleffects** that
 support simulation-based inference through
-[`marginaleffects::inferences()`](https://marginaleffects.com/man/r/inferences.html),
+[`marginaleffects::inferences()`](https://rdrr.io/pkg/marginaleffects/man/inferences.html),
 using **marginaleffects** can provide a more familiar and flexible
 syntax than **clarify** might offer. Ultimately, the user should use the
 package that supports their desired syntax and mode of inference.
@@ -1597,8 +1637,8 @@ Errors, Confidence Intervals, and Other Measures of Statistical
 Accuracy.” *Statistical Science* 1 (1): 54–75.
 <https://www.jstor.org/stable/2245500>.
 
-Greifer, Noah, and Elizabeth A. Stuart. 2023. “Choosing the Causal
-Estimand for Propensity Score Analysis of Observational Studies.”
+Greifer, Noah, and Elizabeth A. Stuart. 2023. *Choosing the Causal
+Estimand for Propensity Score Analysis of Observational Studies*.
 <https://doi.org/10.48550/arXiv.2106.10577>.
 
 Herron, Michael C. 1999. “Postestimation Uncertainty in Limited
@@ -1639,8 +1679,8 @@ Lenth, Russell V. 2024. *Emmeans: Estimated Marginal Means, Aka
 Least-Squares Means*. <https://doi.org/10.32614/CRAN.package.emmeans>.
 
 Long, J. Scott, and Jeremy Freese. 2014. *Regression Models for
-Categorical Dependent Variables Using Stata*. Third edition. College
-Station, Texas: Stata Press Publication, StataCorp LP.
+Categorical Dependent Variables Using Stata*. Third edition. Stata Press
+Publication, StataCorp LP.
 
 MacKinnon, David P., Chondra M. Lockwood, and Jason Williams. 2004.
 “Confidence Limits for the Indirect Effect: Distribution of the Product
@@ -1649,7 +1689,8 @@ and Resampling Methods.” *Multivariate Behavioral Research* 39 (1):
 
 Makowski, Dominique, Mattan S. Ben-Shachar, Indrajeet Patil, and Daniel
 Lüdecke. 2020. “Estimation of Model-Based Predictions, Contrasts and
-Means.” *CRAN*. <https://doi.org/10.32614/CRAN.package.modelbased>.
+Means.” *CRAN*, ahead of print.
+<https://doi.org/10.32614/CRAN.package.modelbased>.
 
 Montiel Olea, José Luis, and Mikkel Plagborg-Møller. 2019. “Simultaneous
 Confidence Bands: Theory, Implementation, and an Application to SVARs.”
@@ -1665,13 +1706,14 @@ Rainey, Carlisle. 2017. “Transformation-Induced Bias: Unbiased
 Coefficients Do Not Imply Unbiased Quantities of Interest.” *Political
 Analysis* 25 (3): 402–9. <https://doi.org/10.1017/pan.2017.11>.
 
-———. 2023. “A Careful Consideration of CLARIFY: Simulation-Induced Bias
-in Point Estimates of Quantities of Interest.” *Political Science
-Research and Methods*, 1–10. <https://doi.org/10.1017/psrm.2023.8>.
+Rainey, Carlisle. 2023. “A Careful Consideration of CLARIFY:
+Simulation-Induced Bias in Point Estimates of Quantities of Interest.”
+*Political Science Research and Methods*, 1–10.
+<https://doi.org/10.1017/psrm.2023.8>.
 
 Thulin, Måns. 2024. *Modern Statistics with R: From Wrangling and
 Exploring Data to Inference and Predictive Modelling*. Second edition.
-Boca Raton, FL: CRC Press. <https://www.modernstatisticswithr.com/>.
+CRC Press. <https://www.modernstatisticswithr.com/>.
 
 Tofighi, Davood, and David P. MacKinnon. 2016. “Monte Carlo Confidence
 Intervals for Complex Functions of Indirect Effects.” *Structural
@@ -1691,18 +1733,17 @@ Zhou, Xiang, and Jerome P. Reiter. 2010. “A Note on Bayesian Inference
 After Multiple Imputation.” *The American Statistician* 64 (2): 159–63.
 <https://doi.org/10.1198/tast.2010.09109>.
 
-------------------------------------------------------------------------
+[^1]: We thank an anonymous reviewer for pointing out a scenario in
+    which this could occur: for a quantity of interest with a
+    right-skewed sampling distribution, one would prefer an estimate to
+    the right of the quantity’s true value to have a confidence interval
+    skewed to left to capture the bulk of the sampling distribution, but
+    in practice a quantile confidence interval would also be skewed to
+    the right. While a symmetric Wald-based interval may not have
+    adequate coverage, the quantile-based interval could perform even
+    worse.
 
-1.  We thank an anonymous reviewer for pointing out a scenario in which
-    this could occur: for a quantity of interest with a right-skewed
-    sampling distribution, one would prefer an estimate to the right of
-    the quantity’s true value to have a confidence interval skewed to
-    left to capture the bulk of the sampling distribution, but in
-    practice a quantile confidence interval would also be skewed to the
-    right. While a symmetric Wald-based interval may not have adequate
-    coverage, the quantile-based interval could perform even worse.
-
-2.  Despite the similar name, the R package **clarify** and the Stata
+[^2]: Despite the similar name, the R package **clarify** and the Stata
     package **CLARIFY** differ in several ways, one of which is that the
     estimates reported by **clarify** in R are those computed using the
     original model coefficients, whereas those reported by **CLARIFY**
@@ -1711,8 +1752,8 @@ After Multiple Imputation.” *The American Statistician* 64 (2): 159–63.
     bias” described by Rainey
     ([2023](#ref-raineyCarefulConsiderationCLARIFY2023)).
 
-3.  In fact, we know the inverse link function for the model (i.e., the
-    Normal distribution function
+[^3]: In fact, we know the inverse link function for the model (i.e.,
+    the Normal distribution function
     [`qnorm()`](https://rdrr.io/r/stats/Normal.html)) is such a
     transformation in this case; **marginaleffects** and other packages
     that implement the delta method for confidence intervals around
@@ -1722,18 +1763,19 @@ After Multiple Imputation.” *The American Statistician* 64 (2): 159–63.
     transformation exists, the quantile intervals will be as valid as
     those that rely on transforming and back-transforming.
 
-4.  In **marginaleffects**, AAPs are computed using `avg_predictions()`,
-    AMEs for binary variables are computed using `avg_comparisons()`,
-    and AMEs for continuous variables are computed using `avg_slopes()`.
-    AAPs are sometimes known as average “counterfactual” predictions.
+[^4]: In **marginaleffects**, AAPs are computed using
+    `avg_predictions()`, AMEs for binary variables are computed using
+    `avg_comparisons()`, and AMEs for continuous variables are computed
+    using `avg_slopes()`. AAPs are sometimes known as average
+    “counterfactual” predictions.
 
-5.  Users familiar with the `tidyverse` will note the similarities
+[^5]: Users familiar with the `tidyverse` will note the similarities
     between [`transform()`](https://rdrr.io/r/base/transform.html) and
     [`dplyr::mutate()`](https://dplyr.tidyverse.org/reference/mutate.html);
     only [`transform()`](https://rdrr.io/r/base/transform.html) can be
-    used with `clarify_est` objects.
+    used with `<clarify_est>` objects.
 
-6.  Note that if a quantity is named `.b#`, e.g., `.b1`, it can only be
-    referred to using the positional shortcut and not its named. That
+[^6]: Note that if a quantity is named `.b#`, e.g., `.b1`, it can only
+    be referred to using the positional shortcut and not its named. That
     is, the positional shortcut takes precedence over the names of the
     quantities.

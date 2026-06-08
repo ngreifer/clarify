@@ -1,9 +1,9 @@
-# Transform and combine `clarify_est` objects
+# Transform and combine `<clarify_est>` objects
 
 [`transform()`](https://rdrr.io/r/base/transform.html) modifies a
-`clarify_est` object by allowing for the calculation of new quantities
+`<clarify_est>` object by allowing for the calculation of new quantities
 from the existing quantities without re-simulating them.
-[`cbind()`](https://rdrr.io/r/base/cbind.html) binds two `clarify_est`
+[`cbind()`](https://rdrr.io/r/base/cbind.html) binds two `<clarify_est>`
 objects together.
 
 ## Usage
@@ -20,7 +20,7 @@ cbind(..., deparse.level = 1)
 
 - \_data:
 
-  the `clarify_est` object to be transformed.
+  the `<clarify_est>` object to be transformed.
 
 - ...:
 
@@ -29,7 +29,7 @@ cbind(..., deparse.level = 1)
   to be computed and `value` is an expression that is a function of the
   existing quantities corresponding to the new quantity to be computed.
   See Details. For [`cbind()`](https://rdrr.io/r/base/cbind.html),
-  `clarify_est` objects to be combined.
+  `<clarify_est>` objects to be combined.
 
 - deparse.level:
 
@@ -37,9 +37,9 @@ cbind(..., deparse.level = 1)
 
 ## Value
 
-A `clarify_est` object, either with new columns added (when using
+A `<clarify_est>` object, either with new columns added (when using
 [`transform()`](https://rdrr.io/r/base/transform.html)) or combining two
-`clarify_est` objects. Note that any type attributes corresponding to
+`<clarify_est>` objects. Note that any type attributes corresponding to
 the [`sim_apply()`](sim_apply.md) wrapper used (e.g.,
 [`sim_ame()`](sim_ame.md)) is lost when using either function. This can
 affect any helper functions (e.g.,
@@ -85,7 +85,7 @@ s <- sim(fit, n = 100)
 
 # Average adjusted predictions for `treat` within
 # subsets of `race`
-est_b <- sim_ame(s, var = "treat", verbose = FALSE,
+est_b <- sim_ame(s, var = "treat",
                  subset = race == "black")
 est_b
 #> A <clarify_est> object (from `sim_ame()`)
@@ -96,7 +96,7 @@ est_b
 #>  E[Y(0)] 4589
 #>  E[Y(1)] 6148
 
-est_h <- sim_ame(s, var = "treat", verbose = FALSE,
+est_h <- sim_ame(s, var = "treat",
                  subset = race == "hispan")
 est_h
 #> A <clarify_est> object (from `sim_ame()`)

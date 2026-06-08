@@ -7,7 +7,12 @@
   Unfortunately this means all prior results will not be perfectly
   reproducible when using this and future versions.
 
-- Removed *chk* as a dependency; error messages now use *cli*.
+- Removed *chk* as a dependency; error messages now use *arg*.
+
+- `verbose` is now set to `FALSE` by default when not in an interactive
+  sessions.
+
+- Documentation updates.
 
 ## `clarify` 0.2.2
 
@@ -22,7 +27,7 @@ CRAN release: 2025-09-19
   [`sim_ame()`](../reference/sim_ame.md), and
   [`sim_adrf()`](../reference/sim_adrf.md) now accept other arguments
   passed through `...`, which are passed to
-  [`marginaleffects::get_predict()`](https://marginaleffects.com/man/r/get_predict.html)
+  [`marginaleffects::get_predict()`](https://rdrr.io/pkg/marginaleffects/man/get_predict.html)
   to compute predictions.
 
 - Fixed a bug when using [`sim_ame()`](../reference/sim_ame.md) after

@@ -36,11 +36,13 @@ Useful links:
 
 Authors:
 
+- Noah Greifer <ngreifer@iq.harvard.edu>
+  ([ORCID](https://orcid.org/0000-0003-3067-7154))
+
 - Steven Worthington <sworthington@iq.harvard.edu>
   ([ORCID](https://orcid.org/0000-0001-9550-5797))
 
-- Stefano Iacus <siacus@iq.harvard.edu>
-  ([ORCID](https://orcid.org/0000-0002-4884-0047))
+- Stefano Iacus ([ORCID](https://orcid.org/0000-0002-4884-0047))
 
 - Gary King <king@harvard.edu>
   ([ORCID](https://orcid.org/0000-0002-5327-7631))

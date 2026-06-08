@@ -17,7 +17,7 @@ sim_ame(
   outcome = NULL,
   type = NULL,
   eps = 1e-05,
-  verbose = TRUE,
+  verbose = interactive(),
   cl = NULL,
   ...
 )
@@ -30,7 +30,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
 - sim:
 
-  a `clarify_sim` object; the output of a call to [`sim()`](sim.md) or
+  a `<clarify_sim>` object; the output of a call to [`sim()`](sim.md) or
   [`misim()`](misim.md).
 
 - var:
@@ -77,7 +77,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
   a string containing the type of predicted values (e.g., the link or
   the response). Passed to
-  [`marginaleffects::get_predict()`](https://marginaleffects.com/man/r/get_predict.html)
+  [`marginaleffects::get_predict()`](https://rdrr.io/pkg/marginaleffects/man/get_predict.html)
   and eventually to [`predict()`](https://rdrr.io/r/stats/predict.html)
   in most cases. The default and allowable option depend on the type of
   model supplied, but almost always corresponds to the response scale
@@ -91,7 +91,8 @@ print(x, digits = 4L, max.ests = 6L, ...)
 - verbose:
 
   `logical`; whether to display a text progress bar indicating progress
-  and estimated time remaining for the procedure. Default is `TRUE`.
+  and estimated time remaining for the procedure. Default is `TRUE` for
+  interactive sessions and `FALSE` otherwise.
 
 - cl:
 
@@ -105,7 +106,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 - ...:
 
   for `sim_ame()`, additional arguments passed to
-  [`marginaleffects::get_predict()`](https://marginaleffects.com/man/r/get_predict.html)
+  [`marginaleffects::get_predict()`](https://rdrr.io/pkg/marginaleffects/man/get_predict.html)
   (and eventually to
   [`predict()`](https://rdrr.io/r/stats/predict.html)) to compute
   predictions. For [`print()`](https://rdrr.io/r/base/print.html),
@@ -113,7 +114,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
 - x:
 
-  a `clarify_ame` object.
+  a `<clarify_ame>` object.
 
 - digits:
 
@@ -126,15 +127,15 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
 ## Value
 
-A `clarify_ame` object, which inherits from `clarify_est` and is similar
-to the output of [`sim_apply()`](sim_apply.md), with the additional
-attributes `"var"` containing the variable values specified in `var` and
-`"by"` containing the names of the variables specified in `by` (if any).
-The average adjusted predictions will be named `E[Y({v})]`, where `{v}`
-is replaced with the values the variables named in `var` take on. The
-average marginal effect for a continuous `var` will be named
-`E[dY/d({x})]` where `{x}` is replaced with `var`. When `by` is
-specified, the average adjusted predictions will be named
+A `<clarify_ame>` object, which inherits from `<clarify_est>` and is
+similar to the output of [`sim_apply()`](sim_apply.md), with the
+additional attributes `"var"` containing the variable values specified
+in `var` and `"by"` containing the names of the variables specified in
+`by` (if any). The average adjusted predictions will be named
+`E[Y({v})]`, where `{v}` is replaced with the values the variables named
+in `var` take on. The average marginal effect for a continuous `var`
+will be named `E[dY/d({x})]` where `{x}` is replaced with `var`. When
+`by` is specified, the average adjusted predictions will be named
 `E[Y({v})|{b}]` and the average marginal effect `E[dY/d({x})|{b}]` where
 `{b}` is a comma-separated list of of values of the `by` variables at
 which the quantity is computed. See examples.
@@ -197,11 +198,10 @@ average marginal mean, and standardized mean). When exactly two average
 adjusted predictions are requested, a contrast between them can be
 requested by supplying an argument to `contrast` (see Effect Measures
 section below). Contrasts can be manually computed using
-[`transform()`](https://rdrr.io/r/base/transform.html) afterward as
-well; this is required when multiple average adjusted predictions are
-requested (i.e., because a single variable was supplied to `var` with
-more than two levels or a combination of multiple variables was
-supplied).
+[`transform()`](transform.clarify_est.md) afterward as well; this is
+required when multiple average adjusted predictions are requested (i.e.,
+because a single variable was supplied to `var` with more than two
+levels or a combination of multiple variables was supplied).
 
 A marginal effect is the instantaneous rate of change corresponding to
 changing a unit's observed value of a variable by a tiny amount and
@@ -221,6 +221,10 @@ setting their value of `v` to its unique values. The resulting
 quantities have different interpretations. Both `by` and `var` can be
 used simultaneously.
 
+Note that inference on the computed quantities treats the other
+variables in the model as fixed; that is, it only accounts for
+model-based uncertainty, not uncertainty due to sampling.
+
 ### Effect measures
 
 The effect measures specified in `contrast` are defined below. Typically
@@ -230,18 +234,18 @@ binary outcomes. For a focal variable with two levels, `0` and `1`, and
 an outcome `Y`, the average marginal means will be denoted in the below
 formulas as `E[Y(0)]` and `E[Y(1)]`, respectively.
 
-|                  |                                 |                                             |
-|------------------|---------------------------------|---------------------------------------------|
-| `contrast`       | **Description**                 | **Formula**                                 |
-| `"diff"`/`"rd"`  | Mean/risk difference            | `E[Y(1)] - E[Y(0)]`                         |
-| `"rr"`/`"irr"`   | Risk ratio/incidence rate ratio | `E[Y(1)] / E[Y(0)]`                         |
-| `"sr"`           | Survival ratio                  | `(1 - E[Y(1)]) / (1 - E[Y(0)])`             |
-| `"srr"`/`"grrr"` | Switch risk ratio               | `1 - sr` if `E[Y(1)] > E[Y(0)]`             |
-|                  |                                 | `rr - 1` if `E[Y(1)] < E[Y(0)]`             |
-|                  |                                 | `0` otherwise                               |
-| `"or"`           | Odds ratio                      | `O[Y(1)] / O[Y(0)]`                         |
-|                  |                                 | where `O[Y(.)]` = `E[Y(.)] / (1 - E[Y(.)])` |
-| `"nnt"`          | Number needed to treat          | `1 / rd`                                    |
+|  |  |  |
+|----|----|----|
+| `contrast` | **Description** | **Formula** |
+| `"diff"`/`"rd"` | Mean/risk difference | `E[Y(1)] - E[Y(0)]` |
+| `"rr"`/`"irr"` | Risk ratio/incidence rate ratio | `E[Y(1)] / E[Y(0)]` |
+| `"sr"` | Survival ratio | `(1 - E[Y(1)]) / (1 - E[Y(0)])` |
+| `"srr"`/`"grrr"` | Switch risk ratio | `1 - sr` if `E[Y(1)] > E[Y(0)]` |
+|  |  | `rr - 1` if `E[Y(1)] < E[Y(0)]` |
+|  |  | `0` otherwise |
+| `"or"` | Odds ratio | `O[Y(1)] / O[Y(0)]` |
+|  |  | where `O[Y(.)]` = `E[Y(.)] / (1 - E[Y(.)])` |
+| `"nnt"` | Number needed to treat | `1 / rd` |
 
 The `log(.)` versions are defined by taking the
 [`log()`](https://rdrr.io/r/base/Log.html) (natural log) of the
@@ -249,19 +253,21 @@ corresponding effect measure.
 
 ## See also
 
-[`sim_apply()`](sim_apply.md), which provides a general interface to
-computing any quantities for simulation-based inference;
-[`plot.clarify_est()`](summary.clarify_est.md) for plotting the output
-of a call to `sim_ame()`;
-[`summary.clarify_est()`](summary.clarify_est.md) for computing p-values
-and confidence intervals for the estimated quantities.
+- [`sim_apply()`](sim_apply.md), which provides a general interface to
+  computing any quantities for simulation-based inference.
 
-[`marginaleffects::avg_predictions()`](https://marginaleffects.com/man/r/predictions.html),
-[`marginaleffects::avg_comparisons()`](https://marginaleffects.com/man/r/comparisons.html)
-and
-[`marginaleffects::avg_slopes()`](https://marginaleffects.com/man/r/slopes.html)
-for delta method-based implementations of computing average marginal
-effects.
+- [`plot.clarify_est()`](summary.clarify_est.md) for plotting the output
+  of a call to `sim_ame()`.
+
+- [`summary.clarify_est()`](summary.clarify_est.md) for computing
+  p-values and confidence intervals for the estimated quantities.
+
+- [`marginaleffects::avg_predictions()`](https://rdrr.io/pkg/marginaleffects/man/predictions.html),
+  [`marginaleffects::avg_comparisons()`](https://rdrr.io/pkg/marginaleffects/man/comparisons.html)
+  and
+  [`marginaleffects::avg_slopes()`](https://rdrr.io/pkg/marginaleffects/man/slopes.html)
+  for delta method-based implementations of computing average marginal
+  effects.
 
 ## Examples
 
@@ -278,15 +284,14 @@ set.seed(123)
 s <- sim(fit, n = 100)
 
 # Average marginal effect of `age`
-est <- sim_ame(s, var = "age", verbose = FALSE)
+est <- sim_ame(s, var = "age")
 summary(est)
 #>              Estimate    2.5 %   97.5 %
 #> E[dY/d(age)] -0.00695 -0.01008 -0.00316
 
 # Contrast between average adjusted predictions
 # for `treat`
-est <- sim_ame(s, var = "treat", contrast = "rr",
-               verbose = FALSE)
+est <- sim_ame(s, var = "treat", contrast = "rr")
 summary(est)
 #>         Estimate 2.5 % 97.5 %
 #> E[Y(0)]    0.743 0.688  0.783
@@ -295,7 +300,7 @@ summary(est)
 
 # Average adjusted predictions for `race`; need to follow up
 # with contrasts for specific levels
-est <- sim_ame(s, var = "race", verbose = FALSE)
+est <- sim_ame(s, var = "race")
 
 est <- transform(est,
                  `RR(h,b)` = `E[Y(hispan)]` / `E[Y(black)]`)
@@ -310,10 +315,10 @@ summary(est)
 # Average adjusted predictions for `treat` within levels of
 # `married`, first using `subset` and then using `by`
 est0 <- sim_ame(s, var = "treat", subset = married == 0,
-                contrast = "rd", verbose = FALSE)
+                contrast = "rd")
 names(est0) <- paste0(names(est0), "|married=0")
 est1 <- sim_ame(s, var = "treat", subset = married == 1,
-                contrast = "rd", verbose = FALSE)
+                contrast = "rd")
 names(est1) <- paste0(names(est1), "|married=1")
 
 summary(cbind(est0, est1))
@@ -326,7 +331,7 @@ summary(cbind(est0, est1))
 #> RD|married=1        0.0610 -0.0235  0.1231
 
 est <- sim_ame(s, var = "treat", by = ~married,
-               contrast = "rd", verbose = FALSE)
+               contrast = "rd")
 
 est
 #> A <clarify_est> object (from `sim_ame()`)
@@ -352,8 +357,7 @@ summary(est)
 
 # Average marginal effect of `age` within levels of
 # married*race
-est <- sim_ame(s, var = "age", by = ~married + race,
-               verbose = FALSE)
+est <- sim_ame(s, var = "age", by = ~married + race)
 est
 #> A <clarify_est> object (from `sim_ame()`)
 #>  - Average marginal effect of `age`
@@ -390,8 +394,7 @@ summary(est_diff)
 
 # Average adjusted predictions at a combination of `treat`
 # and `married`
-est <- sim_ame(s, var = c("treat", "married"),
-               verbose = FALSE)
+est <- sim_ame(s, var = c("treat", "married"))
 est
 #> A <clarify_est> object (from `sim_ame()`)
 #>  - Average adjusted predictions for `treat` and `married`
@@ -404,6 +407,5 @@ est
 #>  E[Y(1,1)] 0.8171
 
 # Average marginal effect of `age` setting `married` to 1
-est <- sim_ame(s, var = list("age", married = 1),
-               verbose = FALSE)
+est <- sim_ame(s, var = list("age", married = 1))
 ```

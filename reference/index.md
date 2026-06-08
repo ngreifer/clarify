@@ -17,7 +17,7 @@
 - [`transform(`*`<clarify_est>`*`)`](transform.clarify_est.md)
   [`cbind(`*`<clarify_est>`*`)`](transform.clarify_est.md) :
 
-  Transform and combine `clarify_est` objects
+  Transform and combine `<clarify_est>` objects
 
 ## Wrappers
 

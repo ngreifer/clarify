@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Compute an average dose-response function — sim_adrf"><meta name="description" content="sim_adrf() is a wrapper for sim_apply() that computes average dose-response functions (ADRFs) and average marginal effect functions (AMEFs). An ADRF describes the relationship between values a focal variable can take and the expected value of the outcome were all units to be given each value of the variable. An AMEF describes the relationship between values a focal variable can take and the derivative of ADRF at each value."><meta property="og:description" content="sim_adrf() is a wrapper for sim_apply() that computes average dose-response functions (ADRFs) and average marginal effect functions (AMEFs). An ADRF describes the relationship between values a focal variable can take and the expected value of the outcome were all units to be given each value of the variable. An AMEF describes the relationship between values a focal variable can take and the derivative of ADRF at each value."></head><body>
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Compute an average dose-response function — sim_adrf"><meta name="description" content="sim_adrf() is a wrapper for sim_apply() that computes average dose-response functions (ADRFs) and average marginal effect functions (AMEFs). An ADRF describes the relationship between values a focal variable can take and the expected value of the outcome were all units to be given each value of the variable. An AMEF describes the relationship between values a focal variable can take and the derivative of ADRF at each value."><meta property="og:description" content="sim_adrf() is a wrapper for sim_apply() that computes average dose-response functions (ADRFs) and average marginal effect functions (AMEFs). An ADRF describes the relationship between values a focal variable can take and the expected value of the outcome were all units to be given each value of the variable. An AMEF describes the relationship between values a focal variable can take and the derivative of ADRF at each value."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">clarify</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,7 @@
 <span>  outcome <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  eps <span class="op">=</span> <span class="fl">1e-05</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  cl <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
@@ -75,7 +75,7 @@
 
 
 <dl><dt id="arg-sim">sim<a class="anchor" aria-label="anchor" href="#arg-sim"></a></dt>
-<dd><p>a <code>clarify_sim</code> object; the output of a call to <code><a href="sim.html">sim()</a></code> or <code><a href="misim.html">misim()</a></code>.</p></dd>
+<dd><p>a <code>&lt;clarify_sim&gt;</code> object; the output of a call to <code><a href="sim.html">sim()</a></code> or <code><a href="misim.html">misim()</a></code>.</p></dd>
 
 
 <dt id="arg-var">var<a class="anchor" aria-label="anchor" href="#arg-var"></a></dt>
@@ -107,7 +107,7 @@
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>a string containing the type of predicted values (e.g., the link or the response). Passed to <code><a href="https://marginaleffects.com/man/r/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> and eventually to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> in most cases. The default and allowable option depend on the type of model supplied, but almost always corresponds to the response scale (e.g., predicted probabilities for binomial models).</p></dd>
+<dd><p>a string containing the type of predicted values (e.g., the link or the response). Passed to <code><a href="https://rdrr.io/pkg/marginaleffects/man/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> and eventually to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> in most cases. The default and allowable option depend on the type of model supplied, but almost always corresponds to the response scale (e.g., predicted probabilities for binomial models).</p></dd>
 
 
 <dt id="arg-eps">eps<a class="anchor" aria-label="anchor" href="#arg-eps"></a></dt>
@@ -115,7 +115,7 @@
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p><code>logical</code>; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is <code>TRUE</code>.</p></dd>
+<dd><p><code>logical</code>; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is <code>TRUE</code> for interactive sessions and <code>FALSE</code> otherwise.</p></dd>
 
 
 <dt id="arg-cl">cl<a class="anchor" aria-label="anchor" href="#arg-cl"></a></dt>
@@ -123,11 +123,11 @@
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>for <code>sim_adrf()</code>, additional arguments passed to <code><a href="https://marginaleffects.com/man/r/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> (and eventually to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>) to compute predictions. For <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, ignored.</p></dd>
+<dd><p>for <code>sim_adrf()</code>, additional arguments passed to <code><a href="https://rdrr.io/pkg/marginaleffects/man/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> (and eventually to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>) to compute predictions. For <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, ignored.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>a <code>clarify_adrf</code> object.</p></dd>
+<dd><p>a <code>&lt;clarify_adrf&gt;</code> object.</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
@@ -140,21 +140,24 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>clarify_adrf</code> object, which inherits from <code>clarify_est</code> and is similar to
-the output of <code><a href="sim_apply.html">sim_apply()</a></code>, with the additional attributes <code>"var"</code> containing
-the variable named in <code>var</code>, <code>"by"</code> containing the names of the variables specified in <code>by</code> (if any), <code>"at"</code> containing values at which the ADRF or AMEF is evaluated, and <code>"contrast"</code> containing the argument supplied to <code>contrast</code>. For an ADRF, the average marginal means will be named
-<code>E[Y({v})]</code>, where <code>{v}</code> is replaced with the values in <code>at</code>. For an AMEF, the average marginal effects will be
-named <code>dY/d({x})|{a}</code> where <code>{x}</code> is replaced with <code>var</code> and <code>{a}</code> is replaced by the values in <code>at</code>.</p>
+    <p>A <code>&lt;clarify_adrf&gt;</code> object, which inherits from <code>&lt;clarify_est&gt;</code> and is similar to the output of <code><a href="sim_apply.html">sim_apply()</a></code>, with the additional attributes <code>"var"</code> containing the variable named in <code>var</code>, <code>"by"</code> containing the names of the variables specified in <code>by</code> (if any), <code>"at"</code> containing values at which the ADRF or AMEF is evaluated, and <code>"contrast"</code> containing the argument supplied to <code>contrast</code>. For an ADRF, the average marginal means will be named <code>E[Y({v})]</code>, where <code>{v}</code> is replaced with the values in <code>at</code>. For an AMEF, the average marginal effects will be named <code>dY/d({x})|{a}</code> where <code>{x}</code> is replaced with <code>var</code> and <code>{a}</code> is replaced by the values in <code>at</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The ADRF is composed of average marginal means across levels of the focal predictor. For each level of the focal predictor, predicted values of the outcome are computed after setting the value of the predictor to that level, and those values of the outcome are averaged across all units in the sample to arrive at an average marginal mean. Thus, the ADRF represent the relationship between the "dose" (i.e., the level of the focal predictor) and the average "response" (i.e., the outcome variable). It is the continuous analog to the average marginal effect computed for a binary predictor, e.g., using <code><a href="sim_ame.html">sim_ame()</a></code>. Although inference can be at each level of the predictor or between two levels of the predictor, typically a plot of the ADRF is the most useful relevant quantity. These can be requested using <code><a href="plot.clarify_adrf.html">plot.clarify_adrf()</a></code>.</p>
 <p>The AMEF is the derivative of the ADRF; if we call the derivative of the ADRF at each point a "treatment effect" (i.e., the rate at which the outcome changes corresponding to a small change in the predictor, or "treatment"), the AMEF is a function that relates the size of the treatment effect to the level of the treatment. The shape of the AMEF is usually of less importance than the value of the AMEF at each level of the predictor, which corresponds to the size of the treatment effect at the corresponding level. The AMEF is computed by computing the ADRF at each level of the focal predictor specified in <code>at</code>, shifting the predictor value by a tiny amount (control by <code>eps</code>), and computing the ratio of the change in the outcome to the shift, then averaging this value across all units. This quantity is related the the average marginal effect of a continuous predictor as computed by <code><a href="sim_ame.html">sim_ame()</a></code>, but rather than average these treatment effects across all observed levels of the treatment, the AMEF is a function evaluated at each possible level of the treatment. The "tiny amount" used is <code>eps</code> times the standard deviation of <code>var</code>.</p>
+<p>Note that inference on the computed quantities treats the other variables in the model as fixed; that is, it only accounts for model-based uncertainty, not uncertainty due to sampling.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="plot.clarify_adrf.html">plot.clarify_adrf()</a></code> for plotting the ADRF or AMEF; <code><a href="sim_ame.html">sim_ame()</a></code> for computing average marginal effects; <code><a href="sim_apply.html">sim_apply()</a></code>, which provides a general interface to computing any quantities for simulation-based inference; <code><a href="summary.clarify_est.html">summary.clarify_est()</a></code> for computing p-values and confidence intervals for the estimated quantities.</p>
-<p><code><a href="https://marginaleffects.com/man/r/slopes.html" class="external-link">marginaleffects::avg_slopes()</a></code> and <code><a href="https://marginaleffects.com/man/r/predictions.html" class="external-link">marginaleffects::avg_predictions()</a></code> for delta method-based implementations of computing average marginal effects and average marginal means.</p></div>
+    <div class="dont-index">
+<ul><li><p><code><a href="plot.clarify_adrf.html">plot.clarify_adrf()</a></code> for plotting the ADRF or AMEF.</p></li>
+<li><p><code><a href="sim_ame.html">sim_ame()</a></code> for computing average marginal effects.</p></li>
+<li><p><code><a href="sim_apply.html">sim_apply()</a></code>, which provides a general interface to computing any quantities for simulation-based inference.</p></li>
+<li><p><code><a href="summary.clarify_est.html">summary.clarify_est()</a></code> for computing p-values and confidence intervals for the estimated quantities.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/marginaleffects/man/slopes.html" class="external-link">marginaleffects::avg_slopes()</a></code> and <code><a href="https://rdrr.io/pkg/marginaleffects/man/predictions.html" class="external-link">marginaleffects::avg_predictions()</a></code> for delta method-based implementations of computing average marginal effects and average marginal means.</p></li>
+<li><p>the <a href="https://CRAN.R-project.org/package=adrftools" class="external-link"><span class="pkg">adrftools</span></a> package, which performs inference, testing, and visualization of the ADRF and AMEF.</p></li>
+</ul></div>
     </div>
 
     <div class="section level2">
@@ -172,8 +175,7 @@ named <code>dY/d({x})|{a}</code> where <code>{x}</code> is replaced with <code>v
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ADRF for `age`</span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_adrf</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"age"</span>,</span></span>
-<span class="r-in"><span>                at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">55</span>, length.out <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">55</span>, length.out <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A <span style="color: #0000BB;">&lt;clarify_est&gt;</span> object (from `sim_adrf()`)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Average dose-response function of `age`</span>
@@ -191,8 +193,7 @@ named <code>dY/d({x})|{a}</code> where <code>{x}</code> is replaced with <code>v
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># AMEF for `age`</span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_adrf</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"age"</span>, contrast <span class="op">=</span> <span class="st">"amef"</span>,</span></span>
-<span class="r-in"><span>               at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">55</span>, length.out <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>               verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>               at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">55</span>, length.out <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A <span style="color: #0000BB;">&lt;clarify_est&gt;</span> object (from `sim_adrf()`)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Average marginal effect function of `age`</span>
@@ -219,8 +220,7 @@ named <code>dY/d({x})|{a}</code> where <code>{x}</code> is replaced with <code>v
 <span class="r-in"><span><span class="co"># ADRF for `age` within levels of `married`</span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_adrf</span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"age"</span>,</span></span>
 <span class="r-in"><span>                at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">55</span>, length.out <span class="op">=</span> <span class="fl">6</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                by <span class="op">=</span> <span class="op">~</span><span class="va">married</span>,</span></span>
-<span class="r-in"><span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                by <span class="op">=</span> <span class="op">~</span><span class="va">married</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">est</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A <span style="color: #0000BB;">&lt;clarify_est&gt;</span> object (from `sim_adrf()`)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Average dose-response function of `age`</span>

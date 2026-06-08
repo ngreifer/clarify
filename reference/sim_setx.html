@@ -5,7 +5,7 @@
       fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
     }
   };
-</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Compute predictions and first differences at set values — sim_setx"><meta name="description" content='sim_setx() is a wrapper for sim_apply() that computes predicted values of the outcome at specified values of the predictors, sometimes called marginal predictions. One can also compute the difference between two marginal predictions (the "first difference"). Although any function that accepted clarify_est objects can be used with sim_setx() output objects, a special plotting function, plot.clarify_setx(), can be used to plot marginal predictions.'><meta property="og:description" content='sim_setx() is a wrapper for sim_apply() that computes predicted values of the outcome at specified values of the predictors, sometimes called marginal predictions. One can also compute the difference between two marginal predictions (the "first difference"). Although any function that accepted clarify_est objects can be used with sim_setx() output objects, a special plotting function, plot.clarify_setx(), can be used to plot marginal predictions.'></head><body>
+</script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Compute predictions and first differences at set values — sim_setx"><meta name="description" content='sim_setx() is a wrapper for sim_apply() that computes predicted values of the outcome at specified values of the predictors, sometimes called marginal predictions. One can also compute the difference between two marginal predictions (the "first difference"). Although any function that accepted clarify_est objects can be used with sim_setx() output objects, a special plotting function, plot.clarify_setx(), can be used to plot marginal predictions.'><meta property="og:description" content='sim_setx() is a wrapper for sim_apply() that computes predicted values of the outcome at specified values of the predictors, sometimes called marginal predictions. One can also compute the difference between two marginal predictions (the "first difference"). Although any function that accepted clarify_est objects can be used with sim_setx() output objects, a special plotting function, plot.clarify_setx(), can be used to plot marginal predictions.'></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">clarify</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@
 <span>  x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  outcome <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  cl <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
@@ -70,18 +70,16 @@
 
 
 <dl><dt id="arg-sim">sim<a class="anchor" aria-label="anchor" href="#arg-sim"></a></dt>
-<dd><p>a <code>clarify_sim</code> object; the output of a call to <code><a href="sim.html">sim()</a></code> or <code><a href="misim.html">misim()</a></code>.</p></dd>
+<dd><p>a <code>&lt;clarify_sim&gt;</code> object; the output of a call to <code><a href="sim.html">sim()</a></code> or <code><a href="misim.html">misim()</a></code>.</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>a data.frame containing a reference grid of predictor values or a named list of values each predictor should take defining such a reference grid, e.g., <code>list(v1 = 1:4, v2 = c("A", "B"))</code>. Any omitted predictors are fixed at a "typical" value. See Details. When <code>x1</code> is specified, <code>x</code> should identify a single reference unit.</p>
-<p>For <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, a <code>clarify_setx</code> object.</p></dd>
+<dd><p>a data frame containing a reference grid of predictor values or a named list of values each predictor should take defining such a reference grid, e.g., <code>list(v1 = 1:4, v2 = c("A", "B"))</code>. Any omitted predictors are fixed at a "typical" value. See Details. When <code>x1</code> is specified, <code>x</code> should identify a single reference unit.</p>
+<p>For <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, a <code>&lt;clarify_setx&gt;</code> object.</p></dd>
 
 
 <dt id="arg-x-">x1<a class="anchor" aria-label="anchor" href="#arg-x-"></a></dt>
-<dd><p>a data.frame or named list of the value each predictor should take to compute the
-first difference from the predictor combination specified in <code>x</code>. <code>x1</code> can
-only identify a single unit. See Details.</p></dd>
+<dd><p>a data.frame or named list of the value each predictor should take to compute the first difference from the predictor combination specified in <code>x</code>. <code>x1</code> can only identify a single unit. See Details.</p></dd>
 
 
 <dt id="arg-outcome">outcome<a class="anchor" aria-label="anchor" href="#arg-outcome"></a></dt>
@@ -89,11 +87,11 @@ only identify a single unit. See Details.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>a string containing the type of predicted values (e.g., the link or the response). Passed to <code><a href="https://marginaleffects.com/man/r/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> and eventually to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> in most cases. The default and allowable option depend on the type of model supplied, but almost always corresponds to the response scale (e.g., predicted probabilities for binomial models).</p></dd>
+<dd><p>a string containing the type of predicted values (e.g., the link or the response). Passed to <code><a href="https://rdrr.io/pkg/marginaleffects/man/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> and eventually to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> in most cases. The default and allowable option depend on the type of model supplied, but almost always corresponds to the response scale (e.g., predicted probabilities for binomial models).</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p><code>logical</code>; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is <code>TRUE</code>.</p></dd>
+<dd><p><code>logical</code>; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is <code>TRUE</code> for interactive sessions and <code>FALSE</code> otherwise.</p></dd>
 
 
 <dt id="arg-cl">cl<a class="anchor" aria-label="anchor" href="#arg-cl"></a></dt>
@@ -101,7 +99,7 @@ only identify a single unit. See Details.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>for <code>sim_setx()</code>, additional arguments passed to <code><a href="https://marginaleffects.com/man/r/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> (and eventually to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>) to compute predictions. For <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, ignored.</p></dd>
+<dd><p>for <code>sim_setx()</code>, additional arguments passed to <code><a href="https://rdrr.io/pkg/marginaleffects/man/get_predict.html" class="external-link">marginaleffects::get_predict()</a></code> (and eventually to <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code>) to compute predictions. For <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, ignored.</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
@@ -114,7 +112,7 @@ only identify a single unit. See Details.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>clarify_setx</code> object, which inherits from <code>clarify_est</code> and is similar to the output of <code><a href="sim_apply.html">sim_apply()</a></code>, with the following additional attributes:</p><ul><li><p><code>"setx"</code> - a data frame containing the values at which predictions are to be made</p></li>
+    <p>A <code>&lt;clarify_setx&gt;</code> object, which inherits from <code>&lt;clarify_est&gt;</code> and is similar to the output of <code><a href="sim_apply.html">sim_apply()</a></code>, with the following additional attributes:</p><ul><li><p><code>"setx"</code> - a data frame containing the values at which predictions are to be made</p></li>
 <li><p><code>"fd"</code> - whether or not the first difference is to be computed; set to <code>TRUE</code> if <code>x1</code> is specified and <code>FALSE</code> otherwise</p></li>
 </ul></div>
     <div class="section level2">
@@ -135,10 +133,12 @@ predictor changed, specified in <code>x1</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="sim_apply.html">sim_apply()</a></code>, which provides a general interface to computing any
-quantities for simulation-based inference; <code><a href="plot.clarify_setx.html">plot.clarify_setx()</a></code> for plotting the
-output of a call to <code>sim_setx()</code>; <code><a href="summary.clarify_est.html">summary.clarify_est()</a></code> for computing
-p-values and confidence intervals for the estimated quantities.</p></div>
+    <div class="dont-index">
+<ul><li><p><code><a href="sim_apply.html">sim_apply()</a></code>, which provides a general interface to computing any quantities for simulation-based inference.</p></li>
+<li><p><code><a href="plot.clarify_setx.html">plot.clarify_setx()</a></code> for plotting the output of a call to <code>sim_setx()</code>.</p></li>
+<li><p><code><a href="summary.clarify_est.html">summary.clarify_est()</a></code> for computing p-values and confidence intervals for the estimated quantities.</p></li>
+<li><p><code><a href="https://rdrr.io/pkg/marginaleffects/man/predictions.html" class="external-link">marginaleffects::predictions()</a></code> and <code><a href="https://rdrr.io/pkg/marginaleffects/man/comparisons.html" class="external-link">marginaleffects::comparisons()</a></code> for delta method-based implementations of computing predicted values and first differences.</p></li>
+</ul></div>
     </div>
 
     <div class="section level2">
@@ -155,8 +155,7 @@ p-values and confidence intervals for the estimated quantities.</p></div>
 <span class="r-in"><span><span class="co"># Predicted values at specified values of values, typical</span></span></span>
 <span class="r-in"><span><span class="co"># values for other predictors</span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_setx</span><span class="op">(</span><span class="va">s</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">1</span>,</span></span>
-<span class="r-in"><span>                            re74 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10000</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                            re74 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10000</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         Estimate 2.5 % 97.5 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> treat = 0, re74 = 0         4771  3709   5771</span>
@@ -169,8 +168,7 @@ p-values and confidence intervals for the estimated quantities.</p></div>
 <span class="r-in"><span><span class="co"># Predicted values at specified grid of values, typical</span></span></span>
 <span class="r-in"><span><span class="co"># values for other predictors</span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_setx</span><span class="op">(</span><span class="va">s</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">30</span>, <span class="fl">35</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                            married <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                            married <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                       Estimate 2.5 % 97.5 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> age = 20, married = 0     6377  5211   7464</span>
@@ -187,8 +185,7 @@ p-values and confidence intervals for the estimated quantities.</p></div>
 <span class="r-in"><span><span class="co"># First differences of treat at specified value of</span></span></span>
 <span class="r-in"><span><span class="co"># race, typical values for other predictors</span></span></span>
 <span class="r-in"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu">sim_setx</span><span class="op">(</span><span class="va">s</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">0</span>, race <span class="op">=</span> <span class="st">"hispan"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">1</span>, race <span class="op">=</span> <span class="st">"hispan"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">1</span>, race <span class="op">=</span> <span class="st">"hispan"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Estimate   2.5 %  97.5 %</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> treat = 0   7053.6  5340.1  8589.0</span>

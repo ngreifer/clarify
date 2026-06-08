@@ -2,58 +2,59 @@
 
 ## Introduction
 
-In this document, we demonstrate some common uses of `Zelig` (Imai,
-King, and Lau 2008) and how the same tasks can be performed using
-`clarify`. We’ll include examples for computing predictions at
-representative values (i.e., `setx()` and [`sim()`](../reference/sim.md)
-in `Zelig`), the rare-events logit model, estimating the average
-treatment effect (ATT) after matching, and combining estimates after
-multiple imputation.
+In this document, we demonstrate some common uses of *Zelig* (Imai et
+al. 2008) and how the same tasks can be performed using *clarify*. We’ll
+include examples for computing predictions at representative values
+(i.e., `setx()` and [`sim()`](../reference/sim.md) in *Zelig*), the
+rare-events logit model, estimating the average treatment effect (ATT)
+after matching, and combining estimates after multiple imputation.
 
-The usual workflow in `Zelig` is to fit a model using `zelig()`, specify
+The usual workflow in *Zelig* is to fit a model using `zelig()`, specify
 quantities of interest to simulate using `setx()` on the `zelig()`
 output, and then simulate those quantities using
-[`sim()`](../reference/sim.md). `clarify` uses a similar approach,
-except that the model is fit outside `clarify` using functions in a
-different R package. In addition, `clarify`’s
+[`sim()`](../reference/sim.md). *clarify* uses a similar approach,
+except that the model is fit outside *clarify* using functions in a
+different R package. In addition, *clarify*’s
 [`sim_apply()`](../reference/sim_apply.md) allows for the computation of
-any arbitrary quantity of interest. Unlike `Zelig`, `clarify` follows
+any arbitrary quantity of interest. Unlike *Zelig*, *clarify* follows
 the recommendations of Rainey (2023) to use the estimates computed from
 the original model coefficients rather than the average of the simulated
-draws. We’ll demonstrate how to replicate a standard `Zelig` analysis
-using `clarify` step-by-step. Because simulation-based inference
+draws. We’ll demonstrate how to replicate a standard *Zelig* analysis
+using *clarify* step-by-step. Because simulation-based inference
 involves randomness and some of the algorithms may not perfectly align,
 one shouldn’t expect results to be identical, though in most cases, they
 should be similar.
 
 ``` r
+
 ## library("Zelig")
 library("clarify")
 set.seed(100)
 ```
 
-Note that both `Zelig` and `clarify` have a function called
+Note that both *Zelig* and *clarify* have a function called
 “[`sim()`](../reference/sim.md)”, so we will always make it clear which
 package’s [`sim()`](../reference/sim.md) is being used.
 
 ## Predictions at representative values
 
-Here we’ll use the `lalonde` dataset in
-[MatchIt](https://kosukeimai.github.io/MatchIt/) and fit a linear model
+Here we’ll use the `lalonde` dataset in *MatchIt* and fit a linear model
 for `re78` as a function of the treatment `treat` and covariates.
 
 ``` r
+
 data("lalonde", package = "MatchIt")
 ```
 
 We’ll be interested in the predicted values of the outcome for a typical
 unit at each level of treatment and their first difference.
 
-### `Zelig` workflow
+### *Zelig* workflow
 
-In `Zelig`, we fit the model using `zelig()`:
+In *Zelig*, we fit the model using `zelig()`:
 
 ``` r
+
 fit <- zelig(re78 ~ treat + age + educ + married + race +
                nodegree + re74 + re75, data = lalonde,
              model = "ls", cite = FALSE)
@@ -62,6 +63,7 @@ fit <- zelig(re78 ~ treat + age + educ + married + race +
 Next, we use `setx()` and `setx1()` to set our values of `treat`:
 
 ``` r
+
 fit <- setx(fit, treat = 0)
 fit <- setx1(fit, treat = 1)
 ```
@@ -69,6 +71,7 @@ fit <- setx1(fit, treat = 1)
 Next we simulate the values using [`sim()`](../reference/sim.md):
 
 ``` r
+
 fit <- Zelig::sim(fit)
 ```
 
@@ -76,20 +79,23 @@ Finally, we can print and plot the predicted values and first
 differences:
 
 ``` r
+
 fit
 ```
 
 ``` r
+
 plot(fit)
 ```
 
-### `clarify` workflow
+### *clarify* workflow
 
-In `clarify`, we fit the model using functions outside `clarify`, like
+In *clarify*, we fit the model using functions outside *clarify*, like
 [`stats::lm()`](https://rdrr.io/r/stats/lm.html)or
 [`fixest::feols()`](https://lrberge.github.io/fixest/reference/feols.html).
 
 ``` r
+
 fit <- lm(re78 ~ treat + age + educ + married + race +
             nodegree + re74 + re75, data = lalonde)
 ```
@@ -98,6 +104,7 @@ Next, we simulate the model coefficients using
 [`clarify::sim()`](../reference/sim.md):
 
 ``` r
+
 s <- clarify::sim(fit)
 ```
 
@@ -105,13 +112,14 @@ Next, we use [`sim_setx()`](../reference/sim_setx.md) to set our values
 of the predictors:
 
 ``` r
-est <- sim_setx(s, x = list(treat = 0), x1 = list(treat = 1),
-                verbose = FALSE)
+
+est <- sim_setx(s, x = list(treat = 0), x1 = list(treat = 1))
 ```
 
 Finally, we can summarize and plot the predicted values:
 
 ``` r
+
 summary(est)
 #>           Estimate   2.5 %  97.5 %
 #> treat = 0   6686.0  5410.3  7970.1
@@ -125,30 +133,32 @@ plot(est)
 
 ## Rare-events logit
 
-`Zelig` uses a special method for logistic regression with rare events
+*Zelig* uses a special method for logistic regression with rare events
 as described in King and Zeng (2001). This is the primary implementation
 of the method in R. However, newer methods have been developed that
 perform similarly to or better than the method of King and Zeng (Puhr et
 al. 2017) and are implemented in R packages that are compatible with
-`clarify`, such as `logistf` and `brglm2`.
+*clarify*, such as *logistf* and *brglm2*.
 
 Here, we’ll use the `lalonde` dataset with a constructed rare outcome
 variable to demonstrate how to perform a rare events logistic regression
-in `Zelig` and in `clarify`.
+in *Zelig* and in *clarify*.
 
 ``` r
+
 data("lalonde", package = "MatchIt")
 
 #Rare outcome: 1978 earnings over $20k; ~6% prevalence
 lalonde$re78_20k <- lalonde$re78 >= 20000
 ```
 
-### `Zelig` workflow
+### *Zelig* workflow
 
-In `Zelig`, we fit a rare events logistic model using `zelig()` with
+In *Zelig*, we fit a rare events logistic model using `zelig()` with
 `model = "relogit"`.
 
 ``` r
+
 fit <- zelig(re78_20k ~ treat + age + educ + married + race +
                nodegree + re74 + re75, data = lalonde,
              model = "relogit", cite = FALSE)
@@ -160,6 +170,7 @@ We can compute predicted values at representative values using `setx()`
 and `Zelig::sim()` as above.
 
 ``` r
+
 fit <- setx(fit, treat = 0)
 fit <- setx1(fit, treat = 1)
 
@@ -169,16 +180,18 @@ fit
 ```
 
 ``` r
+
 plot(fit)
 ```
 
-### `clarify` workflow
+### *clarify* workflow
 
 Here, we’ll use `logistf::logistif()` with `flic = TRUE`, which performs
 a variation on Firth’s logistic regression with a correction for bias in
 the intercept (Puhr et al. 2017).
 
 ``` r
+
 fit <- logistf::logistf(re78_20k ~ treat + age + educ + married + race +
                           nodegree + re74 + re75, data = lalonde,
                         flic = TRUE)
@@ -223,10 +236,10 @@ We can compute predictions at representative values using
 [`sim_setx()`](../reference/sim_setx.md).
 
 ``` r
+
 s <- clarify::sim(fit)
 
-est <- sim_setx(s, x = list(treat = 0), x1 = list(treat = 1),
-                verbose = FALSE)
+est <- sim_setx(s, x = list(treat = 0), x1 = list(treat = 1))
 
 summary(est)
 #>           Estimate    2.5 %   97.5 %
@@ -236,6 +249,7 @@ summary(est)
 ```
 
 ``` r
+
 plot(est)
 ```
 
@@ -246,9 +260,10 @@ plot(est)
 Here we’ll use the `lalonde` dataset and perform propensity score
 matching and then fit a linear model for `re78` as a function of the
 treatment `treat`, the covariates, and their interaction. From this
-model, we’ll compute the ATT of `treat` using `Zelig` and `clarify`.
+model, we’ll compute the ATT of `treat` using *Zelig* and *clarify*.
 
 ``` r
+
 data("lalonde", package = "MatchIt")
 
 m.out <- MatchIt::matchit(treat ~ age + educ + married + race +
@@ -256,12 +271,13 @@ m.out <- MatchIt::matchit(treat ~ age + educ + married + race +
                           method = "nearest")
 ```
 
-### `Zelig` workflow
+### *Zelig* workflow
 
-In `Zelig`, we fit the model using `zelig()` directly on the `matchit`
+In *Zelig*, we fit the model using `zelig()` directly on the `<matchit>`
 object:
 
 ``` r
+
 fit <- zelig(re78 ~ treat * (age + educ + married + race +
                                nodegree + re74 + re75),
              data = m.out, model = "ls", cite = FALSE)
@@ -271,23 +287,27 @@ Next, we use `ATT()` to request the ATT of `treat` and simulate the
 values:
 
 ``` r
+
 fit <- ATT(fit, "treat")
 ```
 
 ``` r
+
 fit
 ```
 
 ``` r
+
 plot(fit)
 ```
 
-### `clarify` workflow
+### *clarify* workflow
 
-In `clarify`, we need to extract the matched dataset and fit a model
-outside `clarify` using another package.
+In *clarify*, we need to extract the matched dataset and fit a model
+outside *clarify* using another package.
 
 ``` r
+
 m.data <- MatchIt::match.data(m.out)
 
 fit <- lm(re78 ~ treat * (age + educ + married + race +
@@ -300,6 +320,7 @@ Next, we simulate the model coefficients using
 matching, we will request a cluster-robust standard error:
 
 ``` r
+
 s <- clarify::sim(fit, vcov = ~subclass)
 ```
 
@@ -307,13 +328,15 @@ Next, we use [`sim_ame()`](../reference/sim_ame.md) to request the
 average marginal effect of `treat` within the subset of treated units:
 
 ``` r
+
 est <- sim_ame(s, var = "treat", subset = treat == 1,
-               contrast = "diff", verbose = FALSE)
+               contrast = "diff")
 ```
 
 Finally, we can summarize and plot the ATT:
 
 ``` r
+
 summary(est)
 #>         Estimate 2.5 % 97.5 %
 #> E[Y(0)]     5228  4086   6364
@@ -327,34 +350,37 @@ plot(est)
 
 ## Combining results after multiple imputation
 
-Here we’ll use the `africa` dataset in
-[Amelia](https://gking.harvard.edu/amelia) to demonstrate combining
+Here we’ll use the `africa` dataset in *Amelia* to demonstrate combining
 estimates after multiple imputation. This analysis is also demonstrated
-using `clarify` at the end of
+using *clarify* at the end of
 [`vignette("clarify")`](../articles/clarify.md).
 
 ``` r
+
 library(Amelia)
 data("africa", package = "Amelia")
 ```
 
 First we multiply impute the data using
 [`amelia()`](https://rdrr.io/pkg/Amelia/man/amelia.html) using the
-specification in the [Amelia](https://gking.harvard.edu/amelia)
-documentation.
+specification in the *Amelia* documentation.
 
 ``` r
+
 # Multiple imputation
 a.out <- amelia(x = africa, m = 10, cs = "country",
                 ts = "year", logs = "gdp_pc", p2s = 0)
 ```
 
-### `Zelig` workflow
+### *Zelig* workflow
 
-With `Zelig`, we can supply the `amelia` object directly to the `data`
-argument of `zelig()` to fit a model in each imputed dataset:
+With *Zelig*, we can supply the
+[`amelia()`](https://rdrr.io/pkg/Amelia/man/amelia.html) output object
+directly to the `data` argument of `zelig()` to fit a model in each
+imputed dataset:
 
 ``` r
+
 fit <- zelig(gdp_pc ~ infl * trade, data = a.out,
              model = "ls", cite = FALSE)
 ```
@@ -363,6 +389,7 @@ Summarizing the coefficient estimates after the simulation can be done
 using [`summary()`](https://rdrr.io/r/base/summary.html):
 
 ``` r
+
 summary(fit)
 ```
 
@@ -370,31 +397,35 @@ We can use `Zelig::sim()` and `setx()` to compute predictions at
 specified values of the predictors:
 
 ``` r
+
 fit <- setx(fit, infl = 0, trade = 40)
 fit <- setx1(fit, infl = 0, trade = 60)
 
 fit <- Zelig::sim(fit)
 ```
 
-`Zelig` does not allow you to combine predicted values across
+*Zelig* does not allow you to combine predicted values across
 imputations.
 
 ``` r
+
 fit
 ```
 
 ``` r
+
 plot(fit)
 ```
 
-### `clarify` workflow
+### *clarify* workflow
 
-`clarify` does not combine coefficients, unlike `zelig()`; instead, the
+*clarify* does not combine coefficients, unlike `zelig()`; instead, the
 models should be fit using `Amelia::with()`. To view the combined
 coefficient estimates, use
 [`Amelia::mi.combine()`](https://rdrr.io/pkg/Amelia/man/mi.combine.html).
 
 ``` r
+
 #Use Amelia functions to model and combine coefficients
 fits <- with(a.out, lm(gdp_pc ~ infl * trade))
 
@@ -415,13 +446,13 @@ Derived quantities can be computed using
 regression model fits:
 
 ``` r
+
 #Simulate coefficients, 100 in each of 10 imputations
 s <- misim(fits, n = 100)
 
 #Compute predictions at specified values
 est <- sim_setx(s, x = list(infl = 0, trade = 40),
-                x1 = list(infl = 0, trade = 60),
-                verbose = FALSE)
+                x1 = list(infl = 0, trade = 60))
 
 summary(est)
 #>            Estimate 2.5 % 97.5 %

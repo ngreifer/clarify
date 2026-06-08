@@ -28,7 +28,7 @@ plot(
 
 - x:
 
-  a `clarify_est` object resulting from a call to
+  a `<clarify_est>` object resulting from a call to
   [`sim_setx()`](sim_setx.md).
 
 - var:
@@ -80,7 +80,7 @@ plot(
 
 ## Value
 
-A `ggplot` object.
+A `<ggplot>` object.
 
 ## Details
 

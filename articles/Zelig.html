@@ -13,8 +13,8 @@
     }
   };
 </script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Translating Zelig to clarify">
 </head>
@@ -26,7 +26,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">clarify</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,54 +75,51 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>In this document, we demonstrate some common uses of
-<code>Zelig</code> <span class="citation">(Imai, King, and Lau
-2008)</span> and how the same tasks can be performed using
-<code>clarify</code>. We’ll include examples for computing predictions
-at representative values (i.e., <code>setx()</code> and
-<code><a href="../reference/sim.html">sim()</a></code> in <code>Zelig</code>), the rare-events logit model,
-estimating the average treatment effect (ATT) after matching, and
-combining estimates after multiple imputation.</p>
-<p>The usual workflow in <code>Zelig</code> is to fit a model using
+<p>In this document, we demonstrate some common uses of <em>Zelig</em>
+<span class="citation">(Imai et al. 2008)</span> and how the same tasks
+can be performed using <em>clarify</em>. We’ll include examples for
+computing predictions at representative values (i.e.,
+<code>setx()</code> and <code><a href="../reference/sim.html">sim()</a></code> in <em>Zelig</em>), the
+rare-events logit model, estimating the average treatment effect (ATT)
+after matching, and combining estimates after multiple imputation.</p>
+<p>The usual workflow in <em>Zelig</em> is to fit a model using
 <code>zelig()</code>, specify quantities of interest to simulate using
 <code>setx()</code> on the <code>zelig()</code> output, and then
-simulate those quantities using <code><a href="../reference/sim.html">sim()</a></code>. <code>clarify</code>
+simulate those quantities using <code><a href="../reference/sim.html">sim()</a></code>. <em>clarify</em>
 uses a similar approach, except that the model is fit outside
-<code>clarify</code> using functions in a different R package. In
-addition, <code>clarify</code>’s <code><a href="../reference/sim_apply.html">sim_apply()</a></code> allows for the
-computation of any arbitrary quantity of interest. Unlike
-<code>Zelig</code>, <code>clarify</code> follows the recommendations of
-<span class="citation">Rainey (2023)</span> to use the estimates
-computed from the original model coefficients rather than the average of
-the simulated draws. We’ll demonstrate how to replicate a standard
-<code>Zelig</code> analysis using <code>clarify</code> step-by-step.
-Because simulation-based inference involves randomness and some of the
-algorithms may not perfectly align, one shouldn’t expect results to be
-identical, though in most cases, they should be similar.</p>
+<em>clarify</em> using functions in a different R package. In addition,
+<em>clarify</em>’s <code><a href="../reference/sim_apply.html">sim_apply()</a></code> allows for the computation
+of any arbitrary quantity of interest. Unlike <em>Zelig</em>,
+<em>clarify</em> follows the recommendations of <span class="citation">Rainey (2023)</span> to use the estimates computed from
+the original model coefficients rather than the average of the simulated
+draws. We’ll demonstrate how to replicate a standard <em>Zelig</em>
+analysis using <em>clarify</em> step-by-step. Because simulation-based
+inference involves randomness and some of the algorithms may not
+perfectly align, one shouldn’t expect results to be identical, though in
+most cases, they should be similar.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## library("Zelig")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/iqss/clarify" class="external-link">"clarify"</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span></code></pre></div>
-<p>Note that both <code>Zelig</code> and <code>clarify</code> have a
-function called “<code><a href="../reference/sim.html">sim()</a></code>”, so we will always make it clear
-which package’s <code><a href="../reference/sim.html">sim()</a></code> is being used.</p>
+<p>Note that both <em>Zelig</em> and <em>clarify</em> have a function
+called “<code><a href="../reference/sim.html">sim()</a></code>”, so we will always make it clear which
+package’s <code><a href="../reference/sim.html">sim()</a></code> is being used.</p>
 </div>
 <div class="section level2">
 <h2 id="predictions-at-representative-values">Predictions at representative values<a class="anchor" aria-label="anchor" href="#predictions-at-representative-values"></a>
 </h2>
-<p>Here we’ll use the <code>lalonde</code> dataset in
-<a href="https://kosukeimai.github.io/MatchIt/" class="external-link">MatchIt</a> and fit a linear model for <code>re78</code> as a
-function of the treatment <code>treat</code> and covariates.</p>
+<p>Here we’ll use the <code>lalonde</code> dataset in <em>MatchIt</em>
+and fit a linear model for <code>re78</code> as a function of the
+treatment <code>treat</code> and covariates.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lalonde"</span>, package <span class="op">=</span> <span class="st">"MatchIt"</span><span class="op">)</span></span></code></pre></div>
 <p>We’ll be interested in the predicted values of the outcome for a
 typical unit at each level of treatment and their first difference.</p>
 <div class="section level3">
 <h3 id="zelig-workflow">
-<code>Zelig</code> workflow<a class="anchor" aria-label="anchor" href="#zelig-workflow"></a>
+<em>Zelig</em> workflow<a class="anchor" aria-label="anchor" href="#zelig-workflow"></a>
 </h3>
-<p>In <code>Zelig</code>, we fit the model using
-<code>zelig()</code>:</p>
+<p>In <em>Zelig</em>, we fit the model using <code>zelig()</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">zelig</span><span class="op">(</span><span class="va">re78</span> <span class="op">~</span> <span class="va">treat</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">married</span> <span class="op">+</span> <span class="va">race</span> <span class="op">+</span></span>
 <span>               <span class="va">nodegree</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span>, data <span class="op">=</span> <span class="va">lalonde</span>,</span>
@@ -144,10 +141,10 @@ differences:</p>
 </div>
 <div class="section level3">
 <h3 id="clarify-workflow">
-<code>clarify</code> workflow<a class="anchor" aria-label="anchor" href="#clarify-workflow"></a>
+<em>clarify</em> workflow<a class="anchor" aria-label="anchor" href="#clarify-workflow"></a>
 </h3>
-<p>In <code>clarify</code>, we fit the model using functions outside
-<code>clarify</code>, like <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">stats::lm()</a></code>or
+<p>In <em>clarify</em>, we fit the model using functions outside
+<em>clarify</em>, like <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">stats::lm()</a></code>or
 <code><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">fixest::feols()</a></code>.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">re78</span> <span class="op">~</span> <span class="va">treat</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">married</span> <span class="op">+</span> <span class="va">race</span> <span class="op">+</span></span>
@@ -159,8 +156,7 @@ differences:</p>
 <p>Next, we use <code><a href="../reference/sim_setx.html">sim_setx()</a></code> to set our values of the
 predictors:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim_setx.html">sim_setx</a></span><span class="op">(</span><span class="va">s</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>, x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim_setx.html">sim_setx</a></span><span class="op">(</span><span class="va">s</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>, x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we can summarize and plot the predicted values:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
@@ -176,18 +172,16 @@ predictors:</p>
 <div class="section level2">
 <h2 id="rare-events-logit">Rare-events logit<a class="anchor" aria-label="anchor" href="#rare-events-logit"></a>
 </h2>
-<p><code>Zelig</code> uses a special method for logistic regression with
+<p><em>Zelig</em> uses a special method for logistic regression with
 rare events as described in <span class="citation">King and Zeng
 (2001)</span>. This is the primary implementation of the method in R.
 However, newer methods have been developed that perform similarly to or
 better than the method of King and Zeng <span class="citation">(Puhr et
 al. 2017)</span> and are implemented in R packages that are compatible
-with <code>clarify</code>, such as <code>logistf</code> and
-<code>brglm2</code>.</p>
+with <em>clarify</em>, such as <em>logistf</em> and <em>brglm2</em>.</p>
 <p>Here, we’ll use the <code>lalonde</code> dataset with a constructed
 rare outcome variable to demonstrate how to perform a rare events
-logistic regression in <code>Zelig</code> and in
-<code>clarify</code>.</p>
+logistic regression in <em>Zelig</em> and in <em>clarify</em>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lalonde"</span>, package <span class="op">=</span> <span class="st">"MatchIt"</span><span class="op">)</span></span>
 <span></span>
@@ -195,9 +189,9 @@ logistic regression in <code>Zelig</code> and in
 <span><span class="va">lalonde</span><span class="op">$</span><span class="va">re78_20k</span> <span class="op">&lt;-</span> <span class="va">lalonde</span><span class="op">$</span><span class="va">re78</span> <span class="op">&gt;=</span> <span class="fl">20000</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="zelig-workflow-1">
-<code>Zelig</code> workflow<a class="anchor" aria-label="anchor" href="#zelig-workflow-1"></a>
+<em>Zelig</em> workflow<a class="anchor" aria-label="anchor" href="#zelig-workflow-1"></a>
 </h3>
-<p>In <code>Zelig</code>, we fit a rare events logistic model using
+<p>In <em>Zelig</em>, we fit a rare events logistic model using
 <code>zelig()</code> with <code>model = "relogit"</code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">zelig</span><span class="op">(</span><span class="va">re78_20k</span> <span class="op">~</span> <span class="va">treat</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">married</span> <span class="op">+</span> <span class="va">race</span> <span class="op">+</span></span>
@@ -219,7 +213,7 @@ logistic regression in <code>Zelig</code> and in
 </div>
 <div class="section level3">
 <h3 id="clarify-workflow-1">
-<code>clarify</code> workflow<a class="anchor" aria-label="anchor" href="#clarify-workflow-1"></a>
+<em>clarify</em> workflow<a class="anchor" aria-label="anchor" href="#clarify-workflow-1"></a>
 </h3>
 <p>Here, we’ll use <code>logistf::logistif()</code> with
 <code>flic = TRUE</code>, which performs a variation on Firth’s logistic
@@ -267,8 +261,7 @@ regression with a correction for bias in the intercept <span class="citation">(P
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">clarify</span><span class="fu">::</span><span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim_setx.html">sim_setx</a></span><span class="op">(</span><span class="va">s</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>, x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim_setx.html">sim_setx</a></span><span class="op">(</span><span class="va">s</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>, x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>treat <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           Estimate    2.5 %   97.5 %</span></span>
@@ -287,8 +280,7 @@ regression with a correction for bias in the intercept <span class="citation">(P
 propensity score matching and then fit a linear model for
 <code>re78</code> as a function of the treatment <code>treat</code>, the
 covariates, and their interaction. From this model, we’ll compute the
-ATT of <code>treat</code> using <code>Zelig</code> and
-<code>clarify</code>.</p>
+ATT of <code>treat</code> using <em>Zelig</em> and <em>clarify</em>.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lalonde"</span>, package <span class="op">=</span> <span class="st">"MatchIt"</span><span class="op">)</span></span>
 <span></span>
@@ -297,10 +289,10 @@ ATT of <code>treat</code> using <code>Zelig</code> and
 <span>                          method <span class="op">=</span> <span class="st">"nearest"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="zelig-workflow-2">
-<code>Zelig</code> workflow<a class="anchor" aria-label="anchor" href="#zelig-workflow-2"></a>
+<em>Zelig</em> workflow<a class="anchor" aria-label="anchor" href="#zelig-workflow-2"></a>
 </h3>
-<p>In <code>Zelig</code>, we fit the model using <code>zelig()</code>
-directly on the <code>matchit</code> object:</p>
+<p>In <em>Zelig</em>, we fit the model using <code>zelig()</code>
+directly on the <code>&lt;matchit&gt;</code> object:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">zelig</span><span class="op">(</span><span class="va">re78</span> <span class="op">~</span> <span class="va">treat</span> <span class="op">*</span> <span class="op">(</span><span class="va">age</span> <span class="op">+</span> <span class="va">educ</span> <span class="op">+</span> <span class="va">married</span> <span class="op">+</span> <span class="va">race</span> <span class="op">+</span></span>
 <span>                               <span class="va">nodegree</span> <span class="op">+</span> <span class="va">re74</span> <span class="op">+</span> <span class="va">re75</span><span class="op">)</span>,</span>
@@ -316,10 +308,10 @@ directly on the <code>matchit</code> object:</p>
 </div>
 <div class="section level3">
 <h3 id="clarify-workflow-2">
-<code>clarify</code> workflow<a class="anchor" aria-label="anchor" href="#clarify-workflow-2"></a>
+<em>clarify</em> workflow<a class="anchor" aria-label="anchor" href="#clarify-workflow-2"></a>
 </h3>
-<p>In <code>clarify</code>, we need to extract the matched dataset and
-fit a model outside <code>clarify</code> using another package.</p>
+<p>In <em>clarify</em>, we need to extract the matched dataset and fit a
+model outside <em>clarify</em> using another package.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m.data</span> <span class="op">&lt;-</span> <span class="fu">MatchIt</span><span class="fu">::</span><span class="fu"><a href="https://kosukeimai.github.io/MatchIt/reference/match_data.html" class="external-link">match.data</a></span><span class="op">(</span><span class="va">m.out</span><span class="op">)</span></span>
 <span></span>
@@ -335,7 +327,7 @@ request a cluster-robust standard error:</p>
 effect of <code>treat</code> within the subset of treated units:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim_ame.html">sim_ame</a></span><span class="op">(</span><span class="va">s</span>, var <span class="op">=</span> <span class="st">"treat"</span>, subset <span class="op">=</span> <span class="va">treat</span> <span class="op">==</span> <span class="fl">1</span>,</span>
-<span>               contrast <span class="op">=</span> <span class="st">"diff"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span>               contrast <span class="op">=</span> <span class="st">"diff"</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we can summarize and plot the ATT:</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
@@ -351,26 +343,26 @@ effect of <code>treat</code> within the subset of treated units:</p>
 <div class="section level2">
 <h2 id="combining-results-after-multiple-imputation">Combining results after multiple imputation<a class="anchor" aria-label="anchor" href="#combining-results-after-multiple-imputation"></a>
 </h2>
-<p>Here we’ll use the <code>africa</code> dataset in
-<a href="https://gking.harvard.edu/amelia" class="external-link">Amelia</a> to demonstrate combining estimates after multiple
-imputation. This analysis is also demonstrated using
-<code>clarify</code> at the end of <code><a href="../articles/clarify.html">vignette("clarify")</a></code>.</p>
+<p>Here we’ll use the <code>africa</code> dataset in <em>Amelia</em> to
+demonstrate combining estimates after multiple imputation. This analysis
+is also demonstrated using <em>clarify</em> at the end of
+<code><a href="../articles/clarify.html">vignette("clarify")</a></code>.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gking.harvard.edu/amelia" class="external-link">Amelia</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"africa"</span>, package <span class="op">=</span> <span class="st">"Amelia"</span><span class="op">)</span></span></code></pre></div>
 <p>First we multiply impute the data using <code><a href="https://rdrr.io/pkg/Amelia/man/amelia.html" class="external-link">amelia()</a></code> using
-the specification in the <a href="https://gking.harvard.edu/amelia" class="external-link">Amelia</a> documentation.</p>
+the specification in the <em>Amelia</em> documentation.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Multiple imputation</span></span>
 <span><span class="va">a.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Amelia/man/amelia.html" class="external-link">amelia</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">africa</span>, m <span class="op">=</span> <span class="fl">10</span>, cs <span class="op">=</span> <span class="st">"country"</span>,</span>
 <span>                ts <span class="op">=</span> <span class="st">"year"</span>, logs <span class="op">=</span> <span class="st">"gdp_pc"</span>, p2s <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="zelig-workflow-3">
-<code>Zelig</code> workflow<a class="anchor" aria-label="anchor" href="#zelig-workflow-3"></a>
+<em>Zelig</em> workflow<a class="anchor" aria-label="anchor" href="#zelig-workflow-3"></a>
 </h3>
-<p>With <code>Zelig</code>, we can supply the <code>amelia</code> object
-directly to the <code>data</code> argument of <code>zelig()</code> to
-fit a model in each imputed dataset:</p>
+<p>With <em>Zelig</em>, we can supply the <code><a href="https://rdrr.io/pkg/Amelia/man/amelia.html" class="external-link">amelia()</a></code> output
+object directly to the <code>data</code> argument of
+<code>zelig()</code> to fit a model in each imputed dataset:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">zelig</span><span class="op">(</span><span class="va">gdp_pc</span> <span class="op">~</span> <span class="va">infl</span> <span class="op">*</span> <span class="va">trade</span>, data <span class="op">=</span> <span class="va">a.out</span>,</span>
 <span>             model <span class="op">=</span> <span class="st">"ls"</span>, cite <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -385,8 +377,8 @@ compute predictions at specified values of the predictors:</p>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">setx1</span><span class="op">(</span><span class="va">fit</span>, infl <span class="op">=</span> <span class="fl">0</span>, trade <span class="op">=</span> <span class="fl">60</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">Zelig</span><span class="fu">::</span><span class="fu">sim</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<p><code>Zelig</code> does not allow you to combine predicted values
-across imputations.</p>
+<p><em>Zelig</em> does not allow you to combine predicted values across
+imputations.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span></span></code></pre></div>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
@@ -394,9 +386,9 @@ across imputations.</p>
 </div>
 <div class="section level3">
 <h3 id="clarify-workflow-3">
-<code>clarify</code> workflow<a class="anchor" aria-label="anchor" href="#clarify-workflow-3"></a>
+<em>clarify</em> workflow<a class="anchor" aria-label="anchor" href="#clarify-workflow-3"></a>
 </h3>
-<p><code>clarify</code> does not combine coefficients, unlike
+<p><em>clarify</em> does not combine coefficients, unlike
 <code>zelig()</code>; instead, the models should be fit using
 <code>Amelia::with()</code>. To view the combined coefficient estimates,
 use <code><a href="https://rdrr.io/pkg/Amelia/man/mi.combine.html" class="external-link">Amelia::mi.combine()</a></code>.</p>
@@ -422,8 +414,7 @@ regression model fits:</p>
 <span></span>
 <span><span class="co">#Compute predictions at specified values</span></span>
 <span><span class="va">est</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim_setx.html">sim_setx</a></span><span class="op">(</span><span class="va">s</span>, x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>infl <span class="op">=</span> <span class="fl">0</span>, trade <span class="op">=</span> <span class="fl">40</span><span class="op">)</span>,</span>
-<span>                x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>infl <span class="op">=</span> <span class="fl">0</span>, trade <span class="op">=</span> <span class="fl">60</span><span class="op">)</span>,</span>
-<span>                verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>                x1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>infl <span class="op">=</span> <span class="fl">0</span>, trade <span class="op">=</span> <span class="fl">60</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">est</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            Estimate 2.5 % 97.5 %</span></span>
@@ -438,7 +429,7 @@ regression model fits:</p>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-imaiCommonFrameworkStatistical2008a" class="csl-entry">
 Imai, Kosuke, Gary King, and Olivia Lau. 2008. <span>“Toward a Common
 Framework for Statistical Analysis and Development.”</span> <em>Journal

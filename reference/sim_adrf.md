@@ -22,7 +22,7 @@ sim_adrf(
   outcome = NULL,
   type = NULL,
   eps = 1e-05,
-  verbose = TRUE,
+  verbose = interactive(),
   cl = NULL,
   ...
 )
@@ -35,7 +35,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
 - sim:
 
-  a `clarify_sim` object; the output of a call to [`sim()`](sim.md) or
+  a `<clarify_sim>` object; the output of a call to [`sim()`](sim.md) or
   [`misim()`](misim.md).
 
 - var:
@@ -87,7 +87,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
   a string containing the type of predicted values (e.g., the link or
   the response). Passed to
-  [`marginaleffects::get_predict()`](https://marginaleffects.com/man/r/get_predict.html)
+  [`marginaleffects::get_predict()`](https://rdrr.io/pkg/marginaleffects/man/get_predict.html)
   and eventually to [`predict()`](https://rdrr.io/r/stats/predict.html)
   in most cases. The default and allowable option depend on the type of
   model supplied, but almost always corresponds to the response scale
@@ -101,7 +101,8 @@ print(x, digits = 4L, max.ests = 6L, ...)
 - verbose:
 
   `logical`; whether to display a text progress bar indicating progress
-  and estimated time remaining for the procedure. Default is `TRUE`.
+  and estimated time remaining for the procedure. Default is `TRUE` for
+  interactive sessions and `FALSE` otherwise.
 
 - cl:
 
@@ -115,7 +116,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 - ...:
 
   for `sim_adrf()`, additional arguments passed to
-  [`marginaleffects::get_predict()`](https://marginaleffects.com/man/r/get_predict.html)
+  [`marginaleffects::get_predict()`](https://rdrr.io/pkg/marginaleffects/man/get_predict.html)
   (and eventually to
   [`predict()`](https://rdrr.io/r/stats/predict.html)) to compute
   predictions. For [`print()`](https://rdrr.io/r/base/print.html),
@@ -123,7 +124,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
 - x:
 
-  a `clarify_adrf` object.
+  a `<clarify_adrf>` object.
 
 - digits:
 
@@ -136,7 +137,7 @@ print(x, digits = 4L, max.ests = 6L, ...)
 
 ## Value
 
-A `clarify_adrf` object, which inherits from `clarify_est` and is
+A `<clarify_adrf>` object, which inherits from `<clarify_est>` and is
 similar to the output of [`sim_apply()`](sim_apply.md), with the
 additional attributes `"var"` containing the variable named in `var`,
 `"by"` containing the names of the variables specified in `by` (if any),
@@ -181,20 +182,32 @@ effects across all observed levels of the treatment, the AMEF is a
 function evaluated at each possible level of the treatment. The "tiny
 amount" used is `eps` times the standard deviation of `var`.
 
+Note that inference on the computed quantities treats the other
+variables in the model as fixed; that is, it only accounts for
+model-based uncertainty, not uncertainty due to sampling.
+
 ## See also
 
-[`plot.clarify_adrf()`](plot.clarify_adrf.md) for plotting the ADRF or
-AMEF; [`sim_ame()`](sim_ame.md) for computing average marginal effects;
-[`sim_apply()`](sim_apply.md), which provides a general interface to
-computing any quantities for simulation-based inference;
-[`summary.clarify_est()`](summary.clarify_est.md) for computing p-values
-and confidence intervals for the estimated quantities.
+- [`plot.clarify_adrf()`](plot.clarify_adrf.md) for plotting the ADRF or
+  AMEF.
 
-[`marginaleffects::avg_slopes()`](https://marginaleffects.com/man/r/slopes.html)
-and
-[`marginaleffects::avg_predictions()`](https://marginaleffects.com/man/r/predictions.html)
-for delta method-based implementations of computing average marginal
-effects and average marginal means.
+- [`sim_ame()`](sim_ame.md) for computing average marginal effects.
+
+- [`sim_apply()`](sim_apply.md), which provides a general interface to
+  computing any quantities for simulation-based inference.
+
+- [`summary.clarify_est()`](summary.clarify_est.md) for computing
+  p-values and confidence intervals for the estimated quantities.
+
+- [`marginaleffects::avg_slopes()`](https://rdrr.io/pkg/marginaleffects/man/slopes.html)
+  and
+  [`marginaleffects::avg_predictions()`](https://rdrr.io/pkg/marginaleffects/man/predictions.html)
+  for delta method-based implementations of computing average marginal
+  effects and average marginal means.
+
+- the [adrftools](https://CRAN.R-project.org/package=adrftools) package,
+  which performs inference, testing, and visualization of the ADRF and
+  AMEF.
 
 ## Examples
 
@@ -212,8 +225,7 @@ s <- sim(fit, n = 100)
 
 # ADRF for `age`
 est <- sim_adrf(s, var = "age",
-                at = seq(15, 55, length.out = 6),
-                verbose = FALSE)
+                at = seq(15, 55, length.out = 6))
 est
 #> A <clarify_est> object (from `sim_adrf()`)
 #>  - Average dose-response function of `age`
@@ -231,8 +243,7 @@ plot(est)
 
 # AMEF for `age`
 est <- sim_adrf(s, var = "age", contrast = "amef",
-               at = seq(15, 55, length.out = 6),
-               verbose = FALSE)
+               at = seq(15, 55, length.out = 6))
 est
 #> A <clarify_est> object (from `sim_adrf()`)
 #>  - Average marginal effect function of `age`
@@ -259,8 +270,7 @@ plot(est)
 # ADRF for `age` within levels of `married`
 est <- sim_adrf(s, var = "age",
                 at = seq(15, 55, length.out = 6),
-                by = ~married,
-                verbose = FALSE)
+                by = ~married)
 est
 #> A <clarify_est> object (from `sim_adrf()`)
 #>  - Average dose-response function of `age`

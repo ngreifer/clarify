@@ -30,7 +30,7 @@ plot(
 
 - x:
 
-  a `clarify_adrf` object resulting from a call to
+  a `<clarify_adrf>` object resulting from a call to
   [`sim_adrf()`](sim_adrf.md).
 
 - ci:
@@ -76,7 +76,7 @@ plot(
 
 ## Value
 
-A `ggplot` object.
+A `<ggplot>` object.
 
 ## Details
 

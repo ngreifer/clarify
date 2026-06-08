@@ -51,7 +51,7 @@ sim(fit, n = 1000L, vcov = NULL, coefs = NULL, dist = NULL)
 
 ## Value
 
-A `clarify_sim` object, which has the following components:
+A `<clarify_sim>` object, which has the following components:
 
 - sim.coefs:
 

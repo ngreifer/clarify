@@ -14,9 +14,10 @@ misim(fitlist, n = 1000, vcov = NULL, coefs = NULL, dist = NULL)
 
 - fitlist:
 
-  a list of model fits, one for each imputed dataset, or a `mira` object
-  (the output of a call to [`with()`](https://rdrr.io/r/base/with.html)
-  applied to a `mids` object in `mice`).
+  a list of model fits, one for each imputed dataset, or a `<mira>`
+  object (the output of a call to
+  [`with()`](https://rdrr.io/r/base/with.html) applied to a `<mids>`
+  object from *mice*).
 
 - n:
 
@@ -54,8 +55,8 @@ misim(fitlist, n = 1000, vcov = NULL, coefs = NULL, dist = NULL)
 
 ## Value
 
-A `clarify_misim` object, which inherits from `clarify_sim` and has the
-following components:
+A `<clarify_misim>` object, which inherits from `<clarify_sim>` and has
+the following components:
 
 - sim.coefs:
 

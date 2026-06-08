@@ -2,7 +2,7 @@
 
 [`summary()`](https://rdrr.io/r/base/summary.html) tabulates the
 estimates and confidence intervals and (optionally) p-values from a
-`clarify_est` object.
+`<clarify_est>` object.
 [`confint()`](https://rdrr.io/r/stats/confint.html) computes confidence
 intervals. [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
 plots the "posterior" distribution of estimates.
@@ -92,7 +92,7 @@ confint(
 
 - object, x:
 
-  a `clarify_est` object; the output of a call to
+  a `<clarify_est>` object; the output of a call to
   [`sim_apply()`](sim_apply.md) or its wrappers.
 
 - null:
@@ -108,7 +108,7 @@ confint(
 ## Value
 
 For [`summary()`](https://rdrr.io/r/base/summary.html), a
-`summary.clarify_est` object, which is a matrix containing the
+`<summary.clarify_est>` object, which is a matrix containing the
 coefficient estimates, standard errors, test statistics, p-values, and
 confidence intervals. Not all columns will be present depending on the
 arguments supplied to
@@ -117,8 +117,8 @@ arguments supplied to
 For [`confint()`](https://rdrr.io/r/stats/confint.html), a matrix
 containing the confidence intervals for the requested quantities.
 
-For [`plot()`](https://rdrr.io/r/graphics/plot.default.html), a `ggplot`
-object.
+For [`plot()`](https://rdrr.io/r/graphics/plot.default.html), a
+`<ggplot>` object.
 
 ## Details
 
@@ -204,7 +204,7 @@ fit <- glm(I(re78 > 0) ~ treat + age + race + nodegree + re74,
 s <- sim(fit, n = 100)
 
 # Compute average marginal means for `treat`
-est <- sim_ame(s, var = "treat", verbose = FALSE)
+est <- sim_ame(s, var = "treat")
 coef(est)
 #>   E[Y(0)]   E[Y(1)] 
 #> 0.7453346 0.8175754 
@@ -218,25 +218,21 @@ est <- transform(est,
 # Compute confidence intervals and p-values,
 # using given null values for computing p-values
 summary(est, null = c(`RD` = 0, `RR` = 1))
-#>         Estimate   2.5 %  97.5 % P-value  
-#> E[Y(0)]   0.7453  0.7067  0.7781       .  
-#> E[Y(1)]   0.8176  0.7478  0.8920       .  
-#> RD        0.0722 -0.0145  0.1871    0.06 .
-#> RR        1.0969  0.9806  1.2588    0.06 .
-#> ---
-#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#>         Estimate   2.5 %  97.5 % P-value
+#> E[Y(0)]   0.7453  0.7055  0.7900       .
+#> E[Y(1)]   0.8176  0.7458  0.8908       .
+#> RD        0.0722 -0.0240  0.1554     0.2
+#> RR        1.0969  0.9692  1.2121     0.2
 
 # Same tests using normal approximation and alternate
 # syntax for `null`
 summary(est, null = c(NA, NA, 0, 1),
         normal = TRUE)
-#>         Estimate   2.5 %  97.5 % P-value  
-#> E[Y(0)]   0.7453  0.7067  0.7781       .  
-#> E[Y(1)]   0.8176  0.7478  0.8920       .  
-#> RD        0.0722 -0.0145  0.1871    0.06 .
-#> RR        1.0969  0.9806  1.2588    0.06 .
-#> ---
-#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#>         Estimate   2.5 %  97.5 % P-value
+#> E[Y(0)]   0.7453  0.7055  0.7900       .
+#> E[Y(1)]   0.8176  0.7458  0.8908       .
+#> RD        0.0722 -0.0240  0.1554     0.2
+#> RR        1.0969  0.9692  1.2121     0.2
 
 # Plot the RD and RR with a reference distribution
 plot(est, parm = c("RD", "RR"), reference = TRUE,
