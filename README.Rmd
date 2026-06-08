@@ -10,6 +10,7 @@ link-citations: true
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
+  fig.align = "center",
   fig.path = "man/figures/README-",
   out.width = "80%"
 )
@@ -36,8 +37,8 @@ install.packages("clarify")
 You can install the development version of *clarify* from [GitHub](https://github.com/iqss/clarify) with
 
 ```{r, eval = F}
-install.packages("remotes")
-remotes::install_github("iqss/clarify")
+install.packages("pak")
+pak::pak("iqss/clarify")
 ```
 
 ## Example
@@ -66,8 +67,7 @@ sim_coefs <- sim(fit)
 sim_est <- sim_ame(sim_coefs,
                    var = "treat",
                    subset = treat == 1,
-                   contrast = "RR",
-                   verbose = FALSE)
+                   contrast = "RR")
 
 sim_est
 
@@ -86,10 +86,10 @@ Simulation-based inference is an alternative to the delta method and bootstrappi
 
 *clarify* was designed to provide a simple, general interface for simulation-based inference and includes a few convenience functions to perform common tasks like computing average marginal effects. The primary functions of *clarify* are `sim()`, `sim_apply()`, `summary()`, and `plot()`. These work together to create a simple workflow for simulation-based inference.
 
--   `sim()` simulates model parameters from a fitted model
--   `sim_apply()` applies an estimator to the simulated coefficients, or to the original object but with the new coefficients inserted
--   `summary()` produces confidence intervals and p-values for the resulting estimates
--   `plot()` produces plots of the simulated sampling distribution of the resulting estimates
+- `sim()` simulates model parameters from a fitted model
+- `sim_apply()` applies an estimator to the simulated coefficients, or to the original object but with the new coefficients inserted
+- `summary()` produces confidence intervals and p-values for the resulting estimates
+- `plot()` produces plots of the simulated sampling distribution of the resulting estimates
 
 There are also some wrappers for `sim_apply()` for performing some common operations: `sim_ame()` computes the average marginal effect of a variable, mirroring `marginaleffects::avg_predictions()` and `marginaleffects::avg_slopes()`; `sim_setx()` computes predictions at typical values of the covariates and differences between them, mirroring `Zelig::setx()` and `Zelig::setx1()`; and `sim_adrf()` computes average dose-response functions. *clarify* also offers support for models fit to multiply imputed data with the `misim()` function.
 
@@ -107,7 +107,7 @@ ATT_fun <- function(fit) {
 }
 
 # Apply that function to the simulated coefficient
-sim_est <- sim_apply(sim_coefs, ATT_fun, verbose = FALSE)
+sim_est <- sim_apply(sim_coefs, ATT_fun)
 
 sim_est
 
@@ -136,8 +136,7 @@ We can also use *clarify* to compute predictions and first differences at set an
 # Predictions across age and treat at typical values
 # of the other predictors
 sim_est <- sim_setx(sim_coefs,
-                    x = list(age = 20:50, treat = 0:1),
-                    verbose = FALSE)
+                    x = list(age = 20:50, treat = 0:1))
 
 #Plot of predicted values across age for each value of treat
 plot(sim_est)

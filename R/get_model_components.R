@@ -6,7 +6,7 @@
 #   b <- try(marginaleffects::get_coef(fit), silent = TRUE)
 #
 #   if (!check_valid_coef(b)) {
-#     .err("`sim()` was unable to extract a valid set of coefficients from the model fit; please supply coefficients to the `coefs` argument and a covariance matrix to the `vcov` argument")
+#     arg::err("`sim()` was unable to extract a valid set of coefficients from the model fit; please supply coefficients to the `coefs` argument and a covariance matrix to the `vcov` argument")
 #   }
 #
 #   b
@@ -17,7 +17,7 @@
 #   v <- try(marginaleffects::get_vcov(fit, vcov), silent = TRUE)
 #
 #   if (!check_valid_vcov(v)) {
-#     .err("`sim()` was unable to extract a valid covariance matrix from the model fit; please supply a covariance matrix to the `vcov` argument")
+#     arg::err("`sim()` was unable to extract a valid covariance matrix from the model fit; please supply a covariance matrix to the `vcov` argument")
 #   }
 #
 #   v

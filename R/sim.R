@@ -9,7 +9,7 @@
 #' @param dist a string containing the name of the multivariate distribution to use to draw simulated coefficients. Should be one of `"normal"` (multivariate normal distribution) or `"t({#})"` (multivariate t distribution), where `{#}` corresponds to the desired degrees of freedom (e.g., `"t(100)"`). If `NULL`, the right distribution to use will be determined based on heuristics; see Details.
 #'
 #' @returns
-#' A `clarify_sim` object, which has the following components:
+#' A `<clarify_sim>` object, which has the following components:
 #'  \item{sim.coefs}{a matrix containing the simulated coefficients with a column for each coefficient and a row for each simulation}
 #'  \item{coefs}{the original coefficients extracted from `fit` or supplied to `coefs`.}
 #'  \item{vcov}{the covariance matrix of the coefficients extracted from `fit` or supplied to `vcov`}
@@ -52,21 +52,21 @@ sim <- function(fit, n = 1e3L, vcov = NULL, coefs = NULL, dist = NULL) {
   }
   else if (is_not_null(fit)) {
     if (!insight::is_regression_model(fit)) {
-      .wrn("{.arg fit} was not detected to be a regression model; proceed with caution")
+      arg::wrn("{.arg fit} was not detected to be a regression model; proceed with caution")
     }
     # if (insight::is_mixed_model(fit)) {
-    #   .wrn("{.fun sim} may not fully support models with random effects; proceed with caution")
+    #   arg::wrn("{.fun sim} may not fully support models with random effects; proceed with caution")
     # }
   }
 
-  arg_count(n)
+  arg::arg_count(n)
 
   coef_supplied <- {
     if (is_null(coefs)) "null"
     else if (is.function(coefs)) "fun"
     else if (check_valid_coef(coefs)) "num"
     else {
-      .err("{.arg coefs} must be a vector of coefficients or a function that extracts one from {.arg fit}")
+      arg::err("{.arg coefs} must be a vector of coefficients or a function that extracts one from {.arg fit}")
     }
   }
 
@@ -124,14 +124,14 @@ print.clarify_sim <- function(x, ...) {
 get_sampling_dist <- function(fit = NULL, dist = NULL) {
 
   if (is_not_null(dist)) {
-    arg_string(dist)
+    arg::arg_string(dist)
 
     dist <- tolower(dist)
 
     if (startsWith(dist, "t(") && endsWith(dist, ")")) {
       df <- substr(dist, 3L, nchar(dist) - 1L)
       if (!nzchar(df) || anyNA(suppressWarnings(df <- as.numeric(df))) || !is.numeric(df) || length(df) != 1L) {
-        .err("when {.arg dist} is supplied as {.val t({{#}})}, {.code {{#}}} must be a number")
+        arg::err("when {.arg dist} is supplied as {.val t({{#}})}, {.code {{#}}} must be a number")
       }
       df <- as.numeric(df)
       dist <- "t"
@@ -140,7 +140,7 @@ get_sampling_dist <- function(fit = NULL, dist = NULL) {
       dist <- "normal"
     }
     else {
-      .err("{.arg dist} must be either {.val normal} or {.val t({{#}})}, where {.code {{#}}} corresponds to the desired degrees of freedom")
+      arg::err("{.arg dist} must be either {.val normal} or {.val t({{#}})}, where {.code {{#}}} corresponds to the desired degrees of freedom")
     }
   }
   else if (is_null(fit)) {
@@ -168,24 +168,24 @@ get_sampling_dist <- function(fit = NULL, dist = NULL) {
 process_coefs <- function(coefs, fit = NULL, coef_supplied) {
   if (coef_supplied == "null") {
     if (is_null(fit)) {
-      .err("{.arg coefs} must be supplied when {.arg fit} is not specified")
+      arg::err("{.arg coefs} must be supplied when {.arg fit} is not specified")
     }
 
     coefs <- marginaleffects::get_coef(fit)
 
     if (!check_valid_coef(coefs)) {
-      .err("a valid set of coefficients could not be extracted automatically; please supply coefficients to the {.arg coefs} argument and a covariance matrix to the {.arg vcov} argument")
+      arg::err("a valid set of coefficients could not be extracted automatically; please supply coefficients to the {.arg coefs} argument and a covariance matrix to the {.arg vcov} argument")
     }
   }
   else if (coef_supplied == "fun") {
     if (is_null(fit)) {
-      .err("{.arg fit} must be supplied when {.arg coefs} is a function")
+      arg::err("{.arg fit} must be supplied when {.arg coefs} is a function")
     }
 
     coefs <- try_catch(coefs(fit))
 
     if (!check_valid_coef(coefs)) {
-      .err("the output of the function supplied to {.arg coefs} must be a numeric vector")
+      arg::err("the output of the function supplied to {.arg coefs} must be a numeric vector")
     }
   }
   else if (coef_supplied == "num") {
@@ -193,7 +193,7 @@ process_coefs <- function(coefs, fit = NULL, coef_supplied) {
   }
 
   if (anyNA(coefs) || !all(is.finite(coefs))) {
-    .err("the coefficients cannot contain {.val {NA}} or non-finite values. This can occur with rank-deficient fits")
+    arg::err("the coefficients cannot contain {.val {NA}} or non-finite values. This can occur with rank-deficient fits")
   }
 
   coefs
@@ -203,34 +203,34 @@ process_coefs <- function(coefs, fit = NULL, coef_supplied) {
 process_vcov <- function(vcov, fit = NULL, vcov_supplied) {
   if (vcov_supplied == "null") {
     if (is_null(fit)) {
-      .err("{.arg vcov} must be supplied when {.arg fit} is not specified")
+      arg::err("{.arg vcov} must be supplied when {.arg fit} is not specified")
     }
 
     vcov <- marginaleffects::get_vcov(fit)
 
     if (!check_valid_vcov(vcov)) {
-      .err("a valid covariance matrix could not be extracted automatically; please supply an argument to {.arg vcov}")
+      arg::err("a valid covariance matrix could not be extracted automatically; please supply an argument to {.arg vcov}")
     }
   }
   else if (vcov_supplied == "num") {
     if (!check_valid_vcov(vcov)) {
-      .err("when supplied as a matrix, {.arg vcov} must be a square, symmetric, numeric matrix")
+      arg::err("when supplied as a matrix, {.arg vcov} must be a square, symmetric, numeric matrix")
     }
   }
   else {
     if (is_null(fit)) {
-      .err("{.arg fit} must be supplied when {.arg vcov} is a not supplied as a matrix")
+      arg::err("{.arg fit} must be supplied when {.arg vcov} is a not supplied as a matrix")
     }
 
     vcov <- marginaleffects::get_vcov(fit, vcov)
 
     if (!check_valid_vcov(vcov)) {
-      .err("a valid covariance matrix could not be extracted using the argument supplied to {.arg vcov}")
+      arg::err("a valid covariance matrix could not be extracted using the argument supplied to {.arg vcov}")
     }
   }
 
   if (anyNA(vcov) || !all(is.finite(vcov))) {
-    .err("the covariance matrix cannot contain {.val {NA}} or non-finite values. This can occur with rank-deficient fits")
+    arg::err("the covariance matrix cannot contain {.val {NA}} or non-finite values. This can occur with rank-deficient fits")
   }
 
   vcov

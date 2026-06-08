@@ -24,7 +24,7 @@ clarify_predict <- function(x, newdata = NULL, group = NULL, type = NULL, ...) {
   }
 
   if (is_null(p) || is_error(p)) {
-    .err("predicted values could not be extracted from the model")
+    arg::err("predicted values could not be extracted from the model")
   }
 
   if (is_not_null(group) && hasName(p, "group")) {

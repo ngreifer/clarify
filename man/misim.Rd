@@ -7,7 +7,7 @@
 misim(fitlist, n = 1000, vcov = NULL, coefs = NULL, dist = NULL)
 }
 \arguments{
-\item{fitlist}{a list of model fits, one for each imputed dataset, or a \code{mira} object (the output of a call to \code{with()} applied to a \code{mids} object in \code{mice}).}
+\item{fitlist}{a list of model fits, one for each imputed dataset, or a \verb{<mira>} object (the output of a call to \code{with()} applied to a \verb{<mids>} object from \emph{mice}).}
 
 \item{n}{the number of simulations to run for each imputed dataset; default is 1000. More is always better but resulting calculations will take longer.}
 
@@ -18,7 +18,7 @@ misim(fitlist, n = 1000, vcov = NULL, coefs = NULL, dist = NULL)
 \item{dist}{a character vector containing the name of the multivariate distribution(s) to use to draw simulated coefficients. Should be one of \code{"normal"} (multivariate normal distribution) or \code{"t_{#}"} (multivariate t distribution), where \verb{\{#\}} corresponds to the desired degrees of freedom (e.g., \code{"t_100"}). If \code{NULL}, the right distributions to use will be determined based on heuristics; see \code{\link[=sim]{sim()}} for details.}
 }
 \value{
-A \code{clarify_misim} object, which inherits from \code{clarify_sim} and has the following components:
+A \verb{<clarify_misim>} object, which inherits from \verb{<clarify_sim>} and has the following components:
 \item{sim.coefs}{a matrix containing the simulated coefficients with a column for each coefficient and a row for each simulation for each imputation}
 \item{coefs}{a matrix containing the original coefficients extracted from \code{fitlist} or supplied to \code{coefs}, with a row per imputation.}
 \item{fit}{the list of model fits supplied to \code{fitlist}}

@@ -5,7 +5,11 @@ clarify News and Updates
 
 * Fixed a bug in the parameterization of the multivariate t-distribution. Thanks to Christopher Johnston for pointing it out. Unfortunately this means all prior results will not be perfectly reproducible when using this and future versions.
 
-* Removed *chk* as a dependency; error messages now use *cli*.
+* Removed *chk* as a dependency; error messages now use *arg*.
+
+* `verbose` is now set to `FALSE` by default when not in an interactive sessions.
+
+* Documentation updates.
 
 # `clarify` 0.2.2
 

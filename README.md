@@ -33,8 +33,8 @@ You can install the development version of *clarify* from
 [GitHub](https://github.com/iqss/clarify) with
 
 ``` r
-install.packages("remotes")
-remotes::install_github("iqss/clarify")
+install.packages("pak")
+pak::pak("iqss/clarify")
 ```
 
 ## Example
@@ -70,14 +70,14 @@ sim_coefs <- sim(fit)
 sim_est <- sim_ame(sim_coefs,
                    var = "treat",
                    subset = treat == 1,
-                   contrast = "RR",
-                   verbose = FALSE)
+                   contrast = "RR")
 
 sim_est
-#> A `clarify_est` object (from `sim_ame()`)
+#> A <clarify_est> object (from `sim_ame()`)
 #>  - Average adjusted predictions for `treat`
 #>  - 1000 simulated values
-#>  - 3 quantities estimated:               
+#>  - 3 quantities estimated
+#>                
 #>  E[Y(0)] 0.6831
 #>  E[Y(1)] 0.7568
 #>  RR      1.1078
@@ -85,15 +85,15 @@ sim_est
 # View the estimates, confidence intervals, and p-values
 summary(sim_est, null = c(`RR` = 1))
 #>         Estimate 2.5 % 97.5 % P-value
-#> E[Y(0)]    0.683 0.592  0.754       .
-#> E[Y(1)]    0.757 0.693  0.807       .
-#> RR         1.108 0.979  1.289    0.12
+#> E[Y(0)]    0.683 0.599  0.757       .
+#> E[Y(1)]    0.757 0.693  0.808       .
+#> RR         1.108 0.967  1.271    0.14
 
 # Plot the resulting sampling distributions
 plot(sim_est)
 ```
 
-<img src="man/figures/README-example-1.png" width="80%" />
+<img src="man/figures/README-example-1.png" alt="" width="80%" style="display: block; margin: auto;" />
 
 Below, we provide information on the framework *clarify* uses and some
 other examples. For a complete vignette, see `vignette("clarify")`.
@@ -114,7 +114,7 @@ Alternatively, if the resulting sampling distribution is normally
 distributed, its standard error can be estimated as the standard
 deviation of the estimates and normal-theory Wald confidence intervals
 and p-values can be computed. The methodology of simulation-based
-inference is explained in King, Tomz, and Wittenberg
+inference is explained in King et al.
 ([2000](#ref-kingMakingMostStatistical2000)) and Herron
 ([1999](#ref-herronPostestimationUncertaintyLimited1999)).
 
@@ -158,12 +158,13 @@ ATT_fun <- function(fit) {
 }
 
 # Apply that function to the simulated coefficient
-sim_est <- sim_apply(sim_coefs, ATT_fun, verbose = FALSE)
+sim_est <- sim_apply(sim_coefs, ATT_fun)
 
 sim_est
-#> A `clarify_est` object (from `sim_apply()`)
+#> A <clarify_est> object (from `sim_apply()`)
 #>  - 1000 simulated values
-#>  - 3 quantities estimated:               
+#>  - 3 quantities estimated
+#>                
 #>  E[Y(0)] 0.6831
 #>  E[Y(1)] 0.7568
 #>  RR      1.1078
@@ -172,15 +173,15 @@ sim_est
 # they are the same as when using sim_ame() above
 summary(sim_est, null = c(`RR` = 1))
 #>         Estimate 2.5 % 97.5 % P-value
-#> E[Y(0)]    0.683 0.592  0.754       .
-#> E[Y(1)]    0.757 0.693  0.807       .
-#> RR         1.108 0.979  1.289    0.12
+#> E[Y(0)]    0.683 0.599  0.757       .
+#> E[Y(1)]    0.757 0.693  0.808       .
+#> RR         1.108 0.967  1.271    0.14
 
 # Plot the resulting sampling distributions
 plot(sim_est, reference = TRUE, ci = FALSE)
 ```
 
-<img src="man/figures/README-example2-1.png" width="80%" />
+<img src="man/figures/README-example2-1.png" alt="" width="80%" style="display: block; margin: auto;" />
 
 The plot of the simulated sampling distribution indicates that the
 sampling distribution for the risk ratio is not normally distributed
@@ -200,10 +201,10 @@ sim_est <- transform(sim_est, `RD` = `E[Y(1)]` - `E[Y(0)]`)
 
 summary(sim_est, null = c(`RR` = 1, `RD` = 0))
 #>         Estimate   2.5 %  97.5 % P-value
-#> E[Y(0)]   0.6831  0.5925  0.7543       .
-#> E[Y(1)]   0.7568  0.6934  0.8067       .
-#> RR        1.1078  0.9789  1.2888    0.12
-#> RD        0.0737 -0.0155  0.1742    0.12
+#> E[Y(0)]   0.6831  0.5990  0.7566       .
+#> E[Y(1)]   0.7568  0.6928  0.8077       .
+#> RR        1.1078  0.9673  1.2714    0.14
+#> RD        0.0737 -0.0239  0.1660    0.14
 ```
 
 We can also use *clarify* to compute predictions and first differences
@@ -214,14 +215,13 @@ of *Zelig*’s `setx()` and `setx1()` functions, using `sim_setx()`:
 # Predictions across age and treat at typical values
 # of the other predictors
 sim_est <- sim_setx(sim_coefs,
-                    x = list(age = 20:50, treat = 0:1),
-                    verbose = FALSE)
+                    x = list(age = 20:50, treat = 0:1))
 
 #Plot of predicted values across age for each value of treat
 plot(sim_est)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.png" width="80%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" alt="" width="80%" style="display: block; margin: auto;" />
 
 See `vignette("Zelig", package = "clarify")` for more examples of
 translating a *Zelig*-based workflow into one that uses *clarify* to
@@ -234,8 +234,7 @@ more details.
 
 ## References
 
-<div id="refs" class="references csl-bib-body hanging-indent"
-entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 
 <div id="ref-greiferClarifySimulationBasedInference2025"
 class="csl-entry">

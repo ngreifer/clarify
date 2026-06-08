@@ -14,7 +14,7 @@ sim_ame(
   outcome = NULL,
   type = NULL,
   eps = 1e-05,
-  verbose = TRUE,
+  verbose = interactive(),
   cl = NULL,
   ...
 )
@@ -22,7 +22,7 @@ sim_ame(
 \method{print}{clarify_ame}(x, digits = 4L, max.ests = 6L, ...)
 }
 \arguments{
-\item{sim}{a \code{clarify_sim} object; the output of a call to \code{\link[=sim]{sim()}} or \code{\link[=misim]{misim()}}.}
+\item{sim}{a \verb{<clarify_sim>} object; the output of a call to \code{\link[=sim]{sim()}} or \code{\link[=misim]{misim()}}.}
 
 \item{var}{either the names of the variables for which marginal effects are to be computed or a named list containing the values the variables should take. See Details.}
 
@@ -56,20 +56,20 @@ scale (e.g., predicted probabilities for binomial models).}
 \item{eps}{when the variable named in \code{var} is continuous, the value by which
 to change the variable values to approximate the derivative. See Details.}
 
-\item{verbose}{\code{logical}; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is \code{TRUE}.}
+\item{verbose}{\code{logical}; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is \code{TRUE} for interactive sessions and \code{FALSE} otherwise.}
 
-\item{cl}{a cluster object created by \code{\link[parallel:makeCluster]{parallel::makeCluster()}}, or an integer to indicate the number of child-processes (integer values are ignored on Windows) for parallel evaluations. See \code{\link[pbapply:pbapply]{pbapply::pblapply()}} for details. If \code{NULL}, no parallelization will take place.}
+\item{cl}{a cluster object created by \code{\link[parallel:makeCluster]{parallel::makeCluster()}}, or an integer to indicate the number of child-processes (integer values are ignored on Windows) for parallel evaluations. See \code{\link[pbapply:pblapply]{pbapply::pblapply()}} for details. If \code{NULL}, no parallelization will take place.}
 
 \item{\dots}{for \code{sim_ame()}, additional arguments passed to \code{\link[marginaleffects:get_predict]{marginaleffects::get_predict()}} (and eventually to \code{predict()}) to compute predictions. For \code{print()}, ignored.}
 
-\item{x}{a \code{clarify_ame} object.}
+\item{x}{a \verb{<clarify_ame>} object.}
 
 \item{digits}{the minimum number of significant digits to be used; passed to \code{\link[=print.data.frame]{print.data.frame()}}.}
 
 \item{max.ests}{the maximum number of estimates to display.}
 }
 \value{
-A \code{clarify_ame} object, which inherits from \code{clarify_est} and is
+A \verb{<clarify_ame>} object, which inherits from \verb{<clarify_est>} and is
 similar to the output of \code{sim_apply()}, with the additional attributes
 \code{"var"} containing the variable values specified in \code{var} and \code{"by"} containing the
 names of the variables specified in \code{by} (if any). The average adjusted
@@ -98,22 +98,13 @@ Below are some examples of specifications and what they request, assuming \code{
 \item \code{list(x1 = 0:1, "x2")}, \code{list("x1", "x2")}, \code{c("x1", "x2")} -- the average marginal effects of \code{x2} setting \code{x1} to 0 and to 1
 }
 
-The average adjusted prediction is the average predicted outcome
-value after setting all units' value of a variable to a specified level. (This quantity
-has several names, including the average potential outcome, average marginal mean, and standardized mean). When exactly two average adjusted predictions are requested, a contrast
-between them can be requested by supplying an argument
-to \code{contrast} (see Effect Measures section below). Contrasts can be manually computed using \code{\link[=transform]{transform()}}
-afterward as well; this is required when multiple average adjusted predictions are requested (i.e., because a single variable was supplied to \code{var} with more than two levels or a combination of multiple variables was supplied).
+The average adjusted prediction is the average predicted outcome value after setting all units' value of a variable to a specified level. (This quantity has several names, including the average potential outcome, average marginal mean, and standardized mean). When exactly two average adjusted predictions are requested, a contrast between them can be requested by supplying an argument to \code{contrast} (see Effect Measures section below). Contrasts can be manually computed using \code{\link[=transform.clarify_est]{transform()}} afterward as well; this is required when multiple average adjusted predictions are requested (i.e., because a single variable was supplied to \code{var} with more than two levels or a combination of multiple variables was supplied).
 
-A marginal effect is the instantaneous rate of change
-corresponding to changing a unit's observed value of a variable by a tiny amount
-and considering to what degree the predicted outcome changes. The ratio of
-the change in the predicted outcome to the change in the value of the variable is
-the marginal effect; these are averaged across the sample to arrive at an
-average marginal effect. The "tiny amount" used is \code{eps} times the standard
-deviation of the focal variable.
+A marginal effect is the instantaneous rate of change corresponding to changing a unit's observed value of a variable by a tiny amount and considering to what degree the predicted outcome changes. The ratio of the change in the predicted outcome to the change in the value of the variable is the marginal effect; these are averaged across the sample to arrive at an average marginal effect. The "tiny amount" used is \code{eps} times the standard deviation of the focal variable.
 
 The difference between using \code{by} or \code{subset} vs. \code{var} is that \code{by} and \code{subset} subset the data when computing the requested quantity, whereas \code{var} sets the corresponding variable to given a value for all units. For example, using \code{by = ~v} computes the quantity of interest separately for each subset of the data defined by \code{v}, whereas setting \code{var = list(., "v")} computes the quantity of interest for all units setting their value of \code{v} to its unique values. The resulting quantities have different interpretations. Both \code{by} and \code{var} can be used simultaneously.
+
+Note that inference on the computed quantities treats the other variables in the model as fixed; that is, it only accounts for model-based uncertainty, not uncertainty due to sampling.
 \subsection{Effect measures}{
 
 The effect measures specified in \code{contrast} are defined below. Typically only
@@ -153,18 +144,17 @@ set.seed(123)
 s <- sim(fit, n = 100)
 
 # Average marginal effect of `age`
-est <- sim_ame(s, var = "age", verbose = FALSE)
+est <- sim_ame(s, var = "age")
 summary(est)
 
 # Contrast between average adjusted predictions
 # for `treat`
-est <- sim_ame(s, var = "treat", contrast = "rr",
-               verbose = FALSE)
+est <- sim_ame(s, var = "treat", contrast = "rr")
 summary(est)
 
 # Average adjusted predictions for `race`; need to follow up
 # with contrasts for specific levels
-est <- sim_ame(s, var = "race", verbose = FALSE)
+est <- sim_ame(s, var = "race")
 
 est <- transform(est,
                  `RR(h,b)` = `E[Y(hispan)]` / `E[Y(black)]`)
@@ -174,24 +164,23 @@ summary(est)
 # Average adjusted predictions for `treat` within levels of
 # `married`, first using `subset` and then using `by`
 est0 <- sim_ame(s, var = "treat", subset = married == 0,
-                contrast = "rd", verbose = FALSE)
+                contrast = "rd")
 names(est0) <- paste0(names(est0), "|married=0")
 est1 <- sim_ame(s, var = "treat", subset = married == 1,
-                contrast = "rd", verbose = FALSE)
+                contrast = "rd")
 names(est1) <- paste0(names(est1), "|married=1")
 
 summary(cbind(est0, est1))
 
 est <- sim_ame(s, var = "treat", by = ~married,
-               contrast = "rd", verbose = FALSE)
+               contrast = "rd")
 
 est
 summary(est)
 
 # Average marginal effect of `age` within levels of
 # married*race
-est <- sim_ame(s, var = "age", by = ~married + race,
-               verbose = FALSE)
+est <- sim_ame(s, var = "age", by = ~married + race)
 est
 summary(est, null = 0)
 
@@ -203,17 +192,18 @@ summary(est_diff)
 
 # Average adjusted predictions at a combination of `treat`
 # and `married`
-est <- sim_ame(s, var = c("treat", "married"),
-               verbose = FALSE)
+est <- sim_ame(s, var = c("treat", "married"))
 est
 
 # Average marginal effect of `age` setting `married` to 1
-est <- sim_ame(s, var = list("age", married = 1),
-               verbose = FALSE)
+est <- sim_ame(s, var = list("age", married = 1))
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[=sim_apply]{sim_apply()}}, which provides a general interface to computing any quantities for simulation-based inference; \code{\link[=plot.clarify_est]{plot.clarify_est()}} for plotting the output of a call to \code{sim_ame()}; \code{\link[=summary.clarify_est]{summary.clarify_est()}} for computing p-values and confidence intervals for the estimated quantities.
-
-\code{\link[marginaleffects:predictions]{marginaleffects::avg_predictions()}}, \code{\link[marginaleffects:comparisons]{marginaleffects::avg_comparisons()}} and \code{\link[marginaleffects:slopes]{marginaleffects::avg_slopes()}} for delta method-based implementations of computing average marginal effects.
+\itemize{
+\item \code{\link[=sim_apply]{sim_apply()}}, which provides a general interface to computing any quantities for simulation-based inference.
+\item \code{\link[=plot.clarify_est]{plot.clarify_est()}} for plotting the output of a call to \code{sim_ame()}.
+\item \code{\link[=summary.clarify_est]{summary.clarify_est()}} for computing p-values and confidence intervals for the estimated quantities.
+\item \code{\link[marginaleffects:avg_predictions]{marginaleffects::avg_predictions()}}, \code{\link[marginaleffects:avg_comparisons]{marginaleffects::avg_comparisons()}} and \code{\link[marginaleffects:avg_slopes]{marginaleffects::avg_slopes()}} for delta method-based implementations of computing average marginal effects.
+}
 }

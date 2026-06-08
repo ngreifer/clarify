@@ -13,24 +13,25 @@
 #' @param type a string containing the type of predicted values (e.g., the link or the response). Passed to [marginaleffects::get_predict()] and eventually to `predict()` in most cases. The default and allowable option depend on the type of model supplied, but almost always corresponds to the response scale (e.g., predicted probabilities for binomial models).
 #' @param eps when `contrast = "amef"`, the value by which to shift the value of `var` to approximate the derivative. See Details.
 #' @param \dots for `sim_adrf()`, additional arguments passed to [marginaleffects::get_predict()] (and eventually to `predict()`) to compute predictions. For `print()`, ignored.
-#' @param x a `clarify_adrf` object.
+#' @param x a `<clarify_adrf>` object.
 #'
 #' @details
 #' The ADRF is composed of average marginal means across levels of the focal predictor. For each level of the focal predictor, predicted values of the outcome are computed after setting the value of the predictor to that level, and those values of the outcome are averaged across all units in the sample to arrive at an average marginal mean. Thus, the ADRF represent the relationship between the "dose" (i.e., the level of the focal predictor) and the average "response" (i.e., the outcome variable). It is the continuous analog to the average marginal effect computed for a binary predictor, e.g., using [sim_ame()]. Although inference can be at each level of the predictor or between two levels of the predictor, typically a plot of the ADRF is the most useful relevant quantity. These can be requested using [plot.clarify_adrf()].
 #'
-#' The AMEF is the derivative of the ADRF; if we call the derivative of the ADRF at each point a "treatment effect" (i.e., the rate at which the outcome changes corresponding to a small change in the predictor, or "treatment"), the AMEF is a function that relates the size of the treatment effect to the level of the treatment. The shape of the AMEF is usually of less importance than the value of the AMEF at each level of the predictor, which corresponds to the size of the treatment effect at the corresponding level. The AMEF is computed by computing the ADRF at each level of the focal predictor specified in `at`, shifting the predictor value by a tiny amount (control by `eps`), and computing the ratio of the change in the outcome to the shift, then averaging this value across all units. This quantity is related the the average marginal effect of a continuous predictor as computed by [`sim_ame()`], but rather than average these treatment effects across all observed levels of the treatment, the AMEF is a function evaluated at each possible level of the treatment. The "tiny amount" used is `eps` times the standard deviation of `var`.
+#' The AMEF is the derivative of the ADRF; if we call the derivative of the ADRF at each point a "treatment effect" (i.e., the rate at which the outcome changes corresponding to a small change in the predictor, or "treatment"), the AMEF is a function that relates the size of the treatment effect to the level of the treatment. The shape of the AMEF is usually of less importance than the value of the AMEF at each level of the predictor, which corresponds to the size of the treatment effect at the corresponding level. The AMEF is computed by computing the ADRF at each level of the focal predictor specified in `at`, shifting the predictor value by a tiny amount (control by `eps`), and computing the ratio of the change in the outcome to the shift, then averaging this value across all units. This quantity is related the the average marginal effect of a continuous predictor as computed by [sim_ame()], but rather than average these treatment effects across all observed levels of the treatment, the AMEF is a function evaluated at each possible level of the treatment. The "tiny amount" used is `eps` times the standard deviation of `var`.
+#'
+#' Note that inference on the computed quantities treats the other variables in the model as fixed; that is, it only accounts for model-based uncertainty, not uncertainty due to sampling.
 #'
 #' @returns
-#' A `clarify_adrf` object, which inherits from `clarify_est` and is similar to
-#' the output of `sim_apply()`, with the additional attributes `"var"` containing
-#' the variable named in `var`, `"by"` containing the names of the variables specified in `by` (if any), `"at"` containing values at which the ADRF or AMEF is evaluated, and `"contrast"` containing the argument supplied to `contrast`. For an ADRF, the average marginal means will be named
-#' `E[Y({v})]`, where `{v}` is replaced with the values in `at`. For an AMEF, the average marginal effects will be
-#' named `dY/d({x})|{a}` where `{x}` is replaced with `var` and `{a}` is replaced by the values in `at`.
+#' A `<clarify_adrf>` object, which inherits from `<clarify_est>` and is similar to the output of `sim_apply()`, with the additional attributes `"var"` containing the variable named in `var`, `"by"` containing the names of the variables specified in `by` (if any), `"at"` containing values at which the ADRF or AMEF is evaluated, and `"contrast"` containing the argument supplied to `contrast`. For an ADRF, the average marginal means will be named `E[Y({v})]`, where `{v}` is replaced with the values in `at`. For an AMEF, the average marginal effects will be named `dY/d({x})|{a}` where `{x}` is replaced with `var` and `{a}` is replaced by the values in `at`.
 #'
 #' @seealso
-#' [plot.clarify_adrf()] for plotting the ADRF or AMEF; [sim_ame()] for computing average marginal effects; [sim_apply()], which provides a general interface to computing any quantities for simulation-based inference; [summary.clarify_est()] for computing p-values and confidence intervals for the estimated quantities.
-#'
-#' [marginaleffects::avg_slopes()] and [marginaleffects::avg_predictions()] for delta method-based implementations of computing average marginal effects and average marginal means.
+#' * [plot.clarify_adrf()] for plotting the ADRF or AMEF.
+#' * [sim_ame()] for computing average marginal effects.
+#' * [sim_apply()], which provides a general interface to computing any quantities for simulation-based inference.
+#' * [summary.clarify_est()] for computing p-values and confidence intervals for the estimated quantities.
+#' * [marginaleffects::avg_slopes()] and [marginaleffects::avg_predictions()] for delta method-based implementations of computing average marginal effects and average marginal means.
+#' * the \CRANpkg{adrftools} package, which performs inference, testing, and visualization of the ADRF and AMEF.
 #'
 #' @examplesIf rlang::is_installed("MatchIt")
 #' data("lalonde", package = "MatchIt")
@@ -46,15 +47,13 @@
 #'
 #' # ADRF for `age`
 #' est <- sim_adrf(s, var = "age",
-#'                 at = seq(15, 55, length.out = 6),
-#'                 verbose = FALSE)
+#'                 at = seq(15, 55, length.out = 6))
 #' est
 #' plot(est)
 #'
 #' # AMEF for `age`
 #' est <- sim_adrf(s, var = "age", contrast = "amef",
-#'                at = seq(15, 55, length.out = 6),
-#'                verbose = FALSE)
+#'                at = seq(15, 55, length.out = 6))
 #' est
 #' summary(est)
 #' plot(est)
@@ -62,8 +61,7 @@
 #' # ADRF for `age` within levels of `married`
 #' est <- sim_adrf(s, var = "age",
 #'                 at = seq(15, 55, length.out = 6),
-#'                 by = ~married,
-#'                 verbose = FALSE)
+#'                 by = ~married)
 #' est
 #' plot(est)
 #'
@@ -82,26 +80,23 @@ sim_adrf <- function(sim,
                      outcome = NULL,
                      type = NULL,
                      eps = 1e-5,
-                     verbose = TRUE,
+                     verbose = interactive(),
                      cl = NULL,
                      ...) {
 
   check_sim_apply_wrapper_ready(sim)
 
-  arg_flag(verbose)
-  is_misim <- inherits(sim, "clarify_misim")
-
   if (missing(var)) {
-    .err("{.arg var} must be supplied, identifying the focal variable")
+    arg::err("{.arg var} must be supplied, identifying the focal variable")
   }
 
-  if (!rlang::is_string(var)) {
-    .err("{.arg var} must be the name of the desired focal variable")
-  }
+  arg::arg_string(var,
+                  .msg = "{.arg var} must be the name of the desired focal variable")
 
-  arg_string(contrast)
-  contrast <- tolower(contrast)
-  contrast <- match_arg(contrast, c("adrf", "amef"))
+  contrast <- arg::match_arg(contrast, c("adrf", "amef"))
+
+  arg::arg_flag(verbose)
+  is_misim <- inherits(sim, "clarify_misim")
 
   dat <- {
     if (is_misim)
@@ -111,16 +106,19 @@ sim_adrf <- function(sim,
   }
 
   if (!hasName(dat, var)) {
-    .err("the variable {.var {var}} named in {.arg var} is not present in the original model")
+    arg::err("the variable {.var {var}} named in {.arg var} is not present in the original model")
   }
 
-  if (is_not_null(by)) {
-    if (is.character(by)) {
-      by <- reformulate(by)
-    }
-    else if (!inherits(by, "formula")) {
-      .err("{.arg by} must be a one-sided formula or character vector")
-    }
+  arg::when_not_null(
+    by,
+    arg::arg_or(
+      arg::arg_character,
+      arg::arg_formula(one_sided = TRUE)
+    )
+  )
+
+  if (is_not_null(by) && is.character(by)) {
+    by <- reformulate(by)
   }
 
   var_val <- dat[[var]]
@@ -128,7 +126,7 @@ sim_adrf <- function(sim,
 
   if (is_char_or_factor(var_val) ||
       is.logical(var_val) || length(unique(var_val)) <= 2L) {
-    .err("the variable named in {.arg var} must be a numeric variable taking on more than two values. Use {.fun sim_ame}` instead")
+    arg::err("the variable named in {.arg var} must be a numeric variable taking on more than two values. Use {.fun sim_ame} instead")
   }
 
   index.sub <- substitute(subset)
@@ -149,42 +147,46 @@ sim_adrf <- function(sim,
 
   if (hasName(test_predict, "group") && length(unique_group <- unique(test_predict$group)) > 1L) {
     if (is_null(outcome)) {
-      .err("{.arg outcome} must be supplied with multivariate models and models with multi-category outcomes")
+      arg::err("{.arg outcome} must be supplied with multivariate models and models with multi-category outcomes")
     }
 
-    arg_string(outcome)
+    arg::arg_string(outcome)
 
     if (!outcome %in% unique_group) {
-      .err("only the following values of {.arg outcome} are allowed: {.val {unique_group}}")
+      arg::err("only the following values of {.arg outcome} are allowed: {.val {unique_group}}")
     }
 
     test_predict <- .subset_group(test_predict, outcome)
   }
   else {
     if (is_not_null(outcome)) {
-      .wrn("{.arg outcome} is ignored for univariate models")
+      arg::wrn("{.arg outcome} is ignored for univariate models")
     }
 
     outcome <- NULL
   }
 
   if (nrow(test_predict) != nrow(test_dat)) {
-    .err("not all units received a predicted value, suggesting a bug")
+    arg::err("not all units received a predicted value, suggesting a bug")
   }
+
+  arg::when_not_null(
+    at,
+    arg::arg_numeric
+  )
 
   min_var <- min(var_val)
   max_var <- max(var_val)
   if (is_null(at)) {
-    arg_count(n)
+    arg::arg_count(n)
     # lims <- c(min_var - .01 * (max_var - min_var),
     #           max_var + .01 * (max_var - min_var))
     lims <- c(min_var, max_var)
     at <- seq(lims[1L], lims[2L], length.out = n)
   }
   else {
-    arg_numeric(at)
     if (min(at) > max_var || max(at) < min_var) {
-      .wrn("the values supplied to {.arg at} are outside the range of {.var {var}}; proceed with caution")
+      arg::wrn("the values supplied to {.arg at} are outside the range of {.var {var}}; proceed with caution")
     }
     at <- sort(at)
   }
@@ -235,8 +237,8 @@ sim_adrf <- function(sim,
     }
   }
   else if (contrast == "amef") {
-    arg_number(eps)
-    arg_gt(eps, 0)
+    arg::arg_number(eps)
+    arg::arg_gt(eps, 0)
     eps <- eps * sd(var_val)
 
     if (is_null(by)) {
@@ -311,8 +313,8 @@ sim_adrf <- function(sim,
 #' @exportS3Method print clarify_adrf
 #' @rdname sim_adrf
 print.clarify_adrf <- function(x, digits = 4L, max.ests = 6L, ...) {
-  arg_whole_number(digits)
-  arg_count(max.ests)
+  arg::arg_whole_number(digits)
+  arg::arg_count(max.ests)
 
   n.ests <- length(coef(x))
   max.ests <- min(max.ests, n.ests)

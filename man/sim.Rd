@@ -18,7 +18,7 @@ sim(fit, n = 1000L, vcov = NULL, coefs = NULL, dist = NULL)
 \item{dist}{a string containing the name of the multivariate distribution to use to draw simulated coefficients. Should be one of \code{"normal"} (multivariate normal distribution) or \code{"t({#})"} (multivariate t distribution), where \verb{\{#\}} corresponds to the desired degrees of freedom (e.g., \code{"t(100)"}). If \code{NULL}, the right distribution to use will be determined based on heuristics; see Details.}
 }
 \value{
-A \code{clarify_sim} object, which has the following components:
+A \verb{<clarify_sim>} object, which has the following components:
 \item{sim.coefs}{a matrix containing the simulated coefficients with a column for each coefficient and a row for each simulation}
 \item{coefs}{the original coefficients extracted from \code{fit} or supplied to \code{coefs}.}
 \item{vcov}{the covariance matrix of the coefficients extracted from \code{fit} or supplied to \code{vcov}}

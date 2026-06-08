@@ -3,24 +3,24 @@
 \name{transform.clarify_est}
 \alias{transform.clarify_est}
 \alias{cbind.clarify_est}
-\title{Transform and combine \code{clarify_est} objects}
+\title{Transform and combine \verb{<clarify_est>} objects}
 \usage{
 \method{transform}{clarify_est}(`_data`, ...)
 
 \method{cbind}{clarify_est}(..., deparse.level = 1)
 }
 \arguments{
-\item{_data}{the \code{clarify_est} object to be transformed.}
+\item{_data}{the \verb{<clarify_est>} object to be transformed.}
 
-\item{...}{for \code{transform()}, arguments in the form \code{name = value}, where \code{name} is the name of a new quantity to be computed and \code{value} is an expression that is a function of the existing quantities corresponding to the new quantity to be computed. See Details. For \code{cbind()}, \code{clarify_est} objects to be combined.}
+\item{...}{for \code{transform()}, arguments in the form \code{name = value}, where \code{name} is the name of a new quantity to be computed and \code{value} is an expression that is a function of the existing quantities corresponding to the new quantity to be computed. See Details. For \code{cbind()}, \verb{<clarify_est>} objects to be combined.}
 
 \item{deparse.level}{ignored.}
 }
 \value{
-A \code{clarify_est} object, either with new columns added (when using \code{transform()}) or combining two \code{clarify_est} objects. Note that any type attributes corresponding to the \code{sim_apply()} wrapper used (e.g., \code{sim_ame()}) is lost when using either function. This can affect any helper functions (e.g., \code{plot()}) designed to work with the output of specific wrappers.
+A \verb{<clarify_est>} object, either with new columns added (when using \code{transform()}) or combining two \verb{<clarify_est>} objects. Note that any type attributes corresponding to the \code{sim_apply()} wrapper used (e.g., \code{sim_ame()}) is lost when using either function. This can affect any helper functions (e.g., \code{plot()}) designed to work with the output of specific wrappers.
 }
 \description{
-\code{transform()} modifies a \code{clarify_est} object by allowing for the calculation of new quantities from the existing quantities without re-simulating them. \code{cbind()} binds two \code{clarify_est} objects together.
+\code{transform()} modifies a \verb{<clarify_est>} object by allowing for the calculation of new quantities from the existing quantities without re-simulating them. \code{cbind()} binds two \verb{<clarify_est>} objects together.
 }
 \details{
 For \code{transform()}, the expression on the right side of the \code{=} should use the names of the existing quantities (e.g., \code{`E[Y(1)]` - `E[Y(1)]`}), with \verb{`} appropriately included when the quantity name include parentheses or brackets. Alternatively, it can use indexes prefixed by \code{.b}, e.g., \code{.b2 - .b1}, to refer to the corresponding quantity by position. This can aid in computing derived quantities of quantities with complicated names. (Note that if a quantity is named something like \code{.b1}, it will need to be referred to by position rather than name, as the position-based label takes precedence). See examples. Setting an existing value to \code{NULL} will remove that quantity from the object.
@@ -42,11 +42,11 @@ s <- sim(fit, n = 100)
 
 # Average adjusted predictions for `treat` within
 # subsets of `race`
-est_b <- sim_ame(s, var = "treat", verbose = FALSE,
+est_b <- sim_ame(s, var = "treat",
                  subset = race == "black")
 est_b
 
-est_h <- sim_ame(s, var = "treat", verbose = FALSE,
+est_h <- sim_ame(s, var = "treat",
                  subset = race == "hispan")
 est_h
 

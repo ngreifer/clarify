@@ -29,7 +29,7 @@
 #' @param eps when the variable named in `var` is continuous, the value by which
 #'   to change the variable values to approximate the derivative. See Details.
 #' @param \dots for `sim_ame()`, additional arguments passed to [marginaleffects::get_predict()] (and eventually to `predict()`) to compute predictions. For `print()`, ignored.
-#' @param x a `clarify_ame` object.
+#' @param x a `<clarify_ame>` object.
 #'
 #' @details
 #' `sim_ame()` computes average adjusted predictions or average marginal effects depending on which variables are named in `var` and how they are specified. Canonically, `var` should be specified as a named list with the value(s) each variable should be set to. For example, specifying `var = list(x1 = 0:1)` computes average adjusted predictions setting `x1` to 0 and 1. Specifying a variable's values as `NULL`, e.g., `list(x1 = NULL)`, is equivalent to requesting average adjusted predictions at each unique value of the variable when that variable is binary or a factor or character and requests the average marginal effect of that variable otherwise. Specifying an unnamed entry in the list with a string containing the value of that variable, e.g., `list("x1")` is equivalent to specifying `list(x1 = NULL)`. Similarly, supplying a vector with the names of the variables is equivalent to specifying a list, e.g., `var = "x1"` is equivalent to `var = list(x1 = NULL)`.
@@ -44,22 +44,13 @@
 #' * `list(x1 = 0:1, x2 = c(5, 10))`, `list("x1", x2 = c(5, 10))` -- the average adjusted predictions setting `x1` and `x2` in a full cross of 0, 1 and 5, 10, respectively (e.g., (0, 5), (0, 10), (1, 5), and (1, 10))
 #' * `list(x1 = 0:1, "x2")`, `list("x1", "x2")`, `c("x1", "x2")` -- the average marginal effects of `x2` setting `x1` to 0 and to 1
 #'
-#' The average adjusted prediction is the average predicted outcome
-#' value after setting all units' value of a variable to a specified level. (This quantity
-#' has several names, including the average potential outcome, average marginal mean, and standardized mean). When exactly two average adjusted predictions are requested, a contrast
-#' between them can be requested by supplying an argument
-#' to `contrast` (see Effect Measures section below). Contrasts can be manually computed using [transform()]
-#' afterward as well; this is required when multiple average adjusted predictions are requested (i.e., because a single variable was supplied to `var` with more than two levels or a combination of multiple variables was supplied).
+#' The average adjusted prediction is the average predicted outcome value after setting all units' value of a variable to a specified level. (This quantity has several names, including the average potential outcome, average marginal mean, and standardized mean). When exactly two average adjusted predictions are requested, a contrast between them can be requested by supplying an argument to `contrast` (see Effect Measures section below). Contrasts can be manually computed using [`transform()`][transform.clarify_est] afterward as well; this is required when multiple average adjusted predictions are requested (i.e., because a single variable was supplied to `var` with more than two levels or a combination of multiple variables was supplied).
 #'
-#' A marginal effect is the instantaneous rate of change
-#' corresponding to changing a unit's observed value of a variable by a tiny amount
-#' and considering to what degree the predicted outcome changes. The ratio of
-#' the change in the predicted outcome to the change in the value of the variable is
-#' the marginal effect; these are averaged across the sample to arrive at an
-#' average marginal effect. The "tiny amount" used is `eps` times the standard
-#' deviation of the focal variable.
+#' A marginal effect is the instantaneous rate of change corresponding to changing a unit's observed value of a variable by a tiny amount and considering to what degree the predicted outcome changes. The ratio of the change in the predicted outcome to the change in the value of the variable is the marginal effect; these are averaged across the sample to arrive at an average marginal effect. The "tiny amount" used is `eps` times the standard deviation of the focal variable.
 #'
 #' The difference between using `by` or `subset` vs. `var` is that `by` and `subset` subset the data when computing the requested quantity, whereas `var` sets the corresponding variable to given a value for all units. For example, using `by = ~v` computes the quantity of interest separately for each subset of the data defined by `v`, whereas setting `var = list(., "v")` computes the quantity of interest for all units setting their value of `v` to its unique values. The resulting quantities have different interpretations. Both `by` and `var` can be used simultaneously.
+#'
+#' Note that inference on the computed quantities treats the other variables in the model as fixed; that is, it only accounts for model-based uncertainty, not uncertainty due to sampling.
 #'
 #' ## Effect measures
 #'
@@ -86,7 +77,7 @@
 #' corresponding effect measure.
 #'
 #' @returns
-#' A `clarify_ame` object, which inherits from `clarify_est` and is
+#' A `<clarify_ame>` object, which inherits from `<clarify_est>` and is
 #' similar to the output of `sim_apply()`, with the additional attributes
 #' `"var"` containing the variable values specified in `var` and `"by"` containing the
 #' names of the variables specified in `by` (if any). The average adjusted
@@ -99,9 +90,10 @@
 #' the quantity is computed. See examples.
 #'
 #' @seealso
-#' [sim_apply()], which provides a general interface to computing any quantities for simulation-based inference; [plot.clarify_est()] for plotting the output of a call to `sim_ame()`; [summary.clarify_est()] for computing p-values and confidence intervals for the estimated quantities.
-#'
-#'  [marginaleffects::avg_predictions()], [marginaleffects::avg_comparisons()] and [marginaleffects::avg_slopes()] for delta method-based implementations of computing average marginal effects.
+#' * [sim_apply()], which provides a general interface to computing any quantities for simulation-based inference.
+#' * [plot.clarify_est()] for plotting the output of a call to `sim_ame()`.
+#' * [summary.clarify_est()] for computing p-values and confidence intervals for the estimated quantities.
+#' * [marginaleffects::avg_predictions()], [marginaleffects::avg_comparisons()] and [marginaleffects::avg_slopes()] for delta method-based implementations of computing average marginal effects.
 #'
 #' @examplesIf rlang::is_installed("MatchIt")
 #' data("lalonde", package = "MatchIt")
@@ -116,18 +108,17 @@
 #' s <- sim(fit, n = 100)
 #'
 #' # Average marginal effect of `age`
-#' est <- sim_ame(s, var = "age", verbose = FALSE)
+#' est <- sim_ame(s, var = "age")
 #' summary(est)
 #'
 #' # Contrast between average adjusted predictions
 #' # for `treat`
-#' est <- sim_ame(s, var = "treat", contrast = "rr",
-#'                verbose = FALSE)
+#' est <- sim_ame(s, var = "treat", contrast = "rr")
 #' summary(est)
 #'
 #' # Average adjusted predictions for `race`; need to follow up
 #' # with contrasts for specific levels
-#' est <- sim_ame(s, var = "race", verbose = FALSE)
+#' est <- sim_ame(s, var = "race")
 #'
 #' est <- transform(est,
 #'                  `RR(h,b)` = `E[Y(hispan)]` / `E[Y(black)]`)
@@ -137,24 +128,23 @@
 #' # Average adjusted predictions for `treat` within levels of
 #' # `married`, first using `subset` and then using `by`
 #' est0 <- sim_ame(s, var = "treat", subset = married == 0,
-#'                 contrast = "rd", verbose = FALSE)
+#'                 contrast = "rd")
 #' names(est0) <- paste0(names(est0), "|married=0")
 #' est1 <- sim_ame(s, var = "treat", subset = married == 1,
-#'                 contrast = "rd", verbose = FALSE)
+#'                 contrast = "rd")
 #' names(est1) <- paste0(names(est1), "|married=1")
 #'
 #' summary(cbind(est0, est1))
 #'
 #' est <- sim_ame(s, var = "treat", by = ~married,
-#'                contrast = "rd", verbose = FALSE)
+#'                contrast = "rd")
 #'
 #' est
 #' summary(est)
 #'
 #' # Average marginal effect of `age` within levels of
 #' # married*race
-#' est <- sim_ame(s, var = "age", by = ~married + race,
-#'                verbose = FALSE)
+#' est <- sim_ame(s, var = "age", by = ~married + race)
 #' est
 #' summary(est, null = 0)
 #'
@@ -166,13 +156,11 @@
 #'
 #' # Average adjusted predictions at a combination of `treat`
 #' # and `married`
-#' est <- sim_ame(s, var = c("treat", "married"),
-#'                verbose = FALSE)
+#' est <- sim_ame(s, var = c("treat", "married"))
 #' est
 #'
 #' # Average marginal effect of `age` setting `married` to 1
-#' est <- sim_ame(s, var = list("age", married = 1),
-#'                verbose = FALSE)
+#' est <- sim_ame(s, var = list("age", married = 1))
 
 #' @export
 sim_ame <- function(sim,
@@ -183,19 +171,20 @@ sim_ame <- function(sim,
                     outcome = NULL,
                     type = NULL,
                     eps = 1e-5,
-                    verbose = TRUE,
+                    verbose = interactive(),
                     cl = NULL,
                     ...) {
 
   check_sim_apply_wrapper_ready(sim)
 
-  arg_flag(verbose)
+  arg::arg_flag(verbose)
+
   is_misim <- inherits(sim, "clarify_misim")
 
   vals <- NULL
 
   if (missing(var)) {
-    .err("{.arg var} must be supplied, identifying the focal variable")
+    arg::err("{.arg var} must be supplied, identifying the focal variable")
   }
 
   if (is.character(var)) {
@@ -203,7 +192,7 @@ sim_ame <- function(sim,
   }
 
   if (!is.list(var)) {
-    .err("{.arg var} must be the name of the desired focal variable(s) or a named list with their values")
+    arg::err("{.arg var} must be the name of the desired focal variable(s) or a named list with their values")
   }
 
   vals <- var
@@ -214,13 +203,13 @@ sim_ame <- function(sim,
   vals[!nzchar(names(vals)) & lengths(vals) == 0L] <- NULL
 
   if (is_null(vals)) {
-    .err("{.arg var} must be the name of the desired focal variable or a named list with its values")
+    arg::err("{.arg var} must be the name of the desired focal variable or a named list with its values")
   }
 
   empty_names <- is.na(names(vals)) | !nzchar(names(vals))
   if (any(empty_names)) {
     if (!all_apply(vals[empty_names], rlang::is_string)) {
-      .err("{.arg var} must be the name of the desired focal variable or a named list with its values")
+      arg::err("{.arg var} must be the name of the desired focal variable or a named list with its values")
     }
 
     names(vals)[empty_names] <- unlist(vals[empty_names])
@@ -237,7 +226,7 @@ sim_ame <- function(sim,
   }
 
   if (!all(vars %in% names(dat))) {
-    .err("the variable{?s} {.var {setdiff(vars, names(dat))}} named in {.arg var} {?is/are} not present in the original model")
+    arg::err("the variable{?s} {.var {setdiff(vars, names(dat))}} named in {.arg var} {?is/are} not present in the original model")
   }
 
   var_val <- dat[vars]
@@ -257,7 +246,7 @@ sim_ame <- function(sim,
       }
     }
     else if (is_char_or_factor(var_val[[v]]) && !all(vals[[v]] %in% var_val[[v]])) {
-      .err('the values mentioned in {.code var[[{"v"}]]}` must be values {.var {v}} takes on')
+      arg::err('the values mentioned in {.code var[[{"v"}]]}` must be values {.var {v}} takes on')
     }
   }
 
@@ -266,12 +255,12 @@ sim_ame <- function(sim,
       by <- reformulate(by)
     }
     else if (!inherits(by, "formula")) {
-      .err("{.arg by} must be a one-sided formula or character vector")
+      arg::err("{.arg by} must be a one-sided formula or character vector")
     }
   }
 
   if (sum(var_types == "cont") > 1L) {
-    .err("only one continuous variable can be supplied to {.arg var}")
+    arg::err("only one continuous variable can be supplied to {.arg var}")
   }
 
   index.sub <- substitute(subset)
@@ -290,27 +279,27 @@ sim_ame <- function(sim,
 
   if (hasName(test_predict, "group") && length(unique_group <- unique(test_predict$group)) > 1L) {
     if (is_null(outcome)) {
-      .err("{.arg outcome} must be supplied with multivariate models and models with multi-category outcomes")
+      arg::err("{.arg outcome} must be supplied with multivariate models and models with multi-category outcomes")
     }
 
-    arg_string(outcome)
+    arg::arg_string(outcome)
 
     if (!outcome %in% unique_group) {
-      .err("only the following values of {.arg outcome} are allowed: {.val {unique_group}}")
+      arg::err("only the following values of {.arg outcome} are allowed: {.val {unique_group}}")
     }
 
     test_predict <- .subset_group(test_predict, outcome)
   }
   else {
     if (is_not_null(outcome)) {
-      .wrn("{.arg outcome} is ignored for univariate models")
+      arg::wrn("{.arg outcome} is ignored for univariate models")
     }
 
     outcome <- NULL
   }
 
   if (nrow(test_predict) != nrow(test_dat)) {
-    .err("not all units received a predicted value, suggesting a bug")
+    arg::err("not all units received a predicted value, suggesting a bug")
   }
 
   if (all(var_types == "cat")) {
@@ -321,17 +310,15 @@ sim_ame <- function(sim,
     }
     else if (nrow(vars_grid) == 2L) {
       if (is_not_null(contrast)) {
-        arg_string(contrast)
-        contrast <- tolower(contrast)
-        contrast <- match_arg(contrast, c("diff", "rd", "irr", "rr", "sr", "srr", "grrr", "log(irr)",
-                                          "log(rr)", "or", "log(or)", "nnt"))
+        contrast <- arg::match_arg(contrast, c("diff", "rd", "irr", "rr", "sr", "srr", "grrr", "log(irr)",
+                                               "log(rr)", "or", "log(or)", "nnt"))
       }
     }
     else if (is_not_null(contrast)) {
       if (sum(lengths(vals) >= 2L) > 1L)
-        .wrn("{.arg contrast} is ignored when multiple focal variables takes on two or more levels")
+        arg::wrn("{.arg contrast} is ignored when multiple focal variables takes on two or more levels")
       else
-        .wrn("{.arg contrast} is ignored when any focal variable takes on more than two levels")
+        arg::wrn("{.arg contrast} is ignored when any focal variable takes on more than two levels")
 
       contrast <- NULL
     }
@@ -451,11 +438,11 @@ sim_ame <- function(sim,
     }
   }
   else {
-    arg_number(eps)
-    arg_gt(eps, 0)
+    arg::arg_number(eps)
+    arg::arg_gt(eps, 0)
 
     if (is_not_null(contrast)) {
-      .wrn("{.arg contrast} is ignored when the focal variable is continuous")
+      arg::wrn("{.arg contrast} is ignored when the focal variable is continuous")
       contrast <- NULL
     }
 
@@ -623,8 +610,8 @@ sim_ame <- function(sim,
 #' @exportS3Method print clarify_ame
 #' @rdname sim_ame
 print.clarify_ame <- function(x, digits = 4L, max.ests = 6L, ...) {
-  arg_whole_number(digits)
-  arg_count(max.ests)
+  arg::arg_whole_number(digits)
+  arg::arg_count(max.ests)
 
   n.ests <- length(coef(x))
   max.ests <- min(max.ests, n.ests)
@@ -725,12 +712,11 @@ print.clarify_ame <- function(x, digits = 4L, max.ests = 6L, ...) {
   if (is_not_null(index.sub)) {
     subset <- eval(index.sub, data, parent.frame(2L))
 
-    if (!rlang::is_atomic(subset)) {
-      .err("{.arg subset} must evaluate to an atomic vector")
-    }
+    arg::arg_atomic(subset,
+                    .msg = "{.arg subset} must evaluate to an atomic vector")
 
     if (is.logical(subset) && length(subset) != nrow(data)) {
-      .err("when {.arg subset} is logical, it must have the same length as the original dataset")
+      arg::err("when {.arg subset} is logical, it must have the same length as the original dataset")
     }
 
     if (is_not_null(subset)) {

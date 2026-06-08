@@ -11,7 +11,7 @@ sim_setx(
   x1 = list(),
   outcome = NULL,
   type = NULL,
-  verbose = TRUE,
+  verbose = interactive(),
   cl = NULL,
   ...
 )
@@ -19,23 +19,21 @@ sim_setx(
 \method{print}{clarify_setx}(x, digits = 4L, max.ests = 6L, ...)
 }
 \arguments{
-\item{sim}{a \code{clarify_sim} object; the output of a call to \code{\link[=sim]{sim()}} or \code{\link[=misim]{misim()}}.}
+\item{sim}{a \verb{<clarify_sim>} object; the output of a call to \code{\link[=sim]{sim()}} or \code{\link[=misim]{misim()}}.}
 
-\item{x}{a data.frame containing a reference grid of predictor values or a named list of values each predictor should take defining such a reference grid, e.g., \code{list(v1 = 1:4, v2 = c("A", "B"))}. Any omitted predictors are fixed at a "typical" value. See Details. When \code{x1} is specified, \code{x} should identify a single reference unit.
+\item{x}{a data frame containing a reference grid of predictor values or a named list of values each predictor should take defining such a reference grid, e.g., \code{list(v1 = 1:4, v2 = c("A", "B"))}. Any omitted predictors are fixed at a "typical" value. See Details. When \code{x1} is specified, \code{x} should identify a single reference unit.
 
-For \code{print()}, a \code{clarify_setx} object.}
+For \code{print()}, a \verb{<clarify_setx>} object.}
 
-\item{x1}{a data.frame or named list of the value each predictor should take to compute the
-first difference from the predictor combination specified in \code{x}. \code{x1} can
-only identify a single unit. See Details.}
+\item{x1}{a data.frame or named list of the value each predictor should take to compute the first difference from the predictor combination specified in \code{x}. \code{x1} can only identify a single unit. See Details.}
 
 \item{outcome}{a string containing the name of the outcome or outcome level for multivariate (multiple outcomes) or multi-category outcomes. Ignored for univariate (single outcome) and binary outcomes.}
 
 \item{type}{a string containing the type of predicted values (e.g., the link or the response). Passed to \code{\link[marginaleffects:get_predict]{marginaleffects::get_predict()}} and eventually to \code{predict()} in most cases. The default and allowable option depend on the type of model supplied, but almost always corresponds to the response scale (e.g., predicted probabilities for binomial models).}
 
-\item{verbose}{\code{logical}; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is \code{TRUE}.}
+\item{verbose}{\code{logical}; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is \code{TRUE} for interactive sessions and \code{FALSE} otherwise.}
 
-\item{cl}{a cluster object created by \code{\link[parallel:makeCluster]{parallel::makeCluster()}}, or an integer to indicate the number of child-processes (integer values are ignored on Windows) for parallel evaluations. See \code{\link[pbapply:pbapply]{pbapply::pblapply()}} for details. If \code{NULL}, no parallelization will take place.}
+\item{cl}{a cluster object created by \code{\link[parallel:makeCluster]{parallel::makeCluster()}}, or an integer to indicate the number of child-processes (integer values are ignored on Windows) for parallel evaluations. See \code{\link[pbapply:pblapply]{pbapply::pblapply()}} for details. If \code{NULL}, no parallelization will take place.}
 
 \item{\dots}{for \code{sim_setx()}, additional arguments passed to \code{\link[marginaleffects:get_predict]{marginaleffects::get_predict()}} (and eventually to \code{predict()}) to compute predictions. For \code{print()}, ignored.}
 
@@ -44,7 +42,7 @@ only identify a single unit. See Details.}
 \item{max.ests}{the maximum number of estimates to display.}
 }
 \value{
-A \code{clarify_setx} object, which inherits from \code{clarify_est} and is similar to the output of \code{sim_apply()}, with the following additional attributes:
+A \verb{<clarify_setx>} object, which inherits from \verb{<clarify_est>} and is similar to the output of \code{sim_apply()}, with the following additional attributes:
 \itemize{
 \item \code{"setx"} - a data frame containing the values at which predictions are to be made
 \item \code{"fd"} - whether or not the first difference is to be computed; set to \code{TRUE} if \code{x1} is specified and \code{FALSE} otherwise
@@ -83,31 +81,30 @@ s <- sim(fit, n = 100)
 # Predicted values at specified values of values, typical
 # values for other predictors
 est <- sim_setx(s, x = list(treat = 0:1,
-                            re74 = c(0, 10000)),
-                verbose = FALSE)
+                            re74 = c(0, 10000)))
 summary(est)
 plot(est)
 
 # Predicted values at specified grid of values, typical
 # values for other predictors
 est <- sim_setx(s, x = list(age = c(20, 25, 30, 35),
-                            married = 0:1),
-                verbose = FALSE)
+                            married = 0:1))
 summary(est)
 plot(est)
 
 # First differences of treat at specified value of
 # race, typical values for other predictors
 est <- sim_setx(s, x = data.frame(treat = 0, race = "hispan"),
-                x1 = data.frame(treat = 1, race = "hispan"),
-                verbose = FALSE)
+                x1 = data.frame(treat = 1, race = "hispan"))
 summary(est)
 plot(est)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[=sim_apply]{sim_apply()}}, which provides a general interface to computing any
-quantities for simulation-based inference; \code{\link[=plot.clarify_setx]{plot.clarify_setx()}} for plotting the
-output of a call to \code{sim_setx()}; \code{\link[=summary.clarify_est]{summary.clarify_est()}} for computing
-p-values and confidence intervals for the estimated quantities.
+\itemize{
+\item \code{\link[=sim_apply]{sim_apply()}}, which provides a general interface to computing any quantities for simulation-based inference.
+\item \code{\link[=plot.clarify_setx]{plot.clarify_setx()}} for plotting the output of a call to \code{sim_setx()}.
+\item \code{\link[=summary.clarify_est]{summary.clarify_est()}} for computing p-values and confidence intervals for the estimated quantities.
+\item \code{\link[marginaleffects:predictions]{marginaleffects::predictions()}} and \code{\link[marginaleffects:comparisons]{marginaleffects::comparisons()}} for delta method-based implementations of computing predicted values and first differences.
+}
 }

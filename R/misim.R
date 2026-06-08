@@ -2,14 +2,14 @@
 #'
 #' `misim()` simulates model parameters from multivariate normal or t distributions after multiple imputation that are then used by [sim_apply()] to calculate quantities of interest.
 #'
-#' @param fitlist a list of model fits, one for each imputed dataset, or a `mira` object (the output of a call to `with()` applied to a `mids` object in `mice`).
+#' @param fitlist a list of model fits, one for each imputed dataset, or a `<mira>` object (the output of a call to `with()` applied to a `<mids>` object from *mice*).
 #' @param n the number of simulations to run for each imputed dataset; default is 1000. More is always better but resulting calculations will take longer.
 #' @param vcov a square covariance matrix of the coefficient covariance estimates, a function to use to extract it from `fit`, or a list thereof with an element for each imputed dataset. By default, uses [stats::vcov()] or [insight::get_varcov()] if that doesn't work.
 #' @param coefs a vector of coefficient estimates, a function to use to extract it from `fit`, or a list thereof with an element for each imputed dataset. By default, uses [stats::coef()] or [insight::get_parameters()] if that doesn't work.
 #' @param dist a character vector containing the name of the multivariate distribution(s) to use to draw simulated coefficients. Should be one of `"normal"` (multivariate normal distribution) or `"t_{#}"` (multivariate t distribution), where `{#}` corresponds to the desired degrees of freedom (e.g., `"t_100"`). If `NULL`, the right distributions to use will be determined based on heuristics; see [sim()] for details.
 #'
 #' @returns
-#' A `clarify_misim` object, which inherits from `clarify_sim` and has the following components:
+#' A `<clarify_misim>` object, which inherits from `<clarify_sim>` and has the following components:
 #'  \item{sim.coefs}{a matrix containing the simulated coefficients with a column for each coefficient and a row for each simulation for each imputation}
 #'  \item{coefs}{a matrix containing the original coefficients extracted from `fitlist` or supplied to `coefs`, with a row per imputation.}
 #'  \item{fit}{the list of model fits supplied to `fitlist`}
@@ -56,11 +56,11 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
 
   if (is_null(fitlist)) {
     if (is_null(coefs) || is_null(vcov)) {
-      .err("when {.arg fitlist} is not supplied, arguments must be supplied to both {.arg coefs} and {.arg vcov}")
+      arg::err("when {.arg fitlist} is not supplied, arguments must be supplied to both {.arg coefs} and {.arg vcov}")
     }
 
     if (!is.list(coefs) && !is.list(vcov)) {
-      .err("when {.arg fitlist} is not supplied, at least one of {.arg coefs} or {.arg vcov} must be a list")
+      arg::err("when {.arg fitlist} is not supplied, at least one of {.arg coefs} or {.arg vcov} must be a list")
     }
 
     nimp <- if (is.list(coefs)) length(coefs) else length(vcov)
@@ -70,17 +70,17 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
     nimp <- length(fitlist)
   }
 
-  arg_count(n)
+  arg::arg_count(n)
 
   if (!is.list(coefs)) {
     coefs <- rep.int(list(coefs), nimp)
   }
   else if (length(coefs) != nimp) {
     if (is_null(fitlist)) {
-      .err("when {.arg fitlist} is not supplied and {.arg coefs} is supplied as a list, {.arg coefs} must have as many entries as there are entries in {.arg vcov}")
+      arg::err("when {.arg fitlist} is not supplied and {.arg coefs} is supplied as a list, {.arg coefs} must have as many entries as there are entries in {.arg vcov}")
     }
     else {
-      .err("when supplied as a list, {.arg coefs} must have as many entries as there are models in {.arg fitlist}")
+      arg::err("when supplied as a list, {.arg coefs} must have as many entries as there are models in {.arg fitlist}")
     }
   }
 
@@ -89,7 +89,7 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
     else if (all_apply(coefs, is.function)) "fun"
     else if (all_apply(coefs, check_valid_coef)) "num"
     else {
-      .err("{.arg coefs} must be a vector of coefficients, a function that extracts one from each model in {.arg fitlist}, or a list thereof")
+      arg::err("{.arg coefs} must be a vector of coefficients, a function that extracts one from each model in {.arg fitlist}, or a list thereof")
     }
   }
 
@@ -98,10 +98,10 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
   }
   else if (length(vcov) != nimp) {
     if (is_null(fitlist)) {
-      .err("when {.arg fitlist} is not supplied and {.arg vcov} is supplied as a list, {.arg vcov} must have as many entries as there are entries in {.arg coefs}")
+      arg::err("when {.arg fitlist} is not supplied and {.arg vcov} is supplied as a list, {.arg vcov} must have as many entries as there are entries in {.arg coefs}")
     }
     else {
-      .err("when supplied as a list, {.arg vcov} must have as many entries as there are models in {.arg fitlist}")
+      arg::err("when supplied as a list, {.arg vcov} must have as many entries as there are models in {.arg fitlist}")
     }
   }
 
@@ -121,8 +121,6 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
 
   check_coefs_vcov_length_mi(vcov, coefs, vcov_supplied, coef_supplied)
 
-  arg_count(n)
-
   if (is_not_null(dist)) {
     if (length(dist) == 1L) {
       dist <- rep.int(list(dist), nimp)
@@ -131,7 +129,7 @@ misim <- function(fitlist, n = 1e3, vcov = NULL, coefs = NULL, dist = NULL) {
       dist <- as.list(dist)
     }
     else {
-      .err("when supplied as a vector, {.arg dist} must have as many values as there are imputations")
+      arg::err("when supplied as a vector, {.arg dist} must have as many values as there are imputations (in this case, {.val {nimp}})")
     }
   }
 

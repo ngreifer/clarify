@@ -1,8 +1,8 @@
 #' Plotting and inference for `clarify_est` objects
 #'
-#' `summary()` tabulates the estimates and confidence intervals and (optionally) p-values from a `clarify_est` object. `confint()` computes confidence intervals. `plot()` plots the "posterior" distribution of estimates.
+#' `summary()` tabulates the estimates and confidence intervals and (optionally) p-values from a `<clarify_est>` object. `confint()` computes confidence intervals. `plot()` plots the "posterior" distribution of estimates.
 #'
-#' @param object,x a `clarify_est` object; the output of a call to [sim_apply()] or its wrappers.
+#' @param object,x a `<clarify_est>` object; the output of a call to [sim_apply()] or its wrappers.
 #' @param parm a vector of the names or indices of the estimates to plot. If unspecified, all estimates will be displayed.
 #' @param level the confidence level desired. Default is .95 for 95% confidence intervals.
 #' @param method the method used to compute p-values and confidence intervals. Can be `"wald"` to use a Normal approximation or `"quantile"` to use the simulated sampling distribution (default). See Details. Abbreviations allowed.
@@ -14,11 +14,11 @@
 #' @param ... for `plot()`, further arguments passed to [ggplot2::geom_density()].
 #'
 #' @returns
-#' For `summary()`, a `summary.clarify_est` object, which is a matrix containing the coefficient estimates, standard errors, test statistics, p-values, and confidence intervals. Not all columns will be present depending on the arguments supplied to `summary()`.
+#' For `summary()`, a `<summary.clarify_est>` object, which is a matrix containing the coefficient estimates, standard errors, test statistics, p-values, and confidence intervals. Not all columns will be present depending on the arguments supplied to `summary()`.
 #'
 #' For `confint()`, a matrix containing the confidence intervals for the requested quantities.
 #'
-#' For `plot()`, a `ggplot` object.
+#' For `plot()`, a `<ggplot>` object.
 #'
 #' @details
 #' `summary()` uses the estimates computed from the original model as its estimates and uses the simulated parameters for inference only, in line with the recommendations of Rainey (2023).
@@ -45,7 +45,7 @@
 #' s <- sim(fit, n = 100)
 #'
 #' # Compute average marginal means for `treat`
-#' est <- sim_ame(s, var = "treat", verbose = FALSE)
+#' est <- sim_ame(s, var = "treat")
 #' coef(est)
 #'
 #' # Compute average marginal effects on risk difference
@@ -83,19 +83,18 @@ summary.clarify_est <- function(object,
       is_null(ncol(object)) ||
       ncol(object) != length(coef(object)) ||
       !identical(names(object), names(coef(object)))) {
-    .err("the {.cls clarify_est} object is malformed, possibly due to tampering")
+    arg::err("the {.cls clarify_est} object is malformed, possibly due to tampering")
   }
 
   original_est <- coef(object)
 
   parm <- process_parm(object, parm)
   if (anyNA(parm)) {
-    .err("{.arg parm} must be a numeric or character vector identifying the estimates to summarize")
+    arg::err("{.arg parm} must be a numeric or character vector identifying the estimates to summarize")
   }
 
-  arg_string(method)
-  method <- match_arg(method, c("quantile", "wald"))
-  # method <- match_arg(method, c("quantile", "wald", "optimal"))
+  method <- arg::match_arg(method, c("quantile", "wald"))
+  # method <- arg::match_arg(method, c("quantile", "wald", "optimal"))
 
   null <- process_null(null, object, parm)
 
@@ -103,7 +102,7 @@ summary.clarify_est <- function(object,
 
   nas <- anyNA(object[parm])
   if (nas) {
-    .wrn("{.val {NA}} values are present among the estimates")
+    arg::wrn("{.val {NA}} values are present among the estimates")
   }
 
   ans <- cbind(Estimate = original_est[parm],
@@ -150,7 +149,7 @@ summary.clarify_est <- function(object,
       }
     }
     else {
-      .err('{.arg null} cannot be specified when {.code method = "optimal"}')
+      arg::err('{.arg null} cannot be specified when {.code method = "optimal"}')
     }
 
     p[p < .Machine$double.eps] <- 0
@@ -167,7 +166,7 @@ summary.clarify_est <- function(object,
 
 #' @exportS3Method print summary.clarify_est
 print.summary.clarify_est <- function(x, digits = 3L, ...) {
-  arg_whole_number(digits)
+  arg::arg_whole_number(digits)
   stats::printCoefmat(x, digits = digits,
                       cs.ind = c(1:3, (4)["Std. Error" %in% colnames(x)]),
                       tst.ind = which(colnames(x) == "Z value"),
@@ -185,21 +184,20 @@ confint.clarify_est <- function(object,
                                 simultaneous = FALSE,
                                 ...) {
 
-  arg_number(level)
-  arg_range(level, c(0, 1), inclusive = c(TRUE, FALSE))
+  arg::arg_number(level)
+  arg::arg_between(level, c(0, 1), inclusive = c(TRUE, FALSE))
 
-  arg_string(method)
-  method <- match_arg(method, c("quantile", "wald"))
-  # method <- match_arg(method, c("quantile", "wald", "optimal"))
+  method <- arg::match_arg(method, c("quantile", "wald"))
+  # method <- arg::match_arg(method, c("quantile", "wald", "optimal"))
 
   parm <- process_parm(object, parm)
   if (anyNA(parm)) {
-    .err("{.arg parm} must be a numeric or character vector identifying the estimates for which to compute confidence intervals")
+    arg::err("{.arg parm} must be a numeric or character vector identifying the estimates for which to compute confidence intervals")
   }
 
-  arg_flag(simultaneous)
+  arg::arg_flag(simultaneous)
   if (simultaneous && method == "optimal") {
-    .err('{.code method = "optimal"} cannot be used with {.code simultaneous = TRUE}')
+    arg::err('{.code method = "optimal"} cannot be used with {.code simultaneous = TRUE}')
   }
 
   est_names <- names(object)[parm]
@@ -214,7 +212,7 @@ confint.clarify_est <- function(object,
 
   nas <- anyNA(object[parm])
   if (nas) {
-    .wrn("{.val {NA}} values are present among the estimates")
+    arg::wrn("{.val {NA}} values are present among the estimates")
   }
 
   if (method == "quantile") {

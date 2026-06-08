@@ -54,19 +54,19 @@
 
 \item{...}{for \code{plot()}, further arguments passed to \code{\link[ggplot2:geom_density]{ggplot2::geom_density()}}.}
 
-\item{object, x}{a \code{clarify_est} object; the output of a call to \code{\link[=sim_apply]{sim_apply()}} or its wrappers.}
+\item{object, x}{a \verb{<clarify_est>} object; the output of a call to \code{\link[=sim_apply]{sim_apply()}} or its wrappers.}
 
 \item{null}{the values of the parameters under the null hypothesis for the p-value calculations. Should have length equal to the number of quantities estimated, or one, in which case it will be recycled, or it can be a named vector with just the names of quantities for which null values are to be set. Set values to \code{NA} to omit p-values for those quantities. When all values are \code{NA}, the default, no p-values are produced.}
 }
 \value{
-For \code{summary()}, a \code{summary.clarify_est} object, which is a matrix containing the coefficient estimates, standard errors, test statistics, p-values, and confidence intervals. Not all columns will be present depending on the arguments supplied to \code{summary()}.
+For \code{summary()}, a \verb{<summary.clarify_est>} object, which is a matrix containing the coefficient estimates, standard errors, test statistics, p-values, and confidence intervals. Not all columns will be present depending on the arguments supplied to \code{summary()}.
 
 For \code{confint()}, a matrix containing the confidence intervals for the requested quantities.
 
-For \code{plot()}, a \code{ggplot} object.
+For \code{plot()}, a \verb{<ggplot>} object.
 }
 \description{
-\code{summary()} tabulates the estimates and confidence intervals and (optionally) p-values from a \code{clarify_est} object. \code{confint()} computes confidence intervals. \code{plot()} plots the "posterior" distribution of estimates.
+\code{summary()} tabulates the estimates and confidence intervals and (optionally) p-values from a \verb{<clarify_est>} object. \code{confint()} computes confidence intervals. \code{plot()} plots the "posterior" distribution of estimates.
 }
 \details{
 \code{summary()} uses the estimates computed from the original model as its estimates and uses the simulated parameters for inference only, in line with the recommendations of Rainey (2023).
@@ -86,7 +86,7 @@ fit <- glm(I(re78 > 0) ~ treat + age + race + nodegree + re74,
 s <- sim(fit, n = 100)
 
 # Compute average marginal means for `treat`
-est <- sim_ame(s, var = "treat", verbose = FALSE)
+est <- sim_ame(s, var = "treat")
 coef(est)
 
 # Compute average marginal effects on risk difference

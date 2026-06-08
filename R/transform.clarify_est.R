@@ -1,9 +1,9 @@
-#' Transform and combine `clarify_est` objects
+#' Transform and combine `<clarify_est>` objects
 #'
-#' `transform()` modifies a `clarify_est` object by allowing for the calculation of new quantities from the existing quantities without re-simulating them. `cbind()` binds two `clarify_est` objects together.
+#' `transform()` modifies a `<clarify_est>` object by allowing for the calculation of new quantities from the existing quantities without re-simulating them. `cbind()` binds two `<clarify_est>` objects together.
 #'
-#' @param _data the `clarify_est` object to be transformed.
-#' @param ... for `transform()`, arguments in the form `name = value`, where `name` is the name of a new quantity to be computed and `value` is an expression that is a function of the existing quantities corresponding to the new quantity to be computed. See Details. For `cbind()`, `clarify_est` objects to be combined.
+#' @param _data the `<clarify_est>` object to be transformed.
+#' @param ... for `transform()`, arguments in the form `name = value`, where `name` is the name of a new quantity to be computed and `value` is an expression that is a function of the existing quantities corresponding to the new quantity to be computed. See Details. For `cbind()`, `<clarify_est>` objects to be combined.
 #' @param deparse.level ignored.
 #'
 #' @details
@@ -12,7 +12,7 @@
 #' `cbind()` does not rename the quantities or check for uniqueness of the names, so it is important to rename them yourself prior to combining the objects.
 #'
 #' @returns
-#' A `clarify_est` object, either with new columns added (when using `transform()`) or combining two `clarify_est` objects. Note that any type attributes corresponding to the `sim_apply()` wrapper used (e.g., `sim_ame()`) is lost when using either function. This can affect any helper functions (e.g., `plot()`) designed to work with the output of specific wrappers.
+#' A `<clarify_est>` object, either with new columns added (when using `transform()`) or combining two `<clarify_est>` objects. Note that any type attributes corresponding to the `sim_apply()` wrapper used (e.g., `sim_ame()`) is lost when using either function. This can affect any helper functions (e.g., `plot()`) designed to work with the output of specific wrappers.
 #'
 #' @seealso [transform()], [cbind()], [sim()]
 #'
@@ -30,11 +30,11 @@
 #'
 #' # Average adjusted predictions for `treat` within
 #' # subsets of `race`
-#' est_b <- sim_ame(s, var = "treat", verbose = FALSE,
+#' est_b <- sim_ame(s, var = "treat",
 #'                  subset = race == "black")
 #' est_b
 #'
-#' est_h <- sim_ame(s, var = "treat", verbose = FALSE,
+#' est_h <- sim_ame(s, var = "treat",
 #'                  subset = race == "hispan")
 #' est_h
 #'
@@ -84,15 +84,13 @@ transform.clarify_est <- function(`_data`, ...) {
     }
   }
 
-  e <- try(eval(dots, as.data.frame(`_data`), parent.frame()), silent = TRUE)
-
-  if (is_error(e)) {
-    .err('{conditionMessage(.attr(e, "condition"))}')
-  }
+  try_catch({
+    e <- eval(dots, as.data.frame(`_data`), parent.frame())
+  })
 
   n <- nrow(`_data`)
   if (any_apply(e, function(e.) is_not_null(e.) && (length(e.) != n || !is.numeric(e.)))) {
-    .err("all transformations must be vector operations of the variables in the original {.cls clarify_est} object")
+    arg::err("all transformations must be vector operations of the variables in the original {.cls clarify_est} object")
   }
 
   e_original <- eval(dots, as.list(.attr(`_data`, "original")), parent.frame())
@@ -148,17 +146,17 @@ cbind.clarify_est <- function(..., deparse.level = 1) {
     obj[[i]] <- ...elt(i)
 
     if (!inherits(obj[[i]], "clarify_est")) {
-      .err("all supplied objects must be {.cls clarify_est} objects, the output of calls to {.fun sim_apply} or its wrappers")
+      arg::err("all supplied objects must be {.cls clarify_est} objects or the output of calls to {.fun sim_apply} or its wrappers")
     }
 
     hashes[[i]] <- .attr(obj[[i]], "sim_hash")
 
     if (is_null(hashes[[i]]) || !rlang::is_string(hashes[[i]])) {
-      .err("all supplied objects must be unmodified {.cls clarify_est} objects")
+      arg::err("all supplied objects must be unmodified {.cls clarify_est} objects")
     }
 
     if (i > 1L && (hashes[[i]] != hashes[[1L]] || nrow(obj[[i]]) != nrow(obj[[1L]]))) {
-      .err("all supplied objects must be calls of {.fun sim_apply} or its wrappers on the same {.cls clarify_sim} object")
+      arg::err("all supplied objects must be calls of {.fun sim_apply} or its wrappers on the same {.cls clarify_sim} object")
     }
 
     coefs[[i]] <- coef(obj[[i]])

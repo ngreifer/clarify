@@ -37,61 +37,6 @@ str_rev <- function(x) {
   vapply(lapply(strsplit(x, NULL), rev), paste, character(1L), collapse = "")
 }
 
-#More informative and cleaner version of base::match.arg(). Uses arg, rlang, and cli.
-match_arg <- function(arg, choices, several.ok = FALSE, context = NULL,
-                      arg.name = rlang::caller_arg(arg)) {
-  #Replaces match.arg() but gives cleaner error message and processing of arg.
-  if (missing(arg)) {
-    .err("no argument was supplied to match_arg() (this is a bug)")
-  }
-
-  # arg.name <- deparse1(substitute(arg), width.cutoff = 500L)
-
-  if (missing(choices)) {
-    sysP <- sys.parent()
-    formal.args <- formals(sys.function(sysP))
-    choices <- eval(formal.args[[as.character(substitute(arg))]],
-                    envir = sys.frame(sysP))
-  }
-
-  if (is_null(arg)) {
-    return(choices[1L])
-  }
-
-  if (several.ok) {
-    arg_character(arg, arg.name)
-  }
-  else {
-    arg_string(arg, arg.name)
-
-    if (identical(arg, choices)) {
-      return(arg[1L])
-    }
-  }
-
-  i <- pmatch(arg, choices, nomatch = 0L, duplicates.ok = TRUE)
-
-  if (all(i == 0L)) {
-    one_of <- {
-      if (length(choices) <= 1L) NULL
-      else if (several.ok) "at least one of"
-      else "one of"
-    }
-
-    if (is_null(context)) {
-      .err("the argument to {.arg {arg.name}} should be {one_of} {.or {.val {choices}}}")
-    }
-    else {
-      .err(sprintf("%s the argument to {.arg {arg.name}} should be {one_of} {.or {.val {choices}}}",
-                   context))
-    }
-  }
-
-  i <- i[i > 0L]
-
-  choices[i]
-}
-
 #Format percentage for CI labels
 fmt.prc <- function(probs, digits = 3L) {
   paste(format(100 * probs, trim = TRUE, scientific = FALSE, digits = digits), "%")
@@ -113,17 +58,16 @@ all_the_same <- function(x, na.rm = TRUE) {
 
 #Tidy tryCatching
 try_catch <- function(expr) {
-  tryCatch({
-    withCallingHandlers({
-      expr
-    },
-    warning = function(w) {
-      .wrn("{conditionMessage(w)}")
-      invokeRestart("muffleWarning")
-    })},
-    error = function(e) {
-      .err("{conditionMessage(e)}")
-    })
+  rlang::try_fetch({
+    expr
+  },
+  warning = function(w) {
+    arg::wrn("{conditionMessage(w)}")
+    invokeRestart("muffleWarning")
+  },
+  error = function(e) {
+    arg::err("{conditionMessage(e)}")
+  })
 }
 
 #mode
@@ -172,7 +116,7 @@ is_error <- function(x) {
   inherits(x, "try-error")
 }
 
-is_null <- function(x) {length(x) == 0L}
+is_null <- function(x) {identical(length(x), 0L)}
 is_not_null <- function(x) {!is_null(x)}
 
 is_char_or_factor <- function(x) {
@@ -184,47 +128,6 @@ check_if_zero <- function(x, tolerance = sqrt(.Machine$double.eps)) {
   abs(x) < tolerance
 }
 
-#chk utilities
-# pkg_caller_call <- function() {
-#   pn <- utils::packageName()
-#   package.funs <- c(getNamespaceExports(pn),
-#                     .getNamespaceInfo(asNamespace(pn), "S3methods")[, 3L])
-#
-#   for (i in seq_len(sys.nframe())) {
-#     e <- sys.call(i)
-#
-#     n <- rlang::call_name(e)
-#
-#     if (is_not_null(n) && n %in% package.funs) {
-#       return(e)
-#     }
-#   }
-#
-#   NULL
-# }
-#
-# .err <- function(..., n = NULL, tidy = TRUE) {
-#   m <- chk::message_chk(..., n = n, tidy = tidy)
-#   rlang::abort(paste(strwrap(m), collapse = "\n"),
-#                call = pkg_caller_call())
-# }
-# .wrn <- function(..., n = NULL, tidy = TRUE, immediate = TRUE) {
-#   m <- chk::message_chk(..., n = n, tidy = tidy)
-#
-#   if (immediate && isTRUE(all.equal(0, getOption("warn")))) {
-#     rlang::with_options({
-#       rlang::warn(paste(strwrap(m), collapse = "\n"))
-#     }, warn = 1)
-#   }
-#   else {
-#     rlang::warn(paste(strwrap(m), collapse = "\n"))
-#   }
-# }
-# .msg <- function(..., n = NULL, tidy = TRUE) {
-#   m <- chk::message_chk(..., n = n, tidy = tidy)
-#   rlang::inform(paste(strwrap(m), collapse = "\n"), tidy = FALSE)
-# }
-
 drop_sim_class <- function(x) {
   class(x) <- class(x)[!startsWith(class(x), "clarify_")]
   x
@@ -235,14 +138,14 @@ rmvt <- function(n, mu, Sigma, df = Inf, tol = 1e-7) {
   p <- length(mu)
 
   if (!all(dim(Sigma) == c(p, p))) {
-    .err("incompatible arguments")
+    arg::err("incompatible arguments")
   }
 
   eS <- eigen(Sigma, symmetric = TRUE)
   ev <- eS$values
 
   if (any(ev < -tol * abs(ev[1L]))) {
-    .err("{.arg Sigma} is not positive definite")
+    arg::err("{.arg Sigma} is not positive definite")
   }
 
   mu <- drop(mu)
@@ -331,7 +234,7 @@ all_apply <- function(X, FUN, ...) {
 
   if (nrow(x) > 2L * topn + 1L) {
     msg <- sprintf("--- %s rows omitted. ---",
-                nrow(x) - 2L * topn)
+                   nrow(x) - 2L * topn)
 
     to_it <- length(out) + 1L
 

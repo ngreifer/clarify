@@ -3,7 +3,7 @@
 #' `plot.clarify_sext()` plots the output of [sim_setx()], providing graphics similar to those of [plot.clarify_est()] but with features specifically for plot marginal predictions. For continues predictors, this is a plot of the marginal predictions and their confidence bands across levels of the predictor. Otherwise, this is is a plot of simulated sampling distribution of the marginal predictions.
 #'
 #' @inheritParams plot.clarify_est
-#' @param x a `clarify_est` object resulting from a call to [sim_setx()].
+#' @param x a `<clarify_est>` object resulting from a call to [sim_setx()].
 #' @param var the name of the focal varying predictor, i.e., the variable to be on the x-axis of the plot. All other variables with varying set values will be used to color the resulting plot. See Details. Ignored if no predictors vary or if only one predictor varies in the reference grid or if `x1` was specified in `sim_setx()`. If not set, will use the predictor with the greatest number of unique values specified in the reference grid.
 #' @param ci `logical`; whether to display confidence intervals or bands for the estimates. Default is `TRUE`.
 #' @param method the method used to compute confidence intervals or bands. Can be `"wald"` to use a Normal approximation or `"quantile"` to use the simulated sampling distribution (default). See [summary.clarify_est()] for details. Abbreviations allowed.
@@ -11,7 +11,7 @@
 #' @param simultaneous `logical`; whether confidence bands should be simultaneous or not (i.e., for nominal coverage of the whole effect curve); default is `FALSE`, but `TRUE` is recommended. See Details at [summary.clarify_est()] for details.
 #'
 #' @returns
-#' A `ggplot` object.
+#' A `<ggplot>` object.
 #'
 #' @details
 #' `plot()` creates one of two kinds of plots depending on how the reference grid was specified in the call to `sim_setx()` and what `var` is set to. When the focal varying predictor (i.e., the one set in `var`) is numeric and takes on three or more unique values in the reference grid, the produced plot is a line graph displaying the value of the marginal prediction (denoted as `E[Y|X]`) across values of the focal varying predictor, with confidence bands displayed when `ci = TRUE`. If other predictors also vary, lines for different values will be displayed in different colors. These plots are produced using [ggplot2::geom_line()] and [ggplot2::geom_ribbon()]
@@ -40,7 +40,7 @@ plot.clarify_setx <- function(x,
 
   if (nrow(newdata) == 1L) {
     if (is_not_null(var)) {
-      .wrn("ignoring {.arg var} because no variables vary over predictions")
+      arg::wrn("ignoring {.arg var} because no variables vary over predictions")
     }
 
     return(plot.clarify_est(x, parm = 1L, ci = ci, level = level,
@@ -50,7 +50,7 @@ plot.clarify_setx <- function(x,
 
   if (isTRUE(.attr(x, "fd"))) {
     if (is_not_null(var)) {
-      .wrn("ignoring {.arg var}")
+      arg::wrn("ignoring {.arg var}")
     }
 
     return(plot.clarify_est(x, parm = 1:3, ci = ci, level = level,
@@ -63,7 +63,7 @@ plot.clarify_setx <- function(x,
 
   if (length(varying) == 1L) {
     if (is_not_null(var) && !identical(var, varying)) {
-      .wrn("ignoring {.arg var} because only one variable varies over predictions")
+      arg::wrn("ignoring {.arg var} because only one variable varies over predictions")
     }
     var <- varying
   }
@@ -76,9 +76,9 @@ plot.clarify_setx <- function(x,
     }
   }
   else {
-    arg_string(var)
+    arg::arg_string(var)
     if (!var %in% varying) {
-      .err("{.arg var} must be the name of a predictor set to be varying. Allowable options include {.val {varying}}")
+      arg::err("{.arg var} must be the name of a predictor set to be varying. Allowable options include {.val {varying}}")
     }
   }
 
@@ -103,7 +103,7 @@ plot.clarify_setx <- function(x,
 setx_sim_plot <- function(x, var, non_var_varying = NULL, ci = TRUE, level = .95,
                           method = "quantile", simultaneous = FALSE, ...) {
 
-  arg_flag(ci)
+  arg::arg_flag(ci)
 
   newdata <- .attr(x, "setx")
   original_est <- coef(x)

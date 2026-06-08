@@ -16,7 +16,7 @@ sim_adrf(
   outcome = NULL,
   type = NULL,
   eps = 1e-05,
-  verbose = TRUE,
+  verbose = interactive(),
   cl = NULL,
   ...
 )
@@ -24,7 +24,7 @@ sim_adrf(
 \method{print}{clarify_adrf}(x, digits = 4L, max.ests = 6L, ...)
 }
 \arguments{
-\item{sim}{a \code{clarify_sim} object; the output of a call to \code{\link[=sim]{sim()}} or \code{\link[=misim]{misim()}}.}
+\item{sim}{a \verb{<clarify_sim>} object; the output of a call to \code{\link[=sim]{sim()}} or \code{\link[=misim]{misim()}}.}
 
 \item{var}{the name of a variable for which the ADRF or AMEF is to be computed. This variable must be present in the model supplied to \code{sim()} and must be a numeric variable taking on more than two unique values.}
 
@@ -44,24 +44,20 @@ sim_adrf(
 
 \item{eps}{when \code{contrast = "amef"}, the value by which to shift the value of \code{var} to approximate the derivative. See Details.}
 
-\item{verbose}{\code{logical}; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is \code{TRUE}.}
+\item{verbose}{\code{logical}; whether to display a text progress bar indicating progress and estimated time remaining for the procedure. Default is \code{TRUE} for interactive sessions and \code{FALSE} otherwise.}
 
-\item{cl}{a cluster object created by \code{\link[parallel:makeCluster]{parallel::makeCluster()}}, or an integer to indicate the number of child-processes (integer values are ignored on Windows) for parallel evaluations. See \code{\link[pbapply:pbapply]{pbapply::pblapply()}} for details. If \code{NULL}, no parallelization will take place.}
+\item{cl}{a cluster object created by \code{\link[parallel:makeCluster]{parallel::makeCluster()}}, or an integer to indicate the number of child-processes (integer values are ignored on Windows) for parallel evaluations. See \code{\link[pbapply:pblapply]{pbapply::pblapply()}} for details. If \code{NULL}, no parallelization will take place.}
 
 \item{\dots}{for \code{sim_adrf()}, additional arguments passed to \code{\link[marginaleffects:get_predict]{marginaleffects::get_predict()}} (and eventually to \code{predict()}) to compute predictions. For \code{print()}, ignored.}
 
-\item{x}{a \code{clarify_adrf} object.}
+\item{x}{a \verb{<clarify_adrf>} object.}
 
 \item{digits}{the minimum number of significant digits to be used; passed to \code{\link[=print.data.frame]{print.data.frame()}}.}
 
 \item{max.ests}{the maximum number of estimates to display.}
 }
 \value{
-A \code{clarify_adrf} object, which inherits from \code{clarify_est} and is similar to
-the output of \code{sim_apply()}, with the additional attributes \code{"var"} containing
-the variable named in \code{var}, \code{"by"} containing the names of the variables specified in \code{by} (if any), \code{"at"} containing values at which the ADRF or AMEF is evaluated, and \code{"contrast"} containing the argument supplied to \code{contrast}. For an ADRF, the average marginal means will be named
-\code{E[Y({v})]}, where \code{{v}} is replaced with the values in \code{at}. For an AMEF, the average marginal effects will be
-named \code{dY/d({x})|{a}} where \code{{x}} is replaced with \code{var} and \code{{a}} is replaced by the values in \code{at}.
+A \verb{<clarify_adrf>} object, which inherits from \verb{<clarify_est>} and is similar to the output of \code{sim_apply()}, with the additional attributes \code{"var"} containing the variable named in \code{var}, \code{"by"} containing the names of the variables specified in \code{by} (if any), \code{"at"} containing values at which the ADRF or AMEF is evaluated, and \code{"contrast"} containing the argument supplied to \code{contrast}. For an ADRF, the average marginal means will be named \code{E[Y({v})]}, where \code{{v}} is replaced with the values in \code{at}. For an AMEF, the average marginal effects will be named \code{dY/d({x})|{a}} where \code{{x}} is replaced with \code{var} and \code{{a}} is replaced by the values in \code{at}.
 }
 \description{
 \code{sim_adrf()} is a wrapper for \code{\link[=sim_apply]{sim_apply()}} that computes average dose-response functions (ADRFs) and average marginal effect functions (AMEFs). An ADRF describes the relationship between values a focal variable can take and the expected value of the outcome were all units to be given each value of the variable. An AMEF describes the relationship between values a focal variable can take and the derivative of ADRF at each value.
@@ -70,6 +66,8 @@ named \code{dY/d({x})|{a}} where \code{{x}} is replaced with \code{var} and \cod
 The ADRF is composed of average marginal means across levels of the focal predictor. For each level of the focal predictor, predicted values of the outcome are computed after setting the value of the predictor to that level, and those values of the outcome are averaged across all units in the sample to arrive at an average marginal mean. Thus, the ADRF represent the relationship between the "dose" (i.e., the level of the focal predictor) and the average "response" (i.e., the outcome variable). It is the continuous analog to the average marginal effect computed for a binary predictor, e.g., using \code{\link[=sim_ame]{sim_ame()}}. Although inference can be at each level of the predictor or between two levels of the predictor, typically a plot of the ADRF is the most useful relevant quantity. These can be requested using \code{\link[=plot.clarify_adrf]{plot.clarify_adrf()}}.
 
 The AMEF is the derivative of the ADRF; if we call the derivative of the ADRF at each point a "treatment effect" (i.e., the rate at which the outcome changes corresponding to a small change in the predictor, or "treatment"), the AMEF is a function that relates the size of the treatment effect to the level of the treatment. The shape of the AMEF is usually of less importance than the value of the AMEF at each level of the predictor, which corresponds to the size of the treatment effect at the corresponding level. The AMEF is computed by computing the ADRF at each level of the focal predictor specified in \code{at}, shifting the predictor value by a tiny amount (control by \code{eps}), and computing the ratio of the change in the outcome to the shift, then averaging this value across all units. This quantity is related the the average marginal effect of a continuous predictor as computed by \code{\link[=sim_ame]{sim_ame()}}, but rather than average these treatment effects across all observed levels of the treatment, the AMEF is a function evaluated at each possible level of the treatment. The "tiny amount" used is \code{eps} times the standard deviation of \code{var}.
+
+Note that inference on the computed quantities treats the other variables in the model as fixed; that is, it only accounts for model-based uncertainty, not uncertainty due to sampling.
 }
 \examples{
 \dontshow{if (rlang::is_installed("MatchIt")) withAutoprint(\{ # examplesIf}
@@ -86,15 +84,13 @@ s <- sim(fit, n = 100)
 
 # ADRF for `age`
 est <- sim_adrf(s, var = "age",
-                at = seq(15, 55, length.out = 6),
-                verbose = FALSE)
+                at = seq(15, 55, length.out = 6))
 est
 plot(est)
 
 # AMEF for `age`
 est <- sim_adrf(s, var = "age", contrast = "amef",
-               at = seq(15, 55, length.out = 6),
-               verbose = FALSE)
+               at = seq(15, 55, length.out = 6))
 est
 summary(est)
 plot(est)
@@ -102,8 +98,7 @@ plot(est)
 # ADRF for `age` within levels of `married`
 est <- sim_adrf(s, var = "age",
                 at = seq(15, 55, length.out = 6),
-                by = ~married,
-                verbose = FALSE)
+                by = ~married)
 est
 plot(est)
 
@@ -113,7 +108,12 @@ plot(est_diff) + ggplot2::labs(y = "Diff")
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[=plot.clarify_adrf]{plot.clarify_adrf()}} for plotting the ADRF or AMEF; \code{\link[=sim_ame]{sim_ame()}} for computing average marginal effects; \code{\link[=sim_apply]{sim_apply()}}, which provides a general interface to computing any quantities for simulation-based inference; \code{\link[=summary.clarify_est]{summary.clarify_est()}} for computing p-values and confidence intervals for the estimated quantities.
-
-\code{\link[marginaleffects:slopes]{marginaleffects::avg_slopes()}} and \code{\link[marginaleffects:predictions]{marginaleffects::avg_predictions()}} for delta method-based implementations of computing average marginal effects and average marginal means.
+\itemize{
+\item \code{\link[=plot.clarify_adrf]{plot.clarify_adrf()}} for plotting the ADRF or AMEF.
+\item \code{\link[=sim_ame]{sim_ame()}} for computing average marginal effects.
+\item \code{\link[=sim_apply]{sim_apply()}}, which provides a general interface to computing any quantities for simulation-based inference.
+\item \code{\link[=summary.clarify_est]{summary.clarify_est()}} for computing p-values and confidence intervals for the estimated quantities.
+\item \code{\link[marginaleffects:avg_slopes]{marginaleffects::avg_slopes()}} and \code{\link[marginaleffects:avg_predictions]{marginaleffects::avg_predictions()}} for delta method-based implementations of computing average marginal effects and average marginal means.
+\item the \CRANpkg{adrftools} package, which performs inference, testing, and visualization of the ADRF and AMEF.
+}
 }
