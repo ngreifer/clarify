@@ -1,9 +1,9 @@
 clarify News and Updates
 ======
 
-# `clarify` (development version)
+# *clarify* 0.2.3
 
-* Fixed a bug in the parameterization of the multivariate t-distribution. Thanks to Christopher Johnston for pointing it out. Unfortunately this means all prior results will not be perfectly reproducible when using this and future versions.
+* Fixed a bug in the parameterization of the multivariate t-distribution. Thanks to Christopher Johnston for pointing it out. Unfortunately this means all results produced by prior versions will not be perfectly reproducible when using this and future versions.
 
 * Removed *chk* as a dependency; error messages now use *arg*.
 
@@ -11,7 +11,7 @@ clarify News and Updates
 
 * Documentation updates.
 
-# `clarify` 0.2.2
+# *clarify* 0.2.2
 
 * Simultaneous confidence bands and p-values are now available by setting `simultaneous = TRUE` in calls to `summary()` or `plot()`.
 
@@ -23,13 +23,13 @@ clarify News and Updates
 
 * Fixed an issue where sampling from a t-distribution used a slightly incorrect covariance matrix, leading to intervals that could be a tiny bit too wide in small samples.
 
-* Now using a new random number generator that is more tolerant of nearly singular covariance matrices. The removes a dependence on `mvnfast`. Results from prior versions of `clarify` will not be reproducible using this and future versions, even when using the same seed.
+* Now using a new random number generator that is more tolerant of nearly singular covariance matrices. The removes a dependence on `mvnfast`. Results from prior versions of *clarify* will not be reproducible using this and future versions, even when using the same seed.
 
 * Documentation updates.
 
 * Error and warning messages are wrapped more nicely.
 
-# `clarify` 0.2.1
+# *clarify* 0.2.1
 
 * In `sim_ame()` and `sim_adrf()`, unit-level weights are no longer used to compute means, consistent with advice in [Gabriel et al. (2023)](https://doi.org/10.1002/sim.9969). For those using these functions after matching or weighting for the ATT or ATC, this will not change results. For matching or weighting for the ATE, this improves robustness against misspecified weights.
 
@@ -39,7 +39,7 @@ clarify News and Updates
 
 * When `reference = TRUE` with `plot()`, a blue line at the median of the simulated estimates is also included on the plot; when this value does not align with the estimate, quantile confidence intervals may be invalid.
 
-# `clarify` 0.2.0
+# *clarify* 0.2.0
 
 * `sim_ame()` and `sim_adrf()` now have a `by` argument, which can be used to estimate quantities of interest within subsets of one or more variables.
 
@@ -51,11 +51,11 @@ clarify News and Updates
 
 * Typo fixes in vignettes.
 
-# `clarify` 0.1.3
+# *clarify* 0.1.3
 
-* Documentation updates incorporating the work of Rainey (2023). `clarify` already implemented the recommendations in Rainey (2023) so no functionality has changed.
+* Documentation updates incorporating the work of Rainey (2023). *clarify* already implemented the recommendations in Rainey (2023) so no functionality has changed.
 
-# `clarify` 0.1.2
+# *clarify* 0.1.2
 
 * Added the argument `reference` to `plot.clarify_est()`, which adds a reference normal distribution to the density of the estimates.
 
@@ -63,7 +63,7 @@ clarify News and Updates
 
 * Fixed a warning that can occur about recovering model data, from `insight`.
 
-# `clarify` 0.1.1
+# *clarify* 0.1.1
 
 * In `summary.clarify_est()`, `null` can now be supplied as a named vector to specify the quantities for which p-values should be computed.
 
@@ -71,6 +71,6 @@ clarify News and Updates
 
 * Updates to the README and vignettes.
 
-# `clarify` 0.1.0
+# *clarify* 0.1.0
 
 * First release!
